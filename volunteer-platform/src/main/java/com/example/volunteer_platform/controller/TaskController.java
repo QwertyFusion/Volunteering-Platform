@@ -1,3 +1,4 @@
+
 package com.example.volunteer_platform.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,3 +37,4 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 }
+
