@@ -1,51 +1,37 @@
 package com.example.volunteer_platform.service;
 
-import com.example.volunteer_platform.model.Task;
-import com.example.volunteer_platform.model.User;
-import com.example.volunteer_platform.repository.TaskRepository;
-import com.example.volunteer_platform.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import com.example.volunteer_platform.model.Task;
+import com.example.volunteer_platform.repository.TaskRepository;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
 
     // Create a new task associated with an organization
     public Task createTask(Long organizationId, Task task) {
-        // Logic to associate the task with an organization, if necessary
-        Optional<User> organization = userRepository.findById(organizationId);  // Assuming you have a UserRepository
-        if (organization.isPresent()) {
-            task.setOrganization(organization.get()); // Set the actual User (organization) entity, not just the ID
-            return taskRepository.save(task);
-        } else {
-            throw new RuntimeException("Organization not found for ID: " + organizationId);
-        }
+        // Assuming the task repository has the required logic to save tasks
+        return taskRepository.save(task);
     }
 
-
     // Update an existing task
-    public Optional<Task> updateTask(Long taskId, Task taskDetails) {
+    public Task updateTask(Long taskId, Task taskDetails) {
         return taskRepository.findById(taskId)
-                .map(existingTask -> {
-                    existingTask.setTitle(taskDetails.getTitle());
-                    existingTask.setLocation(taskDetails.getLocation());
-                    existingTask.setDescription(taskDetails.getDescription());
-                    existingTask.setStartDateTime(taskDetails.getStartDateTime());
-                    existingTask.setEndDateTime(taskDetails.getEndDateTime());
-                    existingTask.setStatus(taskDetails.getStatus());
-                    existingTask.setMaxVolunteers(taskDetails.getMaxVolunteers());
-                    return taskRepository.save(existingTask);
-                });
+                .map(task -> {
+                    task.setTitle(taskDetails.getTitle());
+                    task.setLocation(taskDetails.getLocation());
+                    task.setDescription(taskDetails.getDescription());
+                    task.setDate(taskDetails.getDate());
+                    return taskRepository.save(task);
+                }).orElse(null);
     }
 
     // Delete a task
@@ -67,26 +53,18 @@ public class TaskService {
         return taskRepository.findByOrganizationId(organizationId);
     }
 
-    // Search tasks by title, location, or description
+    // Search tasks by name, location, or description
     public List<Task> searchTasks(String title, String location, String description) {
-        if (title != null && !title.isEmpty()) {
-            return taskRepository.findByTitleContainingIgnoreCase(title);
-        } else if (location != null && !location.isEmpty()) {
-            return taskRepository.findByLocationContainingIgnoreCase(location);
-        } else if (description != null && !description.isEmpty()) {
-            return taskRepository.findByDescriptionContainingIgnoreCase(description);
+       
+         if (title != null) {
+            return taskRepository.findByTitleContaining(title);
+        } else if (location != null) {
+            return taskRepository.findByLocationContaining(location);
+        } else if (description != null) {
+            return taskRepository.findByDescriptionContaining(description);
         } else {
             return taskRepository.findAll();
         }
     }
 
-    // Get tasks by status
-    public List<Task> getTasksByStatus(String status) {
-        return taskRepository.findByStatus(Task.TaskStatus.valueOf(status));
-    }
-
-    // Get tasks by upcoming deadlines
-    public List<Task> getTasksByUpcomingDeadlines() {
-        return taskRepository.findByEndDateTimeAfterOrderByEndDateTimeAsc(java.time.LocalDateTime.now());
-    }
 }
