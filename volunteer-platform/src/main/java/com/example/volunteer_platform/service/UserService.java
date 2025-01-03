@@ -1,5 +1,9 @@
 package com.example.volunteer_platform.service;
 
+import com.example.volunteer_platform.model.Organization;
+import com.example.volunteer_platform.model.Volunteer;
+import com.example.volunteer_platform.repository.OrganizationRepository;
+import com.example.volunteer_platform.repository.VolunteerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +18,12 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private OrganizationRepository organizationRepository;
+
+    @Autowired
+    private VolunteerRepository volunteerRepository;
 
     // Register User
     public void saveUser(User user) {
@@ -38,5 +48,25 @@ public class UserService {
     // Delete User By ID
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    // Get all Organizations
+    public List<Organization> getAllOrganizations() {
+        return organizationRepository.findAll();
+    }
+
+    // Get all Volunteers
+    public List<Volunteer> getAllVolunteers() {
+        return volunteerRepository.findAll();
+    }
+
+    // Find Organization By ID
+    public Optional<Organization> findOrganizationById(Long id) {
+        return organizationRepository.findById(id);
+    }
+
+    // Find Volunteer By ID
+    public Optional<Volunteer> findVolunteerById(Long id) {
+        return volunteerRepository.findById(id);
     }
 }

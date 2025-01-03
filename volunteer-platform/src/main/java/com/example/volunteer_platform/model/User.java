@@ -6,17 +6,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "user_type")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@EqualsAndHashCode(callSuper = false)
 public class User {
 
 	@Id
@@ -43,13 +42,6 @@ public class User {
 	@Column(nullable = false, unique = true) // Assuming phone numbers should be unique
 	private String phoneNumber;
 
-//	@Enumerated(EnumType.STRING)
-//	@Column(nullable = false)
-//	private Role role;
-
-//	@Column(nullable = false)
-//	private boolean isActive = true;
-
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
 
@@ -67,9 +59,4 @@ public class User {
 	public void preUpdate() {
 		this.updatedAt = LocalDateTime.now();
 	}
-
-//	// Enum for Role
-//	public enum Role {
-//		VOLUNTEER, ORGANIZATION
-//	}
 }
