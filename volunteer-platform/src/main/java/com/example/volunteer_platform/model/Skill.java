@@ -23,6 +23,9 @@ public class Skill {
     @NotBlank
     private String name;
 
-    @ManyToMany(mappedBy = "skills") // This side of the relationship is mapped by the 'skills' field in Volunteer
+    @ManyToMany(mappedBy = "skills") // This side of the relationship is mapped by the 'skills' field in Task
     private Set<Volunteer> volunteers; // Set of volunteers who have this skill
+
+    @ManyToMany(mappedBy = "skills")
+    private Set<Task> tasks; // Set of tasks that require this skill
 }
