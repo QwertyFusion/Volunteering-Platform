@@ -1,8 +1,7 @@
 package com.example.volunteer_platform.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.stereotype.Service;
 
 import com.example.volunteer_platform.model.User;
@@ -16,7 +15,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // Register a new user with password encoding
     public User registerUser(User user) {
@@ -27,8 +25,8 @@ public class UserService {
         }
 
         // Encrypt the password before saving
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encodedPassword);
+       
+    
 
         return userRepository.save(user);  // Save the user to the database
     }
