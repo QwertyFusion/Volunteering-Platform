@@ -5,11 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("ORGANIZATION")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Organization extends User {
 
     @NotBlank
@@ -20,5 +24,6 @@ public class Organization extends User {
     @Size(max = 255)
     private String website;
 
-    // Methods for creating, updating, and deleting tasks can be added here
+    @OneToMany(mappedBy = "organization", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Task> tasks;
 }

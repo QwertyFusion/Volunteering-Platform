@@ -1,12 +1,14 @@
 package com.example.volunteer_platform.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.repository.TaskRepository;
+
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -53,8 +55,8 @@ public class TaskService {
 
     // Search tasks by name, location, or description
     public List<Task> searchTasks(String title, String location, String description) {
-       
-         if (title != null) {
+
+        if (title != null) {
             return taskRepository.findByTitleContaining(title);
         } else if (location != null) {
             return taskRepository.findByLocationContaining(location);

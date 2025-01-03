@@ -32,16 +32,16 @@ public class TaskSignupController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserSignups(@PathVariable Long userId) {
         List<TaskSignup> signups = taskSignupService.getUserSignups(userId);
-        
+
         if (signups.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        
+
         return ResponseEntity.ok(signups);
     }
 
     // Cancel a task signup
- // Cancel a task signup
+    // Cancel a task signup
     @PutMapping("/cancel/{signupId}")
     public ResponseEntity<?> cancelSignup(@PathVariable Long signupId) {
         Optional<TaskSignup> signupOptional = taskSignupService.cancelSignup(signupId);
@@ -51,7 +51,7 @@ public class TaskSignupController {
         }
 
         TaskSignup signup = signupOptional.get();
-        
+
         // Checking if the status allows cancellation (only "UPCOMING" signups can be cancelled)
         if (signup.getStatus() != TaskSignup.SignupStatus.UPCOMING) {
             return ResponseEntity.badRequest().body("Only upcoming tasks can be cancelled.");
