@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping
 public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/all")
+	@GetMapping("/users")
 	public ResponseEntity<?> getAllUsers() {
 		List<User> allUsers = userService.getAllUsers();
 		if (allUsers.isEmpty()) {
@@ -30,7 +30,7 @@ public class UserController {
 		return new ResponseEntity<>(allUsers, HttpStatus.OK);
 	}
 
-	@GetMapping("/all/organizations")
+	@GetMapping("/organizations ")
 	public ResponseEntity<List<Organization>> getAllOrganizations() {
 		List<Organization> organizations = userService.getAllOrganizations();
 		if (organizations.isEmpty()) {
@@ -40,7 +40,7 @@ public class UserController {
 	}
 
 	// View all Volunteers
-	@GetMapping("/all/volunteers")
+	@GetMapping("/volunteers")
 	public ResponseEntity<List<Volunteer>> getAllVolunteers() {
 		List<Volunteer> volunteers = userService.getAllVolunteers();
 		if (volunteers.isEmpty()) {
@@ -49,18 +49,7 @@ public class UserController {
 		return new ResponseEntity<>(volunteers, HttpStatus.OK);
 	}
 
-//	WE DO NOT NEED A USER - We need them to be either organization or volunteer
-//	@PostMapping("/register")
-//	public ResponseEntity<User> registerUser(@RequestBody User user) {
-//		try {
-//			userService.saveUser(user);
-//			return new ResponseEntity<>(user, HttpStatus.CREATED);
-//		} catch (Exception e) {
-//			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-//		}
-//	}
-
-	@PostMapping("/register/organization")
+	@PostMapping("/organizations")
 	public ResponseEntity<Organization> registerOrganization(@RequestBody Organization org) {
 		try {
 			userService.saveUser(org);
@@ -70,7 +59,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/register/volunteer")
+	@PostMapping("/volunteers")
 	public ResponseEntity<Volunteer> registerVolunteer(@RequestBody Volunteer volunteer) {
 		try {
 			userService.saveUser (volunteer);
@@ -80,49 +69,27 @@ public class UserController {
 		}
 	}
 
-	@GetMapping("/id/{id}")
-	public ResponseEntity<User> getUserById(@PathVariable Long id) {
-		Optional<User> user = userService.findUserById(id);
-		if (user.isPresent()) {
-			return new ResponseEntity<>(user.get(), HttpStatus.OK);
-		}
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	}
+	@GetMapping("/users/{userId}")
+	public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+		Optional<User> user = userService.findUserById(userId);
+        return user.map(value -> new ResponseEntity<>(value, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	@DeleteMapping("/delete/id/{id}")
-	public ResponseEntity<Void> deleteUserById(@PathVariable Long id) {
-		Optional<User> user = userService.findUserById(id);
+	@DeleteMapping("/users/{userId}")
+	public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
+		Optional<User> user = userService.findUserById(userId);
 		if (user.isEmpty()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		userService.deleteUserById(id);
+		userService.deleteUserById(userId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-//	WE CANNOT EDIT USER - We can edit or update organization or volunteer
-//	@PutMapping("/edit/id/{id}")
-//	public ResponseEntity<User> updateUserById(@PathVariable Long id, @RequestBody User updatedUser) {
-//	    // Fetch the existing user
-//	    User existingUser = userService.findUserById(id).orElse(null);
-//	    if (existingUser == null) {
-//	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//	    }
-//
-//	    // Update the fields (you can add specific fields for updating here)
-//	    existingUser.setName(updatedUser.getName()!=null && !updatedUser.getName().isEmpty()? updatedUser.getName() : existingUser.getName());
-//	    existingUser.setEmail(updatedUser.getEmail()!=null && !updatedUser.getEmail().isEmpty()? updatedUser.getEmail() : existingUser.getEmail());
-//	    // We cannot update roles of existing user
-//	    existingUser.setPassword(updatedUser.getPassword()!=null && !updatedUser.getPassword().isEmpty()? updatedUser.getPassword() : existingUser.getPassword());  // Update the password if needed
-//
-//	    // Save the updated user to the database
-//	    userService.saveUser(existingUser);
-//
-//		return new ResponseEntity<>(existingUser, HttpStatus.OK);  // Return the updated user
-//	}
+	//	WE CANNOT EDIT USER - We can edit or update organization or volunteer
 
-	@PutMapping("/edit/organization/id/{id}")
-	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long id, @RequestBody Organization updatedOrg) {
-		Organization existingOrg = userService.findOrganizationById(id).orElse(null);
+	@PutMapping("/organizations/{organizationId}")
+	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long organizationId, @RequestBody Organization updatedOrg) {
+		Organization existingOrg = userService.findOrganizationById(organizationId).orElse(null);
 		if (existingOrg == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -139,9 +106,9 @@ public class UserController {
 	}
 
 	// Edit Volunteer
-	@PutMapping("/edit/volunteer/id/{id}")
-	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long id, @RequestBody Volunteer updatedVol) {
-		Volunteer existingVol = userService.findVolunteerById(id).orElse(null);
+	@PutMapping("/volunteers/{volunteerId}")
+	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long volunteerId, @RequestBody Volunteer updatedVol) {
+		Volunteer existingVol = userService.findVolunteerById(volunteerId).orElse(null);
 		if (existingVol == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
