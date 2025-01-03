@@ -9,6 +9,7 @@ import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.repository.TaskRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -22,6 +23,10 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    public Optional<Task> findById(Long taskId) {
+        return taskRepository.findById(taskId);
+    }
+
     // Update an existing task
     public Task updateTask(Long taskId, Task taskDetails) {
         return taskRepository.findById(taskId)
@@ -29,7 +34,7 @@ public class TaskService {
                     task.setTitle(taskDetails.getTitle());
                     task.setLocation(taskDetails.getLocation());
                     task.setDescription(taskDetails.getDescription());
-                    task.setDate(taskDetails.getDate());
+                    //task.setDate(taskDetails.getDate());
                     return taskRepository.save(task);
                 }).orElse(null);
     }
