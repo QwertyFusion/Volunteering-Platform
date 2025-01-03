@@ -5,15 +5,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface TaskSignupRepository extends JpaRepository<TaskSignup, Long> {
 
     // Find signups by user ID
-    List<TaskSignup> findByUserId(Long userId);
+    List<TaskSignup> findByVolunteerId(Long volunteerId);
 
     // Find signups by task ID
     List<TaskSignup> findByTaskId(Long taskId);
 
     // Custom query to find signups for tasks within a specific time range
     List<TaskSignup> findBySignupDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    Optional<TaskSignup> findByTaskIdAndVolunteerId(Long task_id, Long volunteerId);
 }

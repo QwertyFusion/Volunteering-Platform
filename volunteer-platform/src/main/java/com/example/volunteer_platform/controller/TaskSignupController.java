@@ -1,6 +1,11 @@
 package com.example.volunteer_platform.controller;
 
+import com.example.volunteer_platform.model.Task;
+import com.example.volunteer_platform.model.Volunteer;
+import com.example.volunteer_platform.service.TaskService;
+import com.example.volunteer_platform.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,57 +16,105 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/signup")
+@RequestMapping("/task-signups")
 public class TaskSignupController {
-
     @Autowired
     private TaskSignupService taskSignupService;
 
-    // Sign up for a task
-    @PostMapping("/{taskId}/user/{userId}")
-    public ResponseEntity<?> signUpForTask(@PathVariable Long taskId, @PathVariable Long userId) {
-        Optional<TaskSignup> taskSignup = taskSignupService.signUpForTask(taskId, userId);
+    @Autowired
+    private TaskService taskService;
 
-        if (taskSignup.isEmpty()) {
-            return ResponseEntity.badRequest().body("Task or User not found.");
-        }
-        return ResponseEntity.ok(taskSignup.get());
-    }
+    @Autowired
+    private UserService userService;
 
-    // Get all signups for a user
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUserSignups(@PathVariable Long userId) {
-        List<TaskSignup> signups = taskSignupService.getUserSignups(userId);
+    // GET all volunteers signed up for a task
+    @GetMapping
+    public ResponseEntity<?> getAllSignups() {
+        List<TaskSignup> signups = taskSignupService.getAllSignups();
 
         if (signups.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
-        return ResponseEntity.ok(signups);
+        return new ResponseEntity<>(signups, HttpStatus.OK);
     }
 
-    // Cancel a task signup
-    // Cancel a task signup
-    @PutMapping("/cancel/{signupId}")
-    public ResponseEntity<?> cancelSignup(@PathVariable Long signupId) {
-        Optional<TaskSignup> signupOptional = taskSignupService.cancelSignup(signupId);
+    // GET all task signups by a volunteer
+    @GetMapping("/volunteer/{volunteerId}")
+    public ResponseEntity<?> getUserSignups(@PathVariable Long volunteerId) {
+        List<TaskSignup> signups = taskSignupService.getUserSignups(volunteerId);
 
-        if (signupOptional.isEmpty()) {
-            return ResponseEntity.badRequest().body("Signup not found.");
+        if (signups.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
-        TaskSignup signup = signupOptional.get();
-
-        // Checking if the status allows cancellation (only "UPCOMING" signups can be cancelled)
-        if (signup.getStatus() != TaskSignup.SignupStatus.UPCOMING) {
-            return ResponseEntity.badRequest().body("Only upcoming tasks can be cancelled.");
-        }
-
-        // Save the cancellation status
-        signup.setStatus(TaskSignup.SignupStatus.CANCELLED);
-        taskSignupService.save(signup); // Assuming this is part of the service
-
-        return ResponseEntity.ok(signup); // Return the updated signup object
+        return new ResponseEntity<>(signups, HttpStatus.OK);
     }
 
+    // GET all task signups of a task
+    @GetMapping("/task/{taskId}")
+    public ResponseEntity<?> getTaskSignups(@PathVariable Long taskId) {
+        List<TaskSignup> signups = taskSignupService.getTaskSignups(taskId);
+
+        if (signups.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(signups, HttpStatus.OK);
+    }
+
+    // POST task sign up if volunteer signs up for task
+    @PostMapping("/volunteer/{volunteerId}/task/{taskId}")
+    public ResponseEntity<TaskSignup> signUpForTask(@PathVariable Long taskId, @PathVariable Long volunteerId) {
+        try {
+            Optional<Task> taskOptional = taskService.findById(taskId);
+            Optional<Volunteer> userOptional = userService.findVolunteerById(volunteerId);
+
+            if (taskOptional.isEmpty() || userOptional.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            Task task = taskOptional.get();
+            Volunteer volunteer = userOptional.get();
+
+            // Check if the user has already signed up for the task
+            Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(taskId, volunteer.getId());
+            if (existingSignup.isPresent()) {
+                return new ResponseEntity<>(existingSignup.get(),HttpStatus.FOUND); // Return existing if signup already exists
+            }
+
+            TaskSignup taskSignup = TaskSignup.builder()
+                    .task(task)
+                    .volunteer(volunteer)
+                    .build();
+
+            taskSignupService.save(taskSignup);
+            return new ResponseEntity<>(taskSignup,HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // PUT -> Not needed since it is a simple relation based table.
+    // EMPTY
+
+    // DELETE task signup if volunteer cancels participation for task
+    // Delete by user id and task id
+    @DeleteMapping("/volunteer/{volunteerId}/task/{taskId}")
+    public ResponseEntity<?> cancelSignup(@PathVariable Long volunteerId, @PathVariable Long taskId) {
+        Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(taskId, volunteerId);
+        if (existingSignup.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return existing if signup already exists
+        }
+        taskSignupService.deleteById(existingSignup.get().getSignupId());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Delete by task sign up id
+    @DeleteMapping("/{signupId}")
+    public ResponseEntity<?> cancelSignupById(@PathVariable Long signupId) {
+        Optional<TaskSignup> existingSignup = taskSignupService.findById(signupId);
+        if (existingSignup.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        taskSignupService.deleteById(signupId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
