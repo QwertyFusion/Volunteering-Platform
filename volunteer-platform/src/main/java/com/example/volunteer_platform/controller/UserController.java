@@ -1,7 +1,12 @@
 package com.example.volunteer_platform.controller;
 
+import com.example.volunteer_platform.dto.OrganizationDto;
+import com.example.volunteer_platform.dto.OrganizationPartialDto;
+import com.example.volunteer_platform.dto.VolunteerDto;
+import com.example.volunteer_platform.dto.VolunteerPartialDto;
 import com.example.volunteer_platform.model.Organization;
 import com.example.volunteer_platform.model.Volunteer;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.volunteer_platform.model.User;
@@ -50,8 +55,16 @@ public class UserController {
 	}
 
 	@PostMapping("/organizations")
-	public ResponseEntity<Organization> registerOrganization(@RequestBody Organization org) {
+	public ResponseEntity<Organization> registerOrganization(@RequestBody @Valid OrganizationDto orgDTO) {
 		try {
+			Organization org = new Organization();
+			org.setName(orgDTO.getName());
+			org.setEmail(orgDTO.getEmail());
+			org.setPassword(orgDTO.getPassword());
+			org.setPhoneNumber(orgDTO.getPhoneNumber());
+			org.setAddress(orgDTO.getAddress());
+			org.setWebsite(orgDTO.getWebsite());
+			userService.saveUser(org);
 			userService.saveUser(org);
 			return new ResponseEntity<>(org, HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -60,9 +73,15 @@ public class UserController {
 	}
 
 	@PostMapping("/volunteers")
-	public ResponseEntity<Volunteer> registerVolunteer(@RequestBody Volunteer volunteer) {
+	public ResponseEntity<Volunteer> registerVolunteer(@RequestBody VolunteerDto volunteerDTO) {
 		try {
-			userService.saveUser (volunteer);
+			Volunteer volunteer = new Volunteer();
+			volunteer.setName(volunteerDTO.getName());
+			volunteer.setEmail(volunteerDTO.getEmail());
+			volunteer.setPassword(volunteerDTO.getPassword());
+			volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
+			volunteer.setGender(volunteerDTO.getGender());
+			userService.saveUser(volunteer);
 			return new ResponseEntity<>(volunteer, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -88,7 +107,7 @@ public class UserController {
 	//	WE CANNOT EDIT USER - We can edit or update organization or volunteer
 
 	@PutMapping("/organizations/{organizationId}")
-	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long organizationId, @RequestBody Organization updatedOrg) {
+	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long organizationId, @RequestBody OrganizationPartialDto updatedOrg) {
 		Organization existingOrg = userService.findOrganizationById(organizationId).orElse(null);
 		if (existingOrg == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -107,7 +126,7 @@ public class UserController {
 
 	// Edit Volunteer
 	@PutMapping("/volunteers/{volunteerId}")
-	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long volunteerId, @RequestBody Volunteer updatedVol) {
+	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long volunteerId, @RequestBody VolunteerPartialDto updatedVol) {
 		Volunteer existingVol = userService.findVolunteerById(volunteerId).orElse(null);
 		if (existingVol == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
