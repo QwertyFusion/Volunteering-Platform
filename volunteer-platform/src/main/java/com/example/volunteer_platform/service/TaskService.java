@@ -1,12 +1,15 @@
 package com.example.volunteer_platform.service;
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.repository.TaskRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -20,6 +23,10 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    public Optional<Task> findById(Long taskId) {
+        return taskRepository.findById(taskId);
+    }
+
     // Update an existing task
     public Task updateTask(Long taskId, Task taskDetails) {
         return taskRepository.findById(taskId)
@@ -27,7 +34,7 @@ public class TaskService {
                     task.setTitle(taskDetails.getTitle());
                     task.setLocation(taskDetails.getLocation());
                     task.setDescription(taskDetails.getDescription());
-                    task.setDate(taskDetails.getDate());
+                    //task.setDate(taskDetails.getDate());
                     return taskRepository.save(task);
                 }).orElse(null);
     }
@@ -53,8 +60,8 @@ public class TaskService {
 
     // Search tasks by name, location, or description
     public List<Task> searchTasks(String title, String location, String description) {
-       
-         if (title != null) {
+
+        if (title != null) {
             return taskRepository.findByTitleContaining(title);
         } else if (location != null) {
             return taskRepository.findByLocationContaining(location);

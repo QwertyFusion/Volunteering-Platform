@@ -1,10 +1,19 @@
 package com.example.volunteer_platform.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "task_signup")
+@Data // Lombok annotation to generate getters, setters, toString, equals, and hashCode
+@NoArgsConstructor // Lombok annotation to generate a no-args constructor
+@AllArgsConstructor
+@Builder
 public class TaskSignup {
 
     @Id
@@ -17,70 +26,19 @@ public class TaskSignup {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Volunteer volunteer;
 
     @Column(name = "signup_date", nullable = false, updatable = false)
     private LocalDateTime signupDate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
-    private SignupStatus status;
-
-    // Enum for possible signup statuses
-    public enum SignupStatus {
-        UPCOMING,
-        COMPLETED,
-        CANCELLED
-    }
-
-    // Getters and Setters
-    public Long getSignupId() {
-        return signupId;
-    }
-
-    public void setSignupId(Long signupId) {
-        this.signupId = signupId;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getSignupDate() {
-        return signupDate;
-    }
-
-    public void setSignupDate(LocalDateTime signupDate) {
-        this.signupDate = signupDate;
-    }
-
-    public SignupStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(SignupStatus status) {
-        this.status = status;
-    }
+//    TASK SIGNUP WILL NOT EXIST IF VOLUNTEER DID NOT SIGN UP --> Thus no need for signup status. If cancels, then this entity will get deleted.
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "status", nullable = false)
+//    private SignupStatus status;
 
     // PrePersist hook to automatically set the signupDate when a new signup is created
     @PrePersist
     public void prePersist() {
-        if (this.signupDate == null) {
-            this.signupDate = LocalDateTime.now();
-        }
+        this.signupDate = LocalDateTime.now();
     }
-
-    
 }

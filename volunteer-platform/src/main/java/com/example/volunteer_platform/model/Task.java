@@ -1,96 +1,81 @@
-
 package com.example.volunteer_platform.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.volunteer_platform.enums.TaskStatus;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
 @Entity
 @Table(name="tasks")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
 
-	    @Id
-	    @GeneratedValue(strategy = GenerationType.AUTO)
-	    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-	    private String title;
-	    private String description;
-	    private String location;
-	    private String skills;
-	    private LocalDate date;
-	    private String time;
-	    private String status; // Open, Closed, Cancelled
-	    
-	    public Task() {
-	    	
-	    }
-	    
-		public Task(Long id, String title, String description, String location, String skills, LocalDate date,
-				String time, String status) {
-			super();
-			this.id = id;
-			this.title = title;
-			this.description = description;
-			this.location = location;
-			this.skills = skills;
-			this.date = date;
-			this.time = time;
-			this.status = status;
-		}
-		
-		public String getTitle() {
-			return title;
-		}
-		public void setTitle(String title) {
-			this.title = title;
-		}
-		public Long getId() {
-			return id;
-		}
-		public void setId(Long id) {
-			this.id = id;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
-		public String getLocation() {
-			return location;
-		}
-		public void setLocation(String location) {
-			this.location = location;
-		}
-		public String getSkills() {
-			return skills;
-		}
-		public void setSkills(String skills) {
-			this.skills = skills;
-		}
-		public LocalDate getDate() {
-			return date;
-		}
-		public void setDate(LocalDate date) {
-			this.date = date;
-		}
-		public String getTime() {
-			return time;
-		}
-		public void setTime(String time) {
-			this.time = time;
-		}
-		public String getStatus() {
-			return status;
-		}
-		public void setStatus(String status) {
-			this.status = status;
-		}
-		
-		
-		
+	@NotBlank
+	@Size(max = 100)
+	@Column(nullable = false)
+	private String title;
+
+	@NotBlank
+	@Column(nullable = false)
+	private String description;
+
+	@NotBlank
+	@Size(max = 100)
+	private String location;
+
+	@NotBlank
+	@Future
+	private LocalDate eventDate; // When the event will be hosted. We need this to figure out the time when we send notification. Format: 2nd October 2007
+
+	@Column(nullable = false, updatable = false)
+	private LocalDateTime createdAt;
+
+	@Column(nullable = false)
+	private LocalDateTime updatedAt;
+
+	@Enumerated(EnumType.STRING) // Store the enum as a string in the database
+	@Column(nullable = false)
+	private TaskStatus status; // Use the TaskStatus enum
+
+	@ManyToOne
+	@JoinColumn(name = "organization_id", nullable = false)
+	private Organization organization;
+
+	@ManyToMany
+	@JoinTable(
+			name = "task_skills", // Join table name
+			joinColumns = @JoinColumn(name = "task_id"), // Foreign key for Task
+			inverseJoinColumns = @JoinColumn(name = "skill_id") // Foreign key for Skill
+	)
+	private Set<Skill> skills; // Set of skills required for the task
+
+	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<TaskSignup> signups;
+
+	@PrePersist
+	public void prePersist() {
+		LocalDateTime now = LocalDateTime.now();
+		this.createdAt = now;
+		this.updatedAt = now;
+		this.status = TaskStatus.AVAILABLE;
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		this.updatedAt = LocalDateTime.now();
+	}
 }
-
