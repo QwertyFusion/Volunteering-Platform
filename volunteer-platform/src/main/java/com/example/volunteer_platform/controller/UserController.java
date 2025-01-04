@@ -1,11 +1,10 @@
 package com.example.volunteer_platform.controller;
 
-import com.example.volunteer_platform.dto.OrganizationDto;
-import com.example.volunteer_platform.dto.OrganizationPartialDto;
-import com.example.volunteer_platform.dto.VolunteerDto;
-import com.example.volunteer_platform.dto.VolunteerPartialDto;
+import com.example.volunteer_platform.dto.*;
 import com.example.volunteer_platform.model.Organization;
+import com.example.volunteer_platform.model.Skill;
 import com.example.volunteer_platform.model.Volunteer;
+import com.example.volunteer_platform.service.SkillService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,6 +24,9 @@ import java.util.Optional;
 public class UserController {
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private SkillService skillService;
 
 	@GetMapping("/users")
 	public ResponseEntity<?> getAllUsers() {
@@ -139,5 +141,50 @@ public class UserController {
 
 		userService.saveUser (existingVol);
 		return new ResponseEntity<>(existingVol, HttpStatus.OK);
+	}
+
+	// Add Skill to Volunteer
+	@PostMapping("/volunteers/{volunteerId}/skills")
+	public ResponseEntity<Volunteer> addSkillToVolunteer(@PathVariable Long volunteerId, @RequestBody SkillDto skillDto) {
+		Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
+		if (volunteerOpt.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		Volunteer volunteer = volunteerOpt.get();
+		Skill skill = skillService.findByName(skillDto.getName()).orElse(null);
+
+		if (skill == null) {
+			// Create new skill if it doesn't exist
+			skill = new Skill();
+			skill.setName(skillDto.getName());
+			skillService.saveSkill(skill);
+		}
+
+		// Add skill to volunteer
+		volunteer.getSkills().add(skill);
+		userService.saveUser (volunteer);
+		return new ResponseEntity<>(volunteer, HttpStatus.OK);
+	}
+
+	// Remove Skill from Volunteer
+	@DeleteMapping("/volunteers/{volunteerId}/skills/{skillId}")
+	public ResponseEntity<Volunteer> removeSkillFromVolunteer(@PathVariable Long volunteerId, @PathVariable Long skillId) {
+		Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
+		if (volunteerOpt.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		Volunteer volunteer = volunteerOpt.get();
+		Skill skill = skillService.findById(skillId).orElse(null);
+
+		if (skill == null || !volunteer.getSkills().contains(skill)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		// Remove skill from volunteer
+		volunteer.getSkills().remove(skill);
+		userService.saveUser (volunteer);
+		return new ResponseEntity<>(volunteer, HttpStatus.OK);
 	}
 }
