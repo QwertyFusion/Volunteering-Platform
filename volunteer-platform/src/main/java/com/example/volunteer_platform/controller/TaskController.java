@@ -1,5 +1,8 @@
 package com.example.volunteer_platform.controller;
 
+import com.example.volunteer_platform.dto.SkillDto;
+import com.example.volunteer_platform.model.Skill;
+import com.example.volunteer_platform.service.SkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.service.TaskService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tasks")
@@ -16,6 +20,9 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private SkillService skillService;
 
     // GET all tasks posted by any organization
     @GetMapping
@@ -54,10 +61,6 @@ public class TaskController {
 
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
-
-    // Add skill by name to task
-
-    // Remove skill by name to task
 
     // POST or Create a new task
     // Request includes:
@@ -112,7 +115,48 @@ public class TaskController {
         }
     }
 
+    // Add Skill to Task
+    @PostMapping("/{taskId}/skills")
+    public ResponseEntity<Task> addSkillToTask(@PathVariable Long taskId, @RequestBody SkillDto skillDto) {
+        Optional<Task> taskOpt = taskService.findById(taskId);
+        if (taskOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+        Task task = taskOpt.get();
+        Skill skill = skillService.findByName(skillDto.getName()).orElse(null);
 
+        if (skill == null) {
+            // Create new skill if it doesn't exist
+            skill = new Skill();
+            skill.setName(skillDto.getName());
+            skillService.saveSkill(skill);
+        }
 
+        // Add skill to task
+        task.getSkills().add(skill);
+        taskService.saveTask(task);
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
+
+    // Remove Skill from Task
+    @DeleteMapping("/{taskId}/skills/{skillId}")
+    public ResponseEntity<Task> removeSkillFromTask(@PathVariable Long taskId, @PathVariable Long skillId) {
+        Optional<Task> taskOpt = taskService.findById(taskId);
+        if (taskOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Task task = taskOpt.get();
+        Skill skill = skillService.findById(skillId).orElse(null);
+
+        if (skill == null || !task.getSkills().contains(skill)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Remove skill from task
+        task.getSkills().remove(skill);
+        taskService.saveTask(task);
+        return new ResponseEntity<>(task, HttpStatus.OK);
+    }
 }
