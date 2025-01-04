@@ -41,15 +41,41 @@ public class SkillController {
         }
     }
 
+    // GET Skill by id
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Skill> getSkillById(@PathVariable Long id) {
+        Skill skill = skillService.findById(id).orElse(null);
+        if (skill != null) {
+            return new ResponseEntity<>(skill, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     // POST or save a skill
     @PostMapping
-    public ResponseEntity<?> saveSkill(@RequestBody SkillDto skillDto) {
+    public ResponseEntity<Skill> saveSkill(@RequestBody SkillDto skillDto) {
+        // Check if the skill already exists
+        if (skillService.findByName(skillDto.getName()).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+
         try {
-            Skill skill = Skill.builder().name(skillDto.getName()).build();
+            Skill skill = Skill.builder().name(skillDto.getName().toLowerCase()).build();
             skillService.saveSkill(skill);
             return new ResponseEntity<>(skill, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<?> deleteSkillById(@PathVariable Long id) {
+        Skill skill = skillService.findById(id).orElse(null);
+        if (skill != null) {
+            skillService.deleteSkillbyId(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

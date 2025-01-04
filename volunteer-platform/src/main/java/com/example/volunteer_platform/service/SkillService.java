@@ -33,4 +33,9 @@ public class SkillService {
     public void saveSkill(Skill skill) {
         skillRepository.save(skill);
     }
+
+    // Delete skill (admin only)
+    public void deleteSkillbyId(Long skillId) {
+        skillRepository.deleteById(skillId);
+    }
 }

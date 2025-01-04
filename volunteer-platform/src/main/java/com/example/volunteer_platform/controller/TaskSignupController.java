@@ -1,12 +1,13 @@
 package com.example.volunteer_platform.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.volunteer_platform.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,6 +53,10 @@ public class TaskSignupController {
     // GET all task signups by a volunteer
     @GetMapping("/volunteer/{volunteerId}")
     public ResponseEntity<?> getUserSignups(@PathVariable Long volunteerId) {
+        Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
+        if (volunteerOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         List<TaskSignup> signups = taskSignupService.getUserSignups(volunteerId);
 
         if (signups.isEmpty()) {
@@ -63,6 +68,10 @@ public class TaskSignupController {
     // GET all task signups of a task
     @GetMapping("/task/{taskId}")
     public ResponseEntity<?> getTaskSignups(@PathVariable Long taskId) {
+        Optional<Task> taskOpt = taskService.findById(taskId);
+        if (taskOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
         List<TaskSignup> signups = taskSignupService.getTaskSignups(taskId);
 
         if (signups.isEmpty()) {
@@ -75,15 +84,10 @@ public class TaskSignupController {
     // Request includes:
     //    {
     //        "volunteerId": <volunteer_id_value>,
-    //            "taskId": <task_id_value>,
-    //            "cancellationDeadline": "<Date in the format: yyyy-MM-dd>"
+    //            "taskId": <task_id_value>
     //    }
     @PostMapping
-    public ResponseEntity<?> signUpForTask(@RequestBody @Valid TaskSignupDto request, BindingResult result) {
-        if (result.hasErrors()) {
-            return new ResponseEntity<>(result.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<TaskSignup> signUpForTask(@RequestBody @Valid TaskSignupDto request) {
         try {
             Optional<Task> taskOptional = taskService.findById(request.getTaskId());
             Optional<Volunteer> userOptional = userService.findVolunteerById(request.getVolunteerId());
@@ -95,6 +99,11 @@ public class TaskSignupController {
             Task task = taskOptional.get();
             Volunteer volunteer = userOptional.get();
 
+            // Check if the current date is before the application deadline
+            if (LocalDate.now().isAfter(task.getApplicationDeadline())) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
             // Check if the user has already signed up for the task
             Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(task.getId(), volunteer.getId());
             if (existingSignup.isPresent()) {
@@ -104,7 +113,6 @@ public class TaskSignupController {
             TaskSignup taskSignup = TaskSignup.builder()
                     .task(task)
                     .volunteer(volunteer)
-                    .cancellationDeadline(request.getCancellationDeadline()) // No parsing needed now
                     .build();
 
             taskSignupService.save(taskSignup);
@@ -120,23 +128,39 @@ public class TaskSignupController {
     // DELETE task signup if volunteer cancels participation for task
     // Delete by user id and task id
     @DeleteMapping("/volunteer/{volunteerId}/task/{taskId}")
-    public ResponseEntity<?> cancelSignup(@PathVariable Long volunteerId, @PathVariable Long taskId) {
+    public ResponseEntity<String> cancelSignup(@PathVariable Long volunteerId, @PathVariable Long taskId) {
         Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(taskId, volunteerId);
         if (existingSignup.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return existing if signup already exists
+            return new ResponseEntity<>("Volunteer did not sign up for the task!", HttpStatus.NOT_FOUND);
         }
-        taskSignupService.deleteById(existingSignup.get().getSignupId());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        TaskSignup signup = existingSignup.get();
+        Task task = signup.getTask();
+
+        // Check if the current date is before the cancellation deadline
+        if (LocalDate.now().isAfter(task.getCancellationDeadline())) {
+            return new ResponseEntity<>("Cannot cancel signup after the cancellation deadline.", HttpStatus.BAD_REQUEST);
+        }
+
+        taskSignupService.deleteById(signup.getSignupId());
+        return new ResponseEntity<>("Cancellation Success: Volunteer no longer signed up for the task.", HttpStatus.NO_CONTENT);
     }
 
     // Delete by task sign up id
     @DeleteMapping("/{signupId}")
-    public ResponseEntity<?> cancelSignupById(@PathVariable Long signupId) {
+    public ResponseEntity<String> cancelSignupById(@PathVariable Long signupId) {
         Optional<TaskSignup> existingSignup = taskSignupService.findById(signupId);
         if (existingSignup.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("No reference found", HttpStatus.NOT_FOUND);
         }
+        TaskSignup signup = existingSignup.get();
+        Task task = signup.getTask();
+
+        // Check if the current date is before the cancellation deadline
+        if (LocalDate.now().isAfter(task.getCancellationDeadline())) {
+            return new ResponseEntity<>("Cannot cancel signup after the cancellation deadline.", HttpStatus.BAD_REQUEST);
+        }
+
         taskSignupService.deleteById(signupId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("Cancellation Success: Volunteer no longer signed up for the task.", HttpStatus.NO_CONTENT);
     }
 }

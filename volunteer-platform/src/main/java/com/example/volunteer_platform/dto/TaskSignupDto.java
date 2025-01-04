@@ -25,12 +25,4 @@ public class TaskSignupDto {
      */
     @NotNull(message = "Task ID cannot be null")
     private final Long taskId;
-
-    /**
-     * Cancellation deadline for the task signup.
-     * Must be a valid future date.
-     */
-    @NotNull(message = "Cancellation deadline cannot be null")
-    @Future(message = "Cancellation deadline must be a future date")
-    private final LocalDate cancellationDeadline;
 }

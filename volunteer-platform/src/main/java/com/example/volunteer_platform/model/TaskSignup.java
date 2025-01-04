@@ -32,9 +32,6 @@ public class TaskSignup {
     @Column(name = "signup_date", nullable = false, updatable = false)
     private LocalDateTime signupDate;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDate cancellationDeadline; // Input by task creator (org) in the format "yyyy-MM-dd", later parsed into correct format.
-
     @Column(nullable = false)
     private boolean reminderSent; // Default value is false
 

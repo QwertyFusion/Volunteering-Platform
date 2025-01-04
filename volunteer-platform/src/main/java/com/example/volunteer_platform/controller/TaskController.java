@@ -1,14 +1,19 @@
 package com.example.volunteer_platform.controller;
 
 import com.example.volunteer_platform.dto.SkillDto;
-import com.example.volunteer_platform.model.Skill;
+import com.example.volunteer_platform.dto.TaskDto;
+import com.example.volunteer_platform.dto.TaskPartialDto;
+import com.example.volunteer_platform.model.*;
 import com.example.volunteer_platform.service.SkillService;
+import com.example.volunteer_platform.service.TaskSignupService;
+import com.example.volunteer_platform.service.UserService;
+import jakarta.validation.Valid;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.service.TaskService;
 
 import java.util.List;
@@ -24,6 +29,12 @@ public class TaskController {
     @Autowired
     private SkillService skillService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TaskSignupService taskSignupService;
+
     // GET all tasks posted by any organization
     @GetMapping
     public ResponseEntity<List<Task>> getAllTasks() {
@@ -35,84 +46,52 @@ public class TaskController {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
-    // GET all tasks posted by any particular organization
-    @GetMapping("/organization/{organizationId}")
-    public ResponseEntity<List<Task>> getTasksByOrganization(@PathVariable Long organizationId) {
-        List<Task> tasks = taskService.getTasksByOrganization(organizationId);
-
-        if (tasks.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    // GET task by task id
+    @GetMapping("/id/{taskId}")
+    public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
+        Task task = taskService.findById(taskId).orElse(null);
+        if (task != null) {
+            return new ResponseEntity<>(task, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
     // GET or Search tasks by name, location, or description
-    @GetMapping("/search")
-    public ResponseEntity<List<Task>> searchTasks(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String description) {
+//    @GetMapping("/search")
+//    public ResponseEntity<List<Task>> searchTasks(
+//            @RequestParam(required = false) String title,
+//            @RequestParam(required = false) String location,
+//            @RequestParam(required = false) String description) {
+//
+//        List<Task> tasks = taskService.searchTasks(title, location, description);
+//
+//        if (tasks.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//
+//        return new ResponseEntity<>(tasks, HttpStatus.OK);
+//    }
 
-        List<Task> tasks = taskService.searchTasks(title, location, description);
 
-        if (tasks.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(tasks, HttpStatus.OK);
-    }
-
-    // POST or Create a new task
-    // Request includes:
-    // {
-    //    "title": "Community Cleanup",
-    //    "description": "Join us for a community cleanup event to beautify our local park.",
-    //    "location": "Central Park, Main St.",
-    //    "eventDate": "2023-12-15",  // Ensure this date is in the future
-    //    "organization": {
-    //        "id": 1  // Assuming the organization with ID 1 exists
-    //    },
-    //    "skills": [
-    //        {
-    //            "id": 1  // Assuming the skill with ID 1 exists
-    //        },
-    //        {
-    //            "id": 2  // Assuming the skill with ID 2 exists
-    //        }
-    //    ]
-    // }
-    @PostMapping()
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        try {
-            taskService.saveTask(task);
-            return new ResponseEntity<>(task, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    // PUT or Update an existing task
-    @PutMapping("/update/{taskId}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long taskId, @RequestBody Task taskDetails) {
-        Task updatedTask = taskService.updateTask(taskId, taskDetails);
-
-        if (updatedTask != null) {
-            return ResponseEntity.ok(updatedTask);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-    // Delete a task
+    // Delete a task (Admin only)
     @DeleteMapping("/delete/{taskId}")
     public ResponseEntity<String> deleteTask(@PathVariable Long taskId) {
-        boolean isDeleted = taskService.deleteTask(taskId);
-
-        if (isDeleted) {
-            return ResponseEntity.ok("Task deleted successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+        Optional<Task> task = taskService.findById(taskId);
+        if (task.isEmpty()) {
+            return new ResponseEntity<>("No task exists with the given ID", HttpStatus.NOT_FOUND);
         }
+
+        // Retrieve all signups for the task
+        List<TaskSignup> signups = taskSignupService.getTaskSignups(taskId);
+
+        // Delete all signups associated with the task
+        for (TaskSignup signup : signups) {
+            taskSignupService.deleteById(signup.getSignupId());
+        }
+
+        taskService.deleteByTaskId(taskId);
+        return new ResponseEntity<>("Task deleted successfully.", HttpStatus.NO_CONTENT);
     }
 
     // Add Skill to Task
@@ -124,12 +103,12 @@ public class TaskController {
         }
 
         Task task = taskOpt.get();
-        Skill skill = skillService.findByName(skillDto.getName()).orElse(null);
+        Skill skill = skillService.findByName(skillDto.getName().toLowerCase()).orElse(null);
 
         if (skill == null) {
             // Create new skill if it doesn't exist
             skill = new Skill();
-            skill.setName(skillDto.getName());
+            skill.setName(skillDto.getName().toLowerCase());
             skillService.saveSkill(skill);
         }
 
