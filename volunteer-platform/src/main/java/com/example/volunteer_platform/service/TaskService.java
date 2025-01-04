@@ -17,10 +17,35 @@ public class TaskService {
     @Autowired
     private TaskRepository taskRepository;
 
+    // Get all tasks
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
+
+    // Get all tasks by an organization
+    public List<Task> getTasksByOrganization(Long organizationId) {
+        return taskRepository.findByOrganizationId(organizationId);
+    }
+
+    // Search tasks by name, location, or description
+    public List<Task> searchTasks(String title, String location, String description) {
+
+        if (title != null) {
+            return taskRepository.findByTitleContaining(title);
+        } else if (location != null) {
+            return taskRepository.findByLocationContaining(location);
+        } else if (description != null) {
+            return taskRepository.findByDescriptionContaining(description);
+        } else {
+            return taskRepository.findAll();
+        }
+    }
+
+
     // Create a new task associated with an organization
-    public Task createTask(Long organizationId, Task task) {
+    public void saveTask(Task task) {
         // Assuming the task repository has the required logic to save tasks
-        return taskRepository.save(task);
+        taskRepository.save(task);
     }
 
     public Optional<Task> findById(Long taskId) {
@@ -48,28 +73,10 @@ public class TaskService {
         return false;
     }
 
-    // Get all tasks
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
-    }
 
-    // Get tasks by organization
-    public List<Task> getTasksByOrganization(Long organizationId) {
-        return taskRepository.findByOrganizationId(organizationId);
-    }
 
-    // Search tasks by name, location, or description
-    public List<Task> searchTasks(String title, String location, String description) {
 
-        if (title != null) {
-            return taskRepository.findByTitleContaining(title);
-        } else if (location != null) {
-            return taskRepository.findByLocationContaining(location);
-        } else if (description != null) {
-            return taskRepository.findByDescriptionContaining(description);
-        } else {
-            return taskRepository.findAll();
-        }
-    }
+
+
 
 }
