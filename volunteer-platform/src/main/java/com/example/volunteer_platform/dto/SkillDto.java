@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * DTO for Skill entity.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
