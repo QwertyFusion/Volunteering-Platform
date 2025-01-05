@@ -8,6 +8,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+/**
+ * DTO for the Task entity, including all required fields for task creation.
+ */
 @Data
 public class TaskDto {
 
@@ -23,7 +26,7 @@ public class TaskDto {
     private String location;
 
     @NotNull
-    @Future
+    @Future(message = "Event date must be in the future")
     private LocalDate eventDate; // When the event will be hosted
 
     /**

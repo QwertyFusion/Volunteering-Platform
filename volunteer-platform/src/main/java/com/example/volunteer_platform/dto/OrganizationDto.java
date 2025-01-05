@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO for Organization entity.
+ * DTO for the Organization entity, including address and website information.
  */
 @Data
 @NoArgsConstructor
@@ -17,9 +17,9 @@ import lombok.NoArgsConstructor;
 public class OrganizationDto extends UserDto {
     @NotBlank(message = "Address is required")
     @Size(max = 255, message = "Address cannot exceed 255 characters")
-    private String address;
+    private String address; // Address of the organization
 
     @NotBlank(message = "Website is required")
     @Size(max = 255, message = "Website cannot exceed 255 characters")
-    private String website;
+    private String website; // Website of the organization
 }

@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO for Volunteer entity.
+ * DTO for the Volunteer entity, including gender information.
  */
 @Data
 @NoArgsConstructor
@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class VolunteerDto extends UserDto {
     @NotNull(message = "Gender is required")
-    private Gender gender;
+    private Gender gender; // Gender of the volunteer
 }

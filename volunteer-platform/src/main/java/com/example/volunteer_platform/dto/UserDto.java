@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO for User entity.
+ * DTO for the User entity, containing common user information.
  */
 @Data
 @NoArgsConstructor

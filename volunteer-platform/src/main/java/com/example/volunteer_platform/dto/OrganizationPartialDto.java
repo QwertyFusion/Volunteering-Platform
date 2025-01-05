@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO for Organization entity.
+ * DTO for partial updates to the Organization entity.
  */
 @Data
 @NoArgsConstructor
