@@ -9,12 +9,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Volunteer class represents a volunteer user in the system, extending the User class.
+ */
 @Entity
 @DiscriminatorValue("VOLUNTEER")
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Volunteer extends User {
+
     @NotNull
     @Enumerated(EnumType.STRING) // Persist the enum as a string in the database
     @Column(nullable = false)

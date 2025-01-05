@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO for Skill entity.
+ * DTO for the Skill entity, representing a skill that can be associated with a volunteer.
  */
 @Data
 @NoArgsConstructor
@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SkillDto {
     @NotBlank
-    @Size(max = 100)
-    private String name;
+    @Size(max = 100, message = "Skill name cannot exceed 100 characters")
+    private String name; // Name of the skill
 }

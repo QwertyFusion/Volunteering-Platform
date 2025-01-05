@@ -7,16 +7,42 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository interface for managing TaskSignup entities.
+ */
 public interface TaskSignupRepository extends JpaRepository<TaskSignup, Long> {
 
-    // Find signups by user ID
+    /**
+     * Find signups by volunteer ID.
+     *
+     * @param volunteerId Volunteer ID.
+     * @return List of task signups for the specified volunteer.
+     */
     List<TaskSignup> findByVolunteerId(Long volunteerId);
 
-    // Find signups by task ID
+    /**
+     * Find signups by task ID.
+     *
+     * @param taskId Task ID.
+     * @return List of task signups for the specified task.
+     */
     List<TaskSignup> findByTaskId(Long taskId);
 
-    // Custom query to find signups for tasks within a specific time range
+    /**
+     * Find signups for tasks within a specific time range.
+     *
+     * @param startDate Start date for the range.
+     * @param endDate End date for the range.
+     * @return List of task signups within the specified date range.
+     */
     List<TaskSignup> findBySignupDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
-    Optional<TaskSignup> findByTaskIdAndVolunteerId(Long task_id, Long volunteerId);
+    /**
+     * Find a task signup by task ID and volunteer ID.
+     *
+     * @param taskId Task ID.
+     * @param volunteerId Volunteer ID.
+     * @return Optional containing the task signup if found.
+     */
+    Optional<TaskSignup> findByTaskIdAndVolunteerId(Long taskId, Long volunteerId);
 }

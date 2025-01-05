@@ -1,33 +1,30 @@
 package com.example.volunteer_platform.controller;
 
-import com.example.volunteer_platform.dto.SkillDto;
-import com.example.volunteer_platform.dto.TaskDto;
-import com.example.volunteer_platform.dto.TaskPartialDto;
-import com.example.volunteer_platform.model.*;
-import com.example.volunteer_platform.service.SkillService;
-import com.example.volunteer_platform.service.TaskSignupService;
-import com.example.volunteer_platform.service.UserService;
-import jakarta.validation.Valid;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.volunteer_platform.dto.TaskDto;
+import com.example.volunteer_platform.dto.TaskPartialDto;
+import com.example.volunteer_platform.model.*;
+import com.example.volunteer_platform.service.TaskSignupService;
+import com.example.volunteer_platform.service.UserService;
 import com.example.volunteer_platform.service.TaskService;
 
+import jakarta.validation.Valid;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * TaskController handles API endpoints for managing tasks within the volunteer platform.
+ */
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/api")
 public class TaskController {
 
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private SkillService skillService;
 
     @Autowired
     private UserService userService;
@@ -35,8 +32,12 @@ public class TaskController {
     @Autowired
     private TaskSignupService taskSignupService;
 
-    // GET all tasks posted by any organization
-    @GetMapping
+    /**
+     * Get all tasks posted by any organization.
+     *
+     * @return List of tasks or HTTP 204 if no tasks exist.
+     */
+    @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks() {
         List<Task> tasks = taskService.getAllTasks();
 
@@ -46,8 +47,13 @@ public class TaskController {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
-    // GET task by task id
-    @GetMapping("/id/{taskId}")
+    /**
+     * Get a task by its ID.
+     *
+     * @param taskId Task ID.
+     * @return Task details or HTTP 404 if not found.
+     */
+    @GetMapping("/tasks/{taskId}")
     public ResponseEntity<Task> getTaskById(@PathVariable Long taskId) {
         Task task = taskService.findById(taskId).orElse(null);
         if (task != null) {
@@ -57,7 +63,7 @@ public class TaskController {
         }
     }
 
-    // GET or Search tasks by name, location, or description
+    // GET or Search tasks by name, location, or description (will implement later)
 //    @GetMapping("/search")
 //    public ResponseEntity<List<Task>> searchTasks(
 //            @RequestParam(required = false) String title,
@@ -74,68 +80,147 @@ public class TaskController {
 //    }
 
 
-    // Delete a task (Admin only)
-    @DeleteMapping("/delete/{taskId}")
-    public ResponseEntity<String> deleteTask(@PathVariable Long taskId) {
+    /**
+     * Delete a task by its ID (Admin only).
+     *
+     * @param taskId Task ID.
+     * @return HTTP 204 if deleted, HTTP 404 if not found.
+     */
+    @DeleteMapping("/tasks/delete/{taskId}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
         Optional<Task> task = taskService.findById(taskId);
         if (task.isEmpty()) {
-            return new ResponseEntity<>("No task exists with the given ID", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // Retrieve all signups for the task
         List<TaskSignup> signups = taskSignupService.getTaskSignups(taskId);
 
-        // Delete all signups associated with the task
         for (TaskSignup signup : signups) {
             taskSignupService.deleteById(signup.getSignupId());
         }
 
         taskService.deleteByTaskId(taskId);
-        return new ResponseEntity<>("Task deleted successfully.", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    // Add Skill to Task
-    @PostMapping("/{taskId}/skills")
-    public ResponseEntity<Task> addSkillToTask(@PathVariable Long taskId, @RequestBody SkillDto skillDto) {
-        Optional<Task> taskOpt = taskService.findById(taskId);
-        if (taskOpt.isEmpty()) {
+    // Organization Tasks APIs
+    /**
+     * Get all tasks for a specific organization.
+     *
+     * @param organizationId Organization ID.
+     * @return List of tasks for the organization or HTTP 404 if not found.
+     */
+    @GetMapping("/organizations/{organizationId}/tasks")
+    public ResponseEntity<List<Task>> getOrganizationTasks(@PathVariable Long organizationId) {
+        Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
+        if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        Task task = taskOpt.get();
-        Skill skill = skillService.findByName(skillDto.getName().toLowerCase()).orElse(null);
-
-        if (skill == null) {
-            // Create new skill if it doesn't exist
-            skill = new Skill();
-            skill.setName(skillDto.getName().toLowerCase());
-            skillService.saveSkill(skill);
-        }
-
-        // Add skill to task
-        task.getSkills().add(skill);
-        taskService.saveTask(task);
-        return new ResponseEntity<>(task, HttpStatus.OK);
+        Organization organization = organizationOpt.get();
+        return new ResponseEntity<>(organization.getTasks(), HttpStatus.OK);
     }
 
-    // Remove Skill from Task
-    @DeleteMapping("/{taskId}/skills/{skillId}")
-    public ResponseEntity<Task> removeSkillFromTask(@PathVariable Long taskId, @PathVariable Long skillId) {
-        Optional<Task> taskOpt = taskService.findById(taskId);
-        if (taskOpt.isEmpty()) {
+    /**
+     * Add a new task to an organization.
+     *
+     * @param organizationId Organization ID.
+     * @param taskDto Task details.
+     * @return Created task or HTTP 400 for invalid input.
+     */
+    @PostMapping("/organizations/{organizationId}/tasks")
+    public ResponseEntity<Organization> addTaskToOrganization(@PathVariable Long organizationId, @RequestBody @Valid TaskDto taskDto) {
+        Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
+        if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        Task task = taskOpt.get();
-        Skill skill = skillService.findById(skillId).orElse(null);
+        if (taskDto.getApplicationDeadline().isBefore(LocalDate.now()) ||
+                taskDto.getCancellationDeadline().isBefore(LocalDate.now())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        if (skill == null || !task.getSkills().contains(skill)) {
+        if (taskDto.getApplicationDeadline().isAfter(taskDto.getEventDate()) ||
+                taskDto.getCancellationDeadline().isAfter(taskDto.getEventDate())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Organization organization = organizationOpt.get();
+        Task task = new Task();
+        try {
+            task.setTitle(taskDto.getTitle());
+            task.setDescription(taskDto.getDescription());
+            task.setLocation(taskDto.getLocation());
+            task.setEventDate(taskDto.getEventDate());
+            task.setCancellationDeadline(taskDto.getCancellationDeadline());
+            task.setApplicationDeadline(taskDto.getApplicationDeadline());
+            taskService.saveTask(task);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        organization.getTasks().add(task);
+        userService.saveUser(organization);
+        return new ResponseEntity<>(organization, HttpStatus.OK);
+    }
+
+    /**
+     * Update an existing task in an organization.
+     *
+     * @param organizationId Organization ID.
+     * @param taskId Task ID.
+     * @param updatedTask TaskPartialDto updatedTask details.
+     * @return Updated organization or HTTP 404 if not found.
+     */
+    @PutMapping("/organizations/{organizationId}/tasks/{taskId}")
+    public ResponseEntity<Organization> updateTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId, @RequestBody @Valid TaskPartialDto updatedTask) {
+        Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
+        if (organizationOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Organization organization = organizationOpt.get();
+        Task existingTask = taskService.findById(taskId).orElse(null);
+        if (existingTask == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            existingTask.setTitle(updatedTask.getTitle() != null ? updatedTask.getTitle() : existingTask.getTitle());
+            existingTask.setDescription(updatedTask.getDescription() != null ? updatedTask.getDescription() : existingTask.getDescription());
+            existingTask.setLocation(updatedTask.getLocation() != null ? updatedTask.getLocation() : existingTask.getLocation());
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        taskService.saveTask(existingTask);
+        return new ResponseEntity<>(organization, HttpStatus.OK);
+    }
+
+    /**
+     * Delete a task from an organization.
+     *
+     * @param organizationId Organization ID.
+     * @param taskId Task ID.
+     * @return Updated organization or HTTP 404 if not found.
+     */
+    @DeleteMapping("/organizations/{organizationId}/tasks/{taskId}")
+    public ResponseEntity<Organization> deleteTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId) {
+        Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
+        if (organizationOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Organization organization = organizationOpt.get();
+        Task existingTask = taskService.findById(taskId).orElse(null);
+        if (existingTask == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // Remove skill from task
-        task.getSkills().remove(skill);
-        taskService.saveTask(task);
-        return new ResponseEntity<>(task, HttpStatus.OK);
+        List<TaskSignup> signups = taskSignupService.getTaskSignups(taskId);
+
+        for (TaskSignup signup : signups) {
+            taskSignupService.deleteById(signup.getSignupId());
+        }
+
+        organization.getTasks().remove(existingTask);
+        userService.saveUser(organization);
+        taskService.deleteByTaskId(taskId);
+        return new ResponseEntity<>(organization, HttpStatus.OK);
     }
 }

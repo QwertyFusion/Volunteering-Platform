@@ -14,8 +14,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+/**
+ * Task class represents a task that volunteers can sign up for.
+ */
 @Entity
-@Table(name="tasks")
+@Table(name = "tasks")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,15 +41,14 @@ public class Task {
 	@Size(max = 100)
 	private String location;
 
-	@NotNull
-	@Future
-	private LocalDate eventDate; // When the event will be hosted. We need this to figure out the time when we send notification. Format: 2nd October 2007
+	@NotNull @Future
+	private LocalDate eventDate; // When the event will be hosted. Format is "yyyy-MM-dd"
 
 	@Column(nullable = false, updatable = false)
-	private LocalDate cancellationDeadline; // Input by task creator (org) in the format "yyyy-MM-dd", later parsed into correct format.
+	private LocalDate cancellationDeadline; // Deadline for task cancellation. Format is "yyyy-MM-dd"
 
 	@Column(nullable = false, updatable = false)
-	private LocalDate applicationDeadline; // Input by task creator (org) in the format "yyyy-MM-dd", later parsed into correct format.
+	private LocalDate applicationDeadline; // Deadline for task applications. Format is "yyyy-MM-dd"
 
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
@@ -69,9 +71,9 @@ public class Task {
 	@PrePersist
 	public void prePersist() {
 		LocalDateTime now = LocalDateTime.now();
-		this.createdAt = now;
+		this.createdAt = now; // Set created date and time to now
 		this.updatedAt = now;
-		this.status = TaskStatus.AVAILABLE;
+		this.status = TaskStatus.AVAILABLE; // Default status when created
 	}
 
 	@PreUpdate
