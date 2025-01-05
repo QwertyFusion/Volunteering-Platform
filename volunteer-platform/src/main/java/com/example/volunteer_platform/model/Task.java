@@ -8,6 +8,7 @@ import com.example.volunteer_platform.enums.TaskStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,9 +38,15 @@ public class Task {
 	@Size(max = 100)
 	private String location;
 
-	@NotBlank
+	@NotNull
 	@Future
 	private LocalDate eventDate; // When the event will be hosted. We need this to figure out the time when we send notification. Format: 2nd October 2007
+
+	@Column(nullable = false, updatable = false)
+	private LocalDate cancellationDeadline; // Input by task creator (org) in the format "yyyy-MM-dd", later parsed into correct format.
+
+	@Column(nullable = false, updatable = false)
+	private LocalDate applicationDeadline; // Input by task creator (org) in the format "yyyy-MM-dd", later parsed into correct format.
 
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
@@ -51,10 +58,6 @@ public class Task {
 	@Column(nullable = false)
 	private TaskStatus status; // Use the TaskStatus enum
 
-	@ManyToOne
-	@JoinColumn(name = "organization_id", nullable = false)
-	private Organization organization;
-
 	@ManyToMany
 	@JoinTable(
 			name = "task_skills", // Join table name
@@ -62,9 +65,6 @@ public class Task {
 			inverseJoinColumns = @JoinColumn(name = "skill_id") // Foreign key for Skill
 	)
 	private Set<Skill> skills; // Set of skills required for the task
-
-	@OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<TaskSignup> signups;
 
 	@PrePersist
 	public void prePersist() {

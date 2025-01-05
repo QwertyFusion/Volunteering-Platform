@@ -2,7 +2,9 @@ package com.example.volunteer_platform.model;
 
 import java.util.Set;
 
+import com.example.volunteer_platform.enums.Gender;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Volunteer extends User {
+    @NotNull
+    @Enumerated(EnumType.STRING) // Persist the enum as a string in the database
+    @Column(nullable = false)
+    private Gender gender; // Gender of the volunteer
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
