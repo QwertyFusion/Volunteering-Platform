@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO for Volunteer entity.
+ * DTO for partial updates to the Volunteer entity.
  */
 @Data
 @NoArgsConstructor

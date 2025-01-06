@@ -12,7 +12,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
+/**
+ * Skill class represents a skill that can be associated with a volunteer.
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -27,5 +29,5 @@ public class Skill {
     @NotBlank
     @Size(max = 100)
     @Column(nullable = false, unique = true)
-    private String name;
+    private String name; // Name of the skill
 }

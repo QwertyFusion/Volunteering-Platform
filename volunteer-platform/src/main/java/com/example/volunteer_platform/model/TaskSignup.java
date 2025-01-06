@@ -6,13 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * TaskSignup class represents the signup of a volunteer for a specific task.
+ */
 @Entity
 @Table(name = "task_signup")
-@Data // Lombok annotation to generate getters, setters, toString, equals, and hashCode
-@NoArgsConstructor // Lombok annotation to generate a no-args constructor
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class TaskSignup {
@@ -23,24 +25,21 @@ public class TaskSignup {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "task_id", nullable = false)
-    private Task task;
+    private Task task; // The task the volunteer signed up for
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private Volunteer volunteer;
+    private Volunteer volunteer; // The volunteer who signed up
 
     @Column(name = "signup_date", nullable = false, updatable = false)
-    private LocalDateTime signupDate;
+    private LocalDateTime signupDate; // Date and time of signup
 
     @Column(nullable = false)
-    private boolean reminderSent; // Default value is false
+    private boolean reminderSent; // Indicates if a reminder has been sent
 
-    // TASK SIGNUP WILL NOT EXIST IF VOLUNTEER DID NOT SIGN UP --> Thus no need for signup status. If cancels, then this entity will get deleted.
-
-    // PrePersist hook to automatically set the signupDate when a new signup is created
     @PrePersist
     public void prePersist() {
-        this.signupDate = LocalDateTime.now();
-        this.reminderSent = false;
+        this.signupDate = LocalDateTime.now(); // Set signup date to now
+        this.reminderSent = false; // Default value for reminderSent
     }
 }

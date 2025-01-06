@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * TaskSignupService provides methods to manage task signups in the system.
+ */
 @Service
 @RequiredArgsConstructor
 public class TaskSignupService {
@@ -20,37 +23,70 @@ public class TaskSignupService {
     @Autowired
     private TaskSignupRepository taskSignupRepository;
 
-    // Get all available task signups
+    /**
+     * Get all available task signups.
+     *
+     * @return List of task signups.
+     */
     public List<TaskSignup> getAllSignups() {
         return taskSignupRepository.findAll();
     }
 
-    // Get all signups for a volunteer
+    /**
+     * Get all signups for a specific volunteer.
+     *
+     * @param volunteerId Volunteer ID.
+     * @return List of task signups for the volunteer.
+     */
     public List<TaskSignup> getUserSignups(Long volunteerId) {
         return taskSignupRepository.findByVolunteerId(volunteerId);
     }
 
-    // Get all signups for a task
+    /**
+     * Get all signups for a specific task.
+     *
+     * @param taskId Task ID.
+     * @return List of task signups for the task.
+     */
     public List<TaskSignup> getTaskSignups(Long taskId) {
         return taskSignupRepository.findByTaskId(taskId);
     }
 
-    // Get task signup by task signup id
+    /**
+     * Find a task signup by its ID.
+     *
+     * @param signupId Task signup ID.
+     * @return Optional containing the task signup if found.
+     */
     public Optional<TaskSignup> findById(Long signupId) {
         return taskSignupRepository.findById(signupId);
     }
 
-    // Get the signup by a volunteer for a specific task
+    /**
+     * Get the signup by a volunteer for a specific task.
+     *
+     * @param taskId Task ID.
+     * @param id Volunteer ID.
+     * @return Optional containing the task signup if found.
+     */
     public Optional<TaskSignup> findByTaskIdAndVolunteerId(Long taskId, Long id) {
         return taskSignupRepository.findByTaskIdAndVolunteerId(taskId, id);
     }
 
-    // Save task signup
+    /**
+     * Save a task signup to the database.
+     *
+     * @param taskSignup Task signup to be saved.
+     */
     public void save(TaskSignup taskSignup) {
         taskSignupRepository.save(taskSignup);
     }
 
-    // Delete task signup by task signup id
+    /**
+     * Delete a task signup by its ID.
+     *
+     * @param signupId Task signup ID.
+     */
     public void deleteById(Long signupId) {
         taskSignupRepository.deleteById(signupId);
     }

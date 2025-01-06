@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Future;
-import java.time.LocalDate;
 
 /**
  * Data Transfer Object for task signup requests.
