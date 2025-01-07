@@ -56,6 +56,6 @@ public interface TaskSignupRepository extends JpaRepository<TaskSignup, Long> {
      * @param eventDate The date of the event.
      * @return List of task signups matching the criteria.
      */
-    @Query("SELECT ts FROM TaskSignup ts JOIN ts.task t WHERE t.eventDate = :eventDate AND ts.reminderSent = false")
-    List<TaskSignup> findUpcomingTaskSignups(@Param("eventDate") LocalDate eventDate);
+     @Query("SELECT ts FROM TaskSignup ts JOIN ts.task t WHERE t.eventDate = :eventDate AND ts.reminderSent = false")
+    List<TaskSignup> findUpcomingTaskSignups(@Param("eventDate") LocalDate eventDate, @Param("reminderSent") boolean reminderSent);
 }
