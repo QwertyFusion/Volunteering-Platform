@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.time.LocalDateTime;
 
+/**
+ * Ratings class represents the ratings given by volunteers to organizations and vice versa.
+ */
 @Entity
-@Table(name = "Ratings")
+@Table(name = "ratings")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,30 +20,34 @@ public class Ratings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int ratingId;
+    private long ratingId;
 
     @Column(nullable = false)
-    private int ratedByUserId;
+    private long ratedByUserId; // ID of the user who rated
 
     @Column(nullable = false)
-    private int ratedUserId;
+    private long ratedUserId; // ID of the user being rated
 
     @Column(nullable = false)
-    private int ratingScore;
+    private int ratingScore; // Rating score (e.g., 1-5)
 
     @Column(columnDefinition = "TEXT")
-    private String review;
+    private String review; // Review text
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate; // Date when the rating was created
 
     @Column(nullable = false)
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedDate; // Date when the rating was last updated
+
+    @Column(nullable = false)
+    private boolean isDeleted; // Flag to indicate if the user has been deleted
 
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();
         updatedDate = LocalDateTime.now();
+        isDeleted = false; // Default value
     }
 
     @PreUpdate

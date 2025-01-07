@@ -7,8 +7,11 @@ import com.example.volunteer_platform.model.Ratings;
 
 import java.util.List;
 
+/**
+ * RatingsRepository provides methods to interact with the Ratings database.
+ */
 @Repository
-public interface RatingsRepository extends JpaRepository<Ratings, Integer> {
-    List<Ratings> findByRatedUserId(int ratedUserId);
-    List<Ratings> findByRatedByUserId(int ratedByUserId);
+public interface RatingsRepository extends JpaRepository<Ratings, Long> {
+    List<Ratings> findByRatedUserId(long ratedUserId);
+    List<Ratings> findByRatedByUserId(long ratedByUserId);
 }
