@@ -1,5 +1,6 @@
 package com.example.volunteer_platform.controller;
 
+import com.example.volunteer_platform.enums.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -128,7 +129,7 @@ public class TaskController {
      * @return Created task or HTTP 400 for invalid input.
      */
     @PostMapping("/organizations/{organizationId}/tasks")
-    public ResponseEntity<Organization> addTaskToOrganization(@PathVariable Long organizationId, @RequestBody @Valid TaskDto taskDto) {
+    public ResponseEntity<Task> addTaskToOrganization(@PathVariable Long organizationId, @RequestBody @Valid TaskDto taskDto) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -159,7 +160,7 @@ public class TaskController {
         }
         organization.getTasks().add(task);
         userService.saveUser(organization);
-        return new ResponseEntity<>(organization, HttpStatus.OK);
+        return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
     /**
@@ -168,10 +169,10 @@ public class TaskController {
      * @param organizationId Organization ID.
      * @param taskId Task ID.
      * @param updatedTask TaskPartialDto updatedTask details.
-     * @return Updated organization or HTTP 404 if not found.
+     * @return Updated task or HTTP 404 if not found.
      */
     @PutMapping("/organizations/{organizationId}/tasks/{taskId}")
-    public ResponseEntity<Organization> updateTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId, @RequestBody @Valid TaskPartialDto updatedTask) {
+    public ResponseEntity<Task> updateTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId, @RequestBody @Valid TaskPartialDto updatedTask) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -190,18 +191,18 @@ public class TaskController {
         }
 
         taskService.saveTask(existingTask);
-        return new ResponseEntity<>(organization, HttpStatus.OK);
+        return new ResponseEntity<>(existingTask, HttpStatus.OK);
     }
 
     /**
-     * Delete a task from an organization.
+     * Delete a task from an organization if no volunteers signed up for it.
      *
      * @param organizationId Organization ID.
      * @param taskId Task ID.
-     * @return Updated organization or HTTP 404 if not found.
+     * @return HTTP 204 if deleted, HTTP 404 if not found.
      */
     @DeleteMapping("/organizations/{organizationId}/tasks/{taskId}")
-    public ResponseEntity<Organization> deleteTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId) {
+    public ResponseEntity<Void> deleteTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -211,16 +212,49 @@ public class TaskController {
         if (existingTask == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        if (!organization.getTasks().contains(existingTask)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Task does not belong to this organization
+        }
 
         List<TaskSignup> signups = taskSignupService.getTaskSignups(taskId);
 
-        for (TaskSignup signup : signups) {
-            taskSignupService.deleteById(signup.getSignupId());
+        if (!signups.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // If task got volunteers signed up for it, then it cannot be deleted. However, task can be cancelled.
         }
 
         organization.getTasks().remove(existingTask);
         userService.saveUser(organization);
         taskService.deleteByTaskId(taskId);
-        return new ResponseEntity<>(organization, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    /**
+     * Cancel a task from an organization. It works even if volunteers have registered for the task.
+     *
+     * @param taskId Task ID.
+     * @return Updated task or HTTP 404 if not found.
+     */
+    @PutMapping("/organizations/{organizationId}/tasks/{taskId}/cancel")
+    public ResponseEntity<Task> cancelTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId) {
+        Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
+        if (organizationOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Organization organization = organizationOpt.get();
+        Task existingTask = taskService.findById(taskId).orElse(null);
+        if (existingTask == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (!organization.getTasks().contains(existingTask)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // Task does not belong to this organization
+        }
+        try {
+            existingTask.setStatus(TaskStatus.CANCELLED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        taskService.saveTask(existingTask);
+        return new ResponseEntity<>(existingTask, HttpStatus.OK);
     }
 }

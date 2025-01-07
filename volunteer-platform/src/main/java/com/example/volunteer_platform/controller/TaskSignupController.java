@@ -1,5 +1,6 @@
 package com.example.volunteer_platform.controller;
 
+import com.example.volunteer_platform.enums.TaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -113,7 +114,7 @@ public class TaskSignupController {
             Task task = taskOptional.get();
             Volunteer volunteer = userOptional.get();
 
-            if (LocalDate.now().isAfter(task.getApplicationDeadline())) {
+            if (task.getStatus() == TaskStatus.CANCELLED || task.getStatus() == TaskStatus.APPLICATION_ENDED) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
