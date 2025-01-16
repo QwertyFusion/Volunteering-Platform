@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opportunities</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+        <a class="navbar-brand" href="#">Logo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Opportunities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Rankings</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+        <span class="me-3">Username</span>
+        <div class="rounded-circle bg-success" style="width: 30px; height: 30px;"></div>
+      </div>
+
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Filter Section -->
+            <aside class="col-md-3">
+                <div class="card p-3 mb-4">
+                    <h5>Filter</h5>
+                    <form>
+                        <div class="mb-3">
+                            <label for="skills" class="form-label">Skills</label>
+                            <input type="text" class="form-control" id="skills" placeholder="Enter skills">
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" placeholder="Enter location">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rating of Organization</label>
+                            <div>
+                                <input type="range" class="form-range" min="1" max="5" step="1" id="orgRating">
+                                <div class="d-flex justify-content-between">
+                                    <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
+                                    <span>5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                                               <div class="mb-3">
+                            <label for="keywordSearch" class="form-label">Keyword Search</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="keywordSearch" placeholder="Enter keywords">
+                                <button class="btn btn-outline-secondary" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Opportunities Section -->
+            <main class="col-md-9">
+                <h2 class="mb-4">Opportunities</h2>
+                <div class="row row-cols-1 g-4">
+                    <!-- Task List -->
+                    <div class="row g-3">
+                        <!-- Task Card 1 -->
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">Beach Cleaning</h5>
+                                            <p class="card-text mb-1">Beach Solutions Pvt Ltd</p>
+                                            <p class="card-text small text-muted">Location: New York | Duration: 2 months</p>
+                                            <small class="text-muted">Posted: 2025-01-14</small>
+                                        </div>
+                                        <button class="btn btn-primary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">Charity Event</h5>
+                                            <p class="card-text mb-1">Happy Charity Org</p>
+                                            <p class="card-text small text-muted">Location: San Francisco | Duration: 3 months</p>
+                                            <small class="text-muted">Posted: 2025-01-12</small>
+                                        </div>
+                                        <button class="btn btn-primary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 3 -->
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">Donation Drive</h5>
+                                            <p class="card-text mb-1">Saviour Org</p>
+                                            <p class="card-text small text-muted">Location: Chicago | Duration: 3 months</p>
+                                            <small class="text-muted">Posted: 2025-01-11</small>
+                                        </div>
+                                        <button class="btn btn-primary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <div class="container">
+            <p class="mb-0">Logo | Footer content goes here.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
