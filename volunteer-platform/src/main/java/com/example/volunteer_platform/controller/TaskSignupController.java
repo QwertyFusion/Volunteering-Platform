@@ -1,6 +1,7 @@
 package com.example.volunteer_platform.controller;
 
 import com.example.volunteer_platform.enums.TaskStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -102,6 +103,7 @@ public class TaskSignupController {
      * @return Created TaskSignup or HTTP 404 if task or volunteer not found.
      */
     @PostMapping
+    @Transactional
     public ResponseEntity<TaskSignup> signUpForTask(@RequestBody @Valid TaskSignupDto request) {
         try {
             Optional<Task> taskOptional = taskService.findById(request.getTaskId());
@@ -114,7 +116,7 @@ public class TaskSignupController {
             Task task = taskOptional.get();
             Volunteer volunteer = userOptional.get();
 
-            if (task.getStatus() == TaskStatus.CANCELLED || task.getStatus() == TaskStatus.APPLICATION_ENDED) {
+            if (task.getStatus() == TaskStatus.CANCELLED || task.getStatus() == TaskStatus.APPLICATION_ENDED || task.getStatus() == TaskStatus.FILLED) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
@@ -143,6 +145,7 @@ public class TaskSignupController {
      * @return Success message or HTTP 404 if signup not found.
      */
     @DeleteMapping("/volunteer/{volunteerId}/task/{taskId}")
+    @Transactional
     public ResponseEntity<Void> cancelSignup(@PathVariable Long volunteerId, @PathVariable Long taskId) {
         Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(taskId, volunteerId);
         if (existingSignup.isEmpty()) {
@@ -166,6 +169,7 @@ public class TaskSignupController {
      * @return Success message or HTTP 404 if signup not found.
      */
     @DeleteMapping("/{signupId}")
+    @Transactional
     public ResponseEntity<Void> cancelSignupById(@PathVariable Long signupId) {
         Optional<TaskSignup> existingSignup = taskSignupService.findById(signupId);
         if (existingSignup.isEmpty()) {

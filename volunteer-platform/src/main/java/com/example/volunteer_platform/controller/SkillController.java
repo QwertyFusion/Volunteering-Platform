@@ -1,5 +1,6 @@
 package com.example.volunteer_platform.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +89,7 @@ public class SkillController {
      * @return Created skill or HTTP 409 if a conflict occurs.
      */
     @PostMapping("/skills")
+    @Transactional
     public ResponseEntity<Skill> saveSkill(@RequestBody @Valid SkillDto skillDto) {
         if (skillService.findByName(skillDto.getName()).isPresent()) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -108,6 +110,7 @@ public class SkillController {
      * @return HTTP 204 if deleted or HTTP 404 if not found.
      */
     @DeleteMapping("/skills/id/{id}")
+    @Transactional
     public ResponseEntity<Void> deleteSkillById(@PathVariable Long id) {
         Skill skill = skillService.findById(id).orElse(null);
         if (skill != null) {
@@ -144,6 +147,7 @@ public class SkillController {
      * @return Updated volunteer or HTTP 404 if not found.
      */
     @PostMapping("/volunteers/{volunteerId}/skills")
+    @Transactional
     public ResponseEntity<Volunteer> addSkillToVolunteer(@PathVariable Long volunteerId, @RequestBody @Valid SkillDto skillDto) {
         Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
         if (volunteerOpt.isEmpty()) {
@@ -172,6 +176,7 @@ public class SkillController {
      * @return Updated volunteer or HTTP 404 if not found.
      */
     @DeleteMapping("/volunteers/{volunteerId}/skills/{skillId}")
+    @Transactional
     public ResponseEntity<Volunteer> removeSkillFromVolunteer(@PathVariable Long volunteerId, @PathVariable Long skillId) {
         Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
         if (volunteerOpt.isEmpty()) {
@@ -217,6 +222,7 @@ public class SkillController {
      * @return Updated task or HTTP 404 if task not found.
      */
     @PostMapping("/tasks/{taskId}/skills")
+    @Transactional
     public ResponseEntity<Task> addSkillToTask(@PathVariable Long taskId, @RequestBody @Valid SkillDto skillDto) {
         Optional<Task> taskOpt = taskService.findById(taskId);
         if (taskOpt.isEmpty()) {
@@ -245,6 +251,7 @@ public class SkillController {
      * @return Updated task or HTTP 404 if not found.
      */
     @DeleteMapping("/tasks/{taskId}/skills/{skillId}")
+    @Transactional
     public ResponseEntity<Task> removeSkillFromTask(@PathVariable Long taskId, @PathVariable Long skillId) {
         Optional<Task> taskOpt = taskService.findById(taskId);
         if (taskOpt.isEmpty()) {

@@ -21,12 +21,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class Organization extends User {
 
-    @NotBlank
-    @Size(max = 255)
+    @Column(nullable = false)
     private String address; // Address of the organization
 
-    @NotBlank
-    @Size(max = 255)
+    @Column(nullable = false)
     private String website; // Website of the organization
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

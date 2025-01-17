@@ -1,6 +1,7 @@
 package com.example.volunteer_platform.controller;
 
 import com.example.volunteer_platform.dto.RatingsDto;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -75,6 +76,7 @@ public class RatingsController {
      * @return The submitted rating.
      */
     @PostMapping
+    @Transactional
     public ResponseEntity<Ratings> submitRating(@RequestBody @Valid RatingsDto ratingDto) {
         Ratings rating = new Ratings();
         rating.setRatedByUserId(ratingDto.getRatedByUserId());
@@ -98,6 +100,7 @@ public class RatingsController {
      * @return The updated rating.
      */
     @PutMapping("/{ratingId}")
+    @Transactional
     public ResponseEntity<Ratings> editRating(@PathVariable long ratingId, @RequestBody @Valid RatingsDto ratingDto) {
         Optional<Ratings> optionalRating = ratingsService.getRatingById(ratingId);
         if (optionalRating.isEmpty()) {
@@ -121,6 +124,7 @@ public class RatingsController {
      * @return HTTP 204 if deleted, HTTP 404 if not found.
      */
     @DeleteMapping("/{ratingId}")
+    @Transactional
     public ResponseEntity<Void> deleteRating(@PathVariable int ratingId) {
         Optional<Ratings> rating = ratingsService.getRatingById(ratingId);
         if (rating.isEmpty()) {

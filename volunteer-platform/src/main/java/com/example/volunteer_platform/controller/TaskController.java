@@ -1,6 +1,7 @@
 package com.example.volunteer_platform.controller;
 
 import com.example.volunteer_platform.enums.TaskStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -88,6 +89,7 @@ public class TaskController {
      * @return HTTP 204 if deleted, HTTP 404 if not found.
      */
     @DeleteMapping("/tasks/delete/{taskId}")
+    @Transactional
     public ResponseEntity<Void> deleteTask(@PathVariable Long taskId) {
         Optional<Task> task = taskService.findById(taskId);
         if (task.isEmpty()) {
@@ -129,6 +131,7 @@ public class TaskController {
      * @return Created task or HTTP 400 for invalid input.
      */
     @PostMapping("/organizations/{organizationId}/tasks")
+    @Transactional
     public ResponseEntity<Task> addTaskToOrganization(@PathVariable Long organizationId, @RequestBody @Valid TaskDto taskDto) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
@@ -172,6 +175,7 @@ public class TaskController {
      * @return Updated task or HTTP 404 if not found.
      */
     @PutMapping("/organizations/{organizationId}/tasks/{taskId}")
+    @Transactional
     public ResponseEntity<Task> updateTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId, @RequestBody @Valid TaskPartialDto updatedTask) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
@@ -202,6 +206,7 @@ public class TaskController {
      * @return HTTP 204 if deleted, HTTP 404 if not found.
      */
     @DeleteMapping("/organizations/{organizationId}/tasks/{taskId}")
+    @Transactional
     public ResponseEntity<Void> deleteTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
@@ -235,6 +240,7 @@ public class TaskController {
      * @return Updated task or HTTP 404 if not found.
      */
     @PutMapping("/organizations/{organizationId}/tasks/{taskId}/cancel")
+    @Transactional
     public ResponseEntity<Task> cancelTaskInOrganization(@PathVariable Long organizationId, @PathVariable Long taskId) {
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {

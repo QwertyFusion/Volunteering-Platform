@@ -4,6 +4,7 @@ package com.example.volunteer_platform.controller;
 import com.example.volunteer_platform.dto.ReminderStatusDTO;
 import com.example.volunteer_platform.scheduler.ReminderScheduler;
 import com.example.volunteer_platform.service.TaskSignupService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ public class ReminderTestController {
 
     // Trigger reminders manually
     @PostMapping("/send")
+    @Transactional
     public ResponseEntity<String> triggerReminders() {
         try {
             reminderScheduler.sendTaskReminders();

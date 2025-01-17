@@ -1,5 +1,6 @@
 package com.example.volunteer_platform.controller;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.volunteer_platform.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -80,6 +81,7 @@ public class UserController {
 	 * @return Registered organization or HTTP 400 for invalid input.
 	 */
 	@PostMapping("/organizations")
+	@Transactional
 	public ResponseEntity<Organization> registerOrganization(@RequestBody @Valid OrganizationDto orgDTO) {
 		try {
 			Organization org = new Organization();
@@ -117,6 +119,7 @@ public class UserController {
 	 * @return Updated organization or HTTP 404 if not found.
 	 */
 	@PutMapping("/organizations/{organizationId}")
+	@Transactional
 	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long organizationId, @RequestBody @Valid OrganizationPartialDto updatedOrg) {
 		Organization existingOrg = userService.findOrganizationById(organizationId).orElse(null);
 		if (existingOrg == null) {
@@ -141,6 +144,7 @@ public class UserController {
 	 * @return HTTP 204 if deleted, HTTP 404 if not found.
 	 */
 	@DeleteMapping("/organizations/{organizationId}")
+	@Transactional
 	public ResponseEntity<Void> deleteOrganizationById(@PathVariable Long organizationId) {
 		Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
 		if (organizationOpt.isEmpty()) {
@@ -186,16 +190,10 @@ public class UserController {
 	 * @return Registered volunteer or HTTP 400 for invalid input.
 	 */
 	@PostMapping("/volunteers")
-	public ResponseEntity<Volunteer> registerVolunteer(@RequestBody @Valid VolunteerDto volunteerDTO) {
+	public ResponseEntity<VolunteerDto> registerVolunteer(@RequestBody @Valid VolunteerDto volunteerDTO) {
 		try {
-			Volunteer volunteer = new Volunteer();
-			volunteer.setName(volunteerDTO.getName());
-			volunteer.setEmail(volunteerDTO.getEmail());
-			volunteer.setPassword(volunteerDTO.getPassword());
-			volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
-			volunteer.setGender(volunteerDTO.getGender());
-			userService.saveUser(volunteer);
-			return new ResponseEntity<>(volunteer, HttpStatus.CREATED);
+			userService.saveVolunteer(volunteerDTO);
+			return new ResponseEntity<>(volunteerDTO, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -222,6 +220,7 @@ public class UserController {
 	 * @return Updated volunteer or HTTP 404 if not found.
 	 */
 	@PutMapping("/volunteers/{volunteerId}")
+	@Transactional
 	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long volunteerId, @RequestBody @Valid VolunteerPartialDto updatedVol) {
 		Volunteer existingVol = userService.findVolunteerById(volunteerId).orElse(null);
 		if (existingVol == null) {
@@ -244,6 +243,7 @@ public class UserController {
 	 * @return HTTP 204 if deleted, HTTP 404 if not found.
 	 */
 	@DeleteMapping("/volunteers/{volunteerId}")
+	@Transactional
 	public ResponseEntity<Void> deleteVolunteerById(@PathVariable Long volunteerId) {
 		Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
 		if (volunteerOpt.isEmpty()) {
