@@ -1,9 +1,11 @@
 package com.example.volunteer_platform.service;
 
+import com.example.volunteer_platform.dto.VolunteerDto;
 import com.example.volunteer_platform.model.Organization;
 import com.example.volunteer_platform.model.Volunteer;
 import com.example.volunteer_platform.repository.OrganizationRepository;
 import com.example.volunteer_platform.repository.VolunteerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,22 @@ public class UserService {
      */
     public void saveUser (User user) {
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void saveVolunteer (VolunteerDto volunteerDTO) {
+        try {
+            Volunteer volunteer = new Volunteer();
+            volunteer.setName(volunteerDTO.getName());
+            volunteer.setEmail(volunteerDTO.getEmail());
+            volunteer.setPassword(volunteerDTO.getPassword());
+            volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
+            volunteer.setGender(volunteerDTO.getGender());
+            saveUser(volunteer);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Could not create volunteer:" + e);
+        }
     }
 
     /**

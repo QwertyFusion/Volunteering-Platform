@@ -42,8 +42,6 @@ public class User {
 	@Column(nullable = false)
 	private String password;
 
-	@NotBlank
-	@Size(max = 15)
 	@Column(nullable = false, unique = true) // Assuming phone numbers should be unique
 	private String phoneNumber;
 

@@ -28,20 +28,17 @@ public class Task {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Size(max = 100)
 	@Column(nullable = false)
 	private String title;
 
-	@NotBlank
 	@Column(nullable = false)
 	private String description;
 
-	@NotBlank
 	@Size(max = 100)
 	private String location;
 
-	@NotNull @Future
+	@Future
+	@Column(nullable = false)
 	private LocalDate eventDate; // When the event will be hosted. Format is "yyyy-MM-dd"
 
 	@Column(nullable = false, updatable = false)
