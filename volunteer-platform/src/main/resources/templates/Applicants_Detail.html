@@ -1,158 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Applicants Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #ffffff;
-        }
-        .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #f1f1f1;
-            border-bottom: 1px solid #ddd;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #8fc7ff;
         }
-        .header .logo {
-            background-color: #007bff;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
+
+        main {
+            flex: 1;
         }
-        .header .nav-links a {
-            margin: 0 10px;
-            color: #333;
-            text-decoration: none;
+
+        #navContainer {
+            background-color: rgba(255, 255, 255, 0.85);
         }
-        .header .nav-links a:hover {
-            text-decoration: underline;
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.5);
         }
-        .header .user {
-            display: flex;
-            align-items: center;
-        }
-        .header .user .avatar {
-            width: 40px;
-            height: 40px;
-            background-color: #ddd;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
+
         .section-title {
+            text-align: center;
             margin: 20px 0;
             font-size: 1.5rem;
             font-weight: bold;
         }
-        .card {
-            margin-bottom: 15px;
-        }
-        .card .card-body {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+
         .rating {
             color: gold;
             cursor: pointer;
         }
-        .rating span {
-            font-size: 1.5rem;
-        }
+
         .more-btn {
             display: block;
             width: 100%;
             text-align: center;
             margin: 20px 0;
         }
+
+        #taskContainer {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-fixed {
+            width: 120px;
+        }
     </style>
 </head>
+
 <body>
-    <div class="header">
-        <div class="logo">Logo</div>
-        <div class="nav-links">
-            <a href="#">Current Tasks</a>
-            <a href="#">Rankings</a>
-        </div>
-        <div class="user">
-            <div class="avatar"></div>
-            <a href="profile.html">Username</a>
+    <!-- Navbar -->
+    <div id="navContainer" class="sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Volunteering Platform</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="#">Current Tasks</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Rankings
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">Top Organizations</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Top Volunteers</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="d-flex">
+                            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle h3 me-2"></i>
+                                        Umbrella Corps
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="#">Account Settings</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Tasks History</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#">Logout</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
         </div>
     </div>
 
-    <div class="container">
-        <div class="section-title">Applicants</div>
+    <!-- Applicants Section -->
+    <main>
+        <div class="container py-5 my-5" id="taskContainer">
+            <div class="d-flex justify-content-start mb-3">
+                <button id="pending-btn" class="btn btn-primary me-2">Pending Applicants</button>
+                <button id="accepted-btn" class="btn btn-outline-primary">Accepted Applicants</button>
+            </div>
 
-        <div class="card">
-            <div class="card-body">
-                <div>
-                    <p>Volunteer Name worked in <strong>35 sessions</strong> before</p>
-                    <div class="rating" data-id="1">
-                        <span data-value="1">&#9733;</span>
-                        <span data-value="2">&#9733;</span>
-                        <span data-value="3">&#9733;</span>
-                        <span data-value="4">&#9733;</span>
-                        <span data-value="5">&#9734;</span>
+
+            <div id="pending-applicants" class="row gy-4 justify-content-center">
+                <div class="section-title">Pending Applicants</div>
+                <div class="card col-10">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-auto">
+                            <p>Volunteer Name worked in <strong>35 sessions</strong> before</p>
+                            <div class="rating" data-id="1">
+                                <span data-value="1">&#9733;</span>
+                                <span data-value="2">&#9733;</span>
+                                <span data-value="3">&#9733;</span>
+                                <span data-value="4">&#9733;</span>
+                                <span data-value="5">&#9734;</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-success accept-btn btn-fixed">Accept</button>
+                            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <button class="btn btn-success accept-btn">Accept</button>
-                    <a href="details.html" class="btn btn-warning">View</a>
-                </div>
-            </div>
-        </div>
 
-        <div class="card">
-            <div class="card-body">
-                <div>
-                    <p>Volunteer Name worked in <strong>15 sessions</strong> before</p>
-                    <div class="rating" data-id="2">
-                        <span data-value="1">&#9733;</span>
-                        <span data-value="2">&#9733;</span>
-                        <span data-value="3">&#9733;</span>
-                        <span data-value="4">&#9734;</span>
-                        <span data-value="5">&#9734;</span>
+                <div class="card col-10">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-auto">
+                            <p>Volunteer Name worked in <strong>15 sessions</strong> before</p>
+                            <div class="rating" data-id="2">
+                                <span data-value="1">&#9733;</span>
+                                <span data-value="2">&#9733;</span>
+                                <span data-value="3">&#9733;</span>
+                                <span data-value="4">&#9734;</span>
+                                <span data-value="5">&#9734;</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-success accept-btn btn-fixed">Accept</button>
+                            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <button class="btn btn-success accept-btn">Accept</button>
-                    <a href="details.html" class="btn btn-warning">View</a>
-                </div>
-            </div>
-        </div>
 
-        <div class="card">
-            <div class="card-body">
-                <div>
-                    <p>Volunteer Name worked in <strong>2 sessions</strong> before</p>
-                    <div class="rating" data-id="3">
-                        <span data-value="1">&#9733;</span>
-                        <span data-value="2">&#9734;</span>
-                        <span data-value="3">&#9734;</span>
-                        <span data-value="4">&#9734;</span>
-                        <span data-value="5">&#9734;</span>
+                <div class="card col-10">
+                    <div class="card-body d-flex align-items-center">
+                        <div class="me-auto">
+                            <p>Volunteer Name worked in <strong>2 sessions</strong> before</p>
+                            <div class="rating" data-id="3">
+                                <span data-value="1">&#9733;</span>
+                                <span data-value="2">&#9734;</span>
+                                <span data-value="3">&#9734;</span>
+                                <span data-value="4">&#9734;</span>
+                                <span data-value="5">&#9734;</span>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-success accept-btn btn-fixed">Accept</button>
+                            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <button class="btn btn-success accept-btn">Accept</button>
-                    <a href="details.html" class="btn btn-warning">View</a>
-                </div>
             </div>
+
+            <div id="accepted-applicants" class="row gy-4 justify-content-center">
+                <div class="section-title">Accepted Applicants</div>
+            </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-sm-2 p-5 bg-dark text-white text-center position-relative">
+        <div class="container d-flex justify-content-between align-items-center">
+            <p class="lead m-0">
+                Copyright &copy; <span id="current-year"></span>
+                Volunteering Platform
+            </p>
+            <a href="https://github.com/QwertyFusion/Volunteering-Platform"
+                class="btn btn-dark d-flex align-items-center text-white text-decoration-none">
+                <i class="bi bi-github h3 me-2"></i>
+                <span class="lead m-0">GitHub Repository</span>
+            </a>
         </div>
 
-        <a href="more.html" class="btn btn-warning more-btn">More</a>
+        <a href="#" class="position-absolute bottom-0 end-0 p-3">
+            <i class="bi bi-arrow-up-circle h1 text-primary"></i>
+        </a>
+    </footer>
 
-        <div class="section-title">Accepted Applicants</div>
-
-        <div id="accepted-applicants"></div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
     <script>
         document.querySelectorAll('.rating').forEach(ratingDiv => {
             const stars = ratingDiv.querySelectorAll('span');
@@ -189,6 +261,41 @@
                 button.classList.replace('btn-success', 'btn-secondary');
             });
         });
+
+        // Button toggle functionality
+        const pendingBtn = document.getElementById('pending-btn');
+        const acceptedBtn = document.getElementById('accepted-btn');
+
+        pendingBtn.addEventListener('click', () => {
+            pendingBtn.classList.add('btn-primary');
+            pendingBtn.classList.remove('btn-outline-primary');
+            acceptedBtn.classList.add('btn-outline-primary');
+            acceptedBtn.classList.remove('btn-primary');
+
+            document.getElementById('pending-applicants').classList.remove('d-none');
+            document.getElementById('accepted-applicants').classList.add('d-none');
+        });
+
+        acceptedBtn.addEventListener('click', () => {
+            acceptedBtn.classList.add('btn-primary');
+            acceptedBtn.classList.remove('btn-outline-primary');
+            pendingBtn.classList.add('btn-outline-primary');
+            pendingBtn.classList.remove('btn-primary');
+
+            document.getElementById('accepted-applicants').classList.remove('d-none');
+            document.getElementById('pending-applicants').classList.add('d-none');
+        });
+
+        // Set initial state
+        document.getElementById('accepted-applicants').classList.add('d-none');
+
+        document.getElementById("current-year").textContent =
+            new Date().getFullYear();
+
+        function rateVolunteers() {
+            alert("Rate Volunteers functionality will be implemented soon.");
+        }
     </script>
 </body>
+
 </html>
