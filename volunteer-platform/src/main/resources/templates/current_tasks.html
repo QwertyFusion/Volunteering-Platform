@@ -52,7 +52,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-0 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="#">Current Tasks</a>
+                <a class="nav-link" aria-current="page" href="#taskList">Current Tasks</a>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -61,10 +61,10 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li>
-                    <a class="dropdown-item" href="#">Top Organizations</a>
+                    <a class="dropdown-item" href="Top_Organizations.html">Top Organizations</a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">Top Volunteers</a>
+                    <a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a>
                   </li>
                 </ul>
               </li>
@@ -79,16 +79,16 @@
                   </a>
                   <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li>
-                      <a class="dropdown-item" href="#">Account Settings</a>
+                      <a class="dropdown-item" href="organization_account_settings.html">Account Settings</a>
                     </li>
                     <li>
-                      <a class="dropdown-item" href="#">Tasks History</a>
+                      <a class="dropdown-item" href="organization_task_history.html">Tasks History</a>
                     </li>
                     <li>
                       <hr class="dropdown-divider" />
                     </li>
                     <li>
-                      <a class="dropdown-item text-danger" href="#">Logout</a>
+                      <a class="dropdown-item text-danger" href="index.html">Logout</a>
                     </li>
                   </ul>
                 </li>
@@ -105,11 +105,11 @@
     <div id="taskContainer" class="container py-5 my-5">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-center flex-grow-1">Current Tasks</h2>
-        <button class="btn btn-success">New Task</button>
+        <a href="create_task.html" class="btn btn-success" >New Task</a>
       </div>
 
       <!-- Task List -->
-      <div class="row gy-4 justify-content-center">
+      <div class="row gy-4 justify-content-center" id="taskList">
         <!-- Task Card 1 -->
         <div class="col-10">
           <div class="card shadow-sm">
@@ -120,7 +120,7 @@
                   <p class="card-text mb-1">Location: New York</p>
                   <p class="card-text small text-muted">Posted: Jan 5, 2025 | 120 Applicants | 15 Selected</p>
                 </div>
-                <button class="btn btn-primary">View</button>
+                <a href="organisation_task_view.html" class="btn btn-primary">View</a>
               </div>
             </div>
           </div>
