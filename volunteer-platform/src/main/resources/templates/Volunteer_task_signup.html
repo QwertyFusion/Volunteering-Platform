@@ -11,28 +11,23 @@
         // Simulated state for task sign-up status
         let isSignedUp = false;
 
-        function showSignupForm() {
-            document.getElementById("taskDetails").style.display = "none";
-            document.getElementById("signupForm").style.display = "block";
-        }
+        function applyForTask() {
+            if (!isSignedUp) {
+                // Simulate task sign-up logic
+                isSignedUp = true;
 
-        function applyForTask(event) {
-            event.preventDefault(); // Prevent form submission
-            
-            // Simulate task sign-up logic
-            isSignedUp = true;
-
-            // Update the UI
-            document.getElementById("signupForm").style.display = "none";
-            document.getElementById("taskDetails").style.display = "block";
-            document.getElementById("applyButton").style.display = "none";
-            document.getElementById("cancelButton").style.display = "inline-block";
-            document.getElementById("successMessage").style.display = "block";
+                // Update the UI
+                document.getElementById("applyButton").style.display = "none";
+                document.getElementById("cancelButton").style.display = "inline-block";
+                document.getElementById("successMessage").style.display = "block";
+            }
         }
 
         function cancelParticipation() {
             if (isSignedUp) {
                 isSignedUp = false;
+
+                // Reset the UI
                 document.getElementById("applyButton").style.display = "inline-block";
                 document.getElementById("cancelButton").style.display = "none";
                 document.getElementById("successMessage").style.display = "none";
@@ -41,6 +36,57 @@
     </script>
 </head>
 <body class="bg-light">
+    <!-- Navbar -->
+  <div id="navContainer" class="sticky-top">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Volunteering Platform</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="opportunities.html">Opportunities</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Rankings
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="Top_Organizations.html">Top Organizations</a></li>
+                  <li><a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="d-flex">
+              <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                <li class="nav-item dropdown">
+                  <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle h3 me-2"></i>
+                    Ash Ketchum
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="Volunteer_Account_Settings.html">Account Settings</a></li>
+                    <li><a class="dropdown-item" href="Volunteer_Task_History.html">Volunteering History</a></li>
+                    <li>
+                      <hr class="dropdown-divider" />
+                    </li>
+                    <li><a class="dropdown-item text-danger" href="index.html">Logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
 
 <div class="container mt-5">
     <div id="taskDetails" class="card shadow-sm">
@@ -65,32 +111,8 @@
             </div>
 
             <!-- Apply and Cancel Buttons -->
-            <button id="applyButton" class="btn btn-primary" onclick="showSignupForm()">Apply Now</button>
+            <button id="applyButton" class="btn btn-primary" onclick="applyForTask()">Apply Now</button>
             <button id="cancelButton" class="btn btn-danger" style="display: none;" onclick="cancelParticipation()">Cancel Participation</button>
-        </div>
-    </div>
-
-    <!-- Signup Form -->
-    <div id="signupForm" class="card shadow-sm mt-4" style="display: none;">
-        <div class="card-header bg-secondary text-white">
-            <h4>Task Signup Form</h4>
-        </div>
-        <div class="card-body">
-            <form onsubmit="applyForTask(event)">
-                <div class="mb-3">
-                    <label for="fullName" class="form-label">Full Name</label>
-                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
-                </div>
-                <button type="submit" class="btn btn-success">Submit Application</button>
-            </form>
         </div>
     </div>
 </div>
