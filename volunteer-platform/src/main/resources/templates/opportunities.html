@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opportunities</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #8fc7ff;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        footer {
+            position: relative;
+            /* Changed to relative for sticky footer */
+            margin-top: auto;
+            /* Ensures footer stays at the bottom */
+        }
+
+        #navContainer {
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #opportunityContainer {
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding-bottom: 50px;
+        }
+
+        .filter-container {
+            max-width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div id="navContainer" class="sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Volunteering Platform</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="#">Opportunities</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Rankings
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="#">Top Organizations</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">Top Volunteers</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="d-flex">
+                            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle h3 me-2"></i>
+                                        Ash Ketchum
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="#">Account Settings</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#">Volunteering History</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#">Logout</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-5">
+        <div class="row justify-content-center"> <!-- Center the row -->
+            <!-- Filter Section -->
+            <aside class="col-md-3 filter-container"> <!-- Added filter-container class -->
+                <div class="card p-3 mb-4">
+                    <h5 class="text-center">Filter</h5>
+                    <form>
+                        <div class="mb-3">
+                            <label for="skills" class="form-label">Skills</label>
+                            <input type="text" class="form-control" id="skills" placeholder="Enter skills">
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" placeholder="Enter location">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Rating of Organization</label>
+                            <div>
+                                <input type="range" class="form-range" min="1" max="5" step="1" id="orgRating">
+                                <div class="d-flex justify-content-between">
+                                    <span>1</span>
+                                    <span>2</span>
+                                    <span>3</span>
+                                    <span>4</span>
+                                    <span>5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="keywordSearch" class="form-label">Keyword Search</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="keywordSearch" placeholder="Enter keywords">
+                                <button class="btn btn-outline-primary" type="button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Opportunities Section -->
+            <main class="col-md-6">
+                <div id="opportunityContainer" class="row row-cols-1">
+                    <h2 class="mt-4 text-center">Opportunities</h2>
+                    <!-- Task List -->
+                    <div class="row g-3 justify-content-center">
+                        <!-- Task Card 1 -->
+                        <div class="col-11">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">Beach Cleaning</h5>
+                                            <p class="card-text mb-1">Beach Solutions Pvt Ltd</p>
+                                            <p class="card-text small text-muted">Location: New York | Duration: 2
+                                                months</p>
+                                            <small class="text-muted">Posted: 2025-01-14</small>
+                                        </div>
+                                        <button class="btn btn-primary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 2 -->
+                        <div class="col-11">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">Charity Event</h5>
+                                            <p class="card-text mb-1">Happy Charity Org</p>
+                                            <p class="card-text small text-muted">Location: San Francisco | Duration: 3
+                                                months</p>
+                                            <small class="text-muted">Posted: 2025-01-12</small>
+                                        </div>
+                                        <button class="btn btn-primary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Task Card 3 -->
+                        <div class="col-11">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h5 class="card-title">Donation Drive</h5>
+                                            <p class="card-text mb-1">Saviour Org</p>
+                                            <p class="card-text small text-muted">Location: Chicago | Duration: 3 months
+                                            </p>
+                                            <small class="text-muted">Posted: 2025-01-11</small>
+                                        </div>
+                                        <button class="btn btn-primary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="p-sm-2 p-5 bg-dark text-white text-center position-relative">
+        <div class="container d-flex justify-content-between align-items-center">
+            <p class="lead m-0">
+                Copyright &copy; <span id="current-year"></span>
+                Volunteering Platform
+            </p>
+            <a href="https://github.com/QwertyFusion/Volunteering-Platform"
+                class="btn btn-dark d-flex align-items-center text-white text-decoration-none">
+                <i class="bi bi-github h3 me-2"></i>
+                <span class="lead m-0">GitHub Repository</span>
+            </a>
+        </div>
+
+        <a href="#" class="position-absolute bottom-0 end-0 p-3">
+            <i class="bi bi-arrow-up-circle h1 text-primary"></i>
+        </a>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <script>
+        document.getElementById("current-year").textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
