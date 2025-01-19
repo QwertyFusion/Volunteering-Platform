@@ -2,188 +2,190 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Current Tasks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
-  <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      background-color: #8fc7ff;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Tasks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" />
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #8fc7ff;
+        }
 
-    main {
-      flex: 1;
-    }
+        #navContainer {
+            background-color: rgba(255, 255, 255, 0.85);
+        }
 
-    #navContainer {
-      background-color: rgba(255, 255, 255, 0.85);
-    }
+        main {
+            flex: 1;
+        }
 
-    #taskContainer {
-      background-color: rgba(255, 255, 255, 0.5);
-      border: none;
-      border-radius: 10px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
+        .card {
+            border-radius: 10px !important;
+        }
 
-    footer {
-      position: sticky;
-      top: 100%;
-    }
-  </style>
+        footer {
+            position: sticky;
+            top: 100%;
+        }
+    </style>
 </head>
 
 <body>
-  <!-- Navbar -->
-  <div id="navContainer" class="sticky-top">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">Volunteering Platform</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link" aria-current="page" href="#">Current Tasks</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  Rankings
+    <!-- Navbar -->
+    <div id="navContainer" class="sticky-top">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Volunteering Platform</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="current_tasks.html">Opportunities</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Rankings
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="Org_Top_Organisations.html">Top Organizations</a></li>
+                                    <li><a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <div class="d-flex">
+                            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-person-circle h3 me-2"></i>
+                                        Ash Ketchum
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="organization_account_settings.html">Account
+                                                Settings</a></li>
+                                        <li><a class="dropdown-item" href="organization_task_history.html">Volunteering
+                                                History</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider" />
+                                        </li>
+                                        <li><a class="dropdown-item text-danger" href="index.html">Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Current Tasks</h2>
+                <a href="create_task.html" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-2"></i>New Task
                 </a>
-                <ul class="dropdown-menu">
-                  <li>
-                    <a class="dropdown-item" href="#">Top Organizations</a>
-                  </li>
-                  <li>
-                    <a class="dropdown-item" href="#">Top Volunteers</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <div class="d-flex">
-              <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-                <li class="nav-item dropdown">
-                  <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-circle h3 me-2"></i>
-                    Umbrella Corps
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <li>
-                      <a class="dropdown-item" href="#">Account Settings</a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">Tasks History</a>
-                    </li>
-                    <li>
-                      <hr class="dropdown-divider" />
-                    </li>
-                    <li>
-                      <a class="dropdown-item text-danger" href="#">Logout</a>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
             </div>
-          </div>
+
+            <div id="taskList" class="row gy-4">
+                <!-- Tasks will be dynamically inserted here -->
+            </div>
         </div>
-      </nav>
-    </div>
-  </div>
+    </main>
 
-  <!-- Main Content -->
-  <main>
-    <div id="taskContainer" class="container py-5 my-5">
-      <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-center flex-grow-1">Current Tasks</h2>
-        <button class="btn btn-success">New Task</button>
-      </div>
-
-      <!-- Task List -->
-      <div class="row gy-4 justify-content-center">
-        <!-- Task Card 1 -->
-        <div class="col-10">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 class="card-title">Beach Cleaning</h5>
-                  <p class="card-text mb-1">Location: New York</p>
-                  <p class="card-text small text-muted">Posted: Jan 5, 2025 | 120 Applicants | 15 Selected</p>
-                </div>
-                <button class="btn btn-primary">View</button>
-              </div>
-            </div>
-          </div>
+    <!-- Footer -->
+    <footer class="p-sm-2 p-5 bg-dark text-white text-center position-relative">
+        <div class="container d-flex justify-content-between align-items-center">
+            <p class="lead m-0">
+                Copyright &copy; <span id="current-year"></span>
+                Volunteering Platform
+            </p>
+            <a href="https://github.com/QwertyFusion/Volunteering-Platform"
+                class="btn btn-dark d-flex align-items-center text-white text-decoration-none">
+                <i class="bi bi-github h3 me-2"></i>
+                <span class="lead m-0">GitHub Repository</span>
+            </a>
         </div>
 
-        <!-- Task Card 2 -->
-        <div class="col-10">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 class="card-title">Charity Event</h5>
-                  <p class="card-text mb-1">Location: San Francisco</p>
-                  <p class="card-text small text-muted">Posted: Dec 20, 2024 | 85 Applicants | 10 Selected</p>
-                </div>
-                <button class="btn btn-primary">View</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <a href="#" class="position-absolute bottom-0 end-0 p-3">
+            <i class="bi bi-arrow-up-circle h1 text-primary"></i>
+        </a>
+    </footer>
 
-        <!-- Task Card 3 -->
-        <div class="col-10">
-          <div class="card shadow-sm">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h5 class="card-title">Donation Drive</h5>
-                  <p class="card-text mb-1">Location: Dallas</p>
-                  <p class="card-text small text-muted">Posted: Jan 1, 2025 | 60 Applicants | 5 Selected</p>
-                </div>
-                <button class="btn btn-primary">View</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Set current year
+        document.getElementById("current-year").textContent = new Date().getFullYear();
 
-  <!-- Footer -->
-  <footer class="p-sm-2 p-5 bg-dark text-white text-center position-relative">
-    <div class="container d-flex justify-content-between align-items-center">
-      <p class="lead m-0">
-        Copyright &copy; <span id="current-year"></span>
-        Volunteering Platform
-      </p>
-      <a href="https://github.com/QwertyFusion/Volunteering-Platform"
-        class="btn btn-dark d-flex align-items-center text-white text-decoration-none">
-        <i class="bi bi-github h3 me-2"></i>
-        <span class="lead m-0">GitHub Repository</span>
-      </a>
-    </div>
+        // Function to load and display tasks
+        function loadTasks() {
+            const taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
+            
+            // Get tasks from localStorage
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            console.log('Retrieved tasks:', tasks); // Debug log
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = `
+                    <div class="col-12 text-center">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <p class="text-muted mb-0">No tasks available at the moment.</p>
+                            </div>
+                        </div>
+                    </div>`;
+                return;
+            }
 
-    <a href="#" class="position-absolute bottom-0 end-0 p-3">
-      <i class="bi bi-arrow-up-circle h1 text-primary"></i>
-    </a>
-  </footer>
+            // Display each task
+            tasks.forEach((task, index) => {
+                const taskCard = `
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">${task.taskName}</h5>
+                                <p class="card-text mb-2">
+                                    <i class="bi bi-geo-alt"></i> ${task.location}
+                                </p>
+                                <p class="card-text mb-2">
+                                    <i class="bi bi-calendar-event"></i> Event Date: ${new Date(task.eventDate).toLocaleDateString()}
+                                </p>
+                                <p class="card-text mb-2">
+                                    <i class="bi bi-clock"></i> Deadline: ${new Date(task.applicationDeadline).toLocaleDateString()}
+                                </p>
+                                <div class="mt-2">
+                                    ${task.skills.map(skill => `
+                                        <span class="badge bg-secondary me-1 mb-1">${skill}</span>
+                                    `).join('')}
+                                </div>
+                                <div class="mt-3">
+                                    <a href="organisation_task_view.html?task=${index}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+                taskList.innerHTML += taskCard;
+            });
+        }
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById("current-year").textContent = new Date().getFullYear();
-  </script>
+        // Load tasks when page loads
+        document.addEventListener('DOMContentLoaded', loadTasks);
+    </script>
 </body>
 
 </html>

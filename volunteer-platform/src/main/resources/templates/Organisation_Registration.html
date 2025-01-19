@@ -108,7 +108,7 @@
                   <input type="url" class="form-control" id="website" placeholder="Enter Website URL">
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 mt-3">Register</button>
+                <button type="submit" class="btn btn-primary w-100 mt-3" id="registerButton">Register</button>
               </form>
             </div>
           </div>
@@ -146,6 +146,11 @@
     document.getElementById("current-year").textContent =
       new Date().getFullYear();
   </script>
+  <script>
+  document.getElementById("registerButton").addEventListener("click", function() {
+    window.location.href = "current_tasks.html";
+  });
+</script>
 </body>
 
 </html>

@@ -37,6 +37,7 @@
   </style>
 </head>
 
+
 <body>
   <!-- Navbar -->
   <div id="navContainer" class="sticky-top">
@@ -52,7 +53,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-0 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#about">About</a>
@@ -77,7 +78,7 @@
           <div class="card login-card">
             <div class="card-body">
               <h2 class="text-center mb-4">Volunteer Registration</h2>
-              <form>
+              <form >
                 <div class="mb-3">
                   <label for="fullName" class="form-label">Full Name</label>
                   <input type="text" class="form-control" id="fullName" placeholder="Enter Full Name" required>
@@ -102,7 +103,9 @@
                   <label for="dob" class="form-label">Date of Birth</label>
                   <input type="date" class="form-control" id="dob" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100 mt-3">Register</button>
+                <!-- <button type="submit" class="btn btn-primary w-100 mt-3" >Register</button> -->
+                <button id="registerButton" type="button" class="btn btn-primary w-100 mt-3">Register</button>
+
               </form>
             </div>
           </div>
@@ -139,6 +142,11 @@
   <script>
     document.getElementById("current-year").textContent =
       new Date().getFullYear();
+  </script>
+  <script>
+    document.getElementById("registerButton").addEventListener("click", function() {
+      window.location.href = "opportunities.html";
+    });
   </script>
 </body>
 
