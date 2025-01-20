@@ -22,24 +22,22 @@
             flex: 1;
         }
 
-        footer {
+        .footer {
             position: relative;
-            /* Changed to relative for sticky footer */
             margin-top: auto;
-            /* Ensures footer stays at the bottom */
         }
 
-        #navContainer {
+        .nav-container {
             background-color: rgba(255, 255, 255, 0.85);
         }
 
-        .card {
+        .opportunity-card {
             border: none;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        #opportunityContainer {
+        .opportunity-container {
             background-color: rgba(255, 255, 255, 0.5);
             border: none;
             border-radius: 10px;
@@ -55,11 +53,11 @@
 
 <body>
     <!-- Navbar -->
-    <div id="navContainer" class="sticky-top">
+    <div class="nav-container sticky-top">
         <div class="container">
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Volunteering Platform</a>
+                    <a class="navbar-brand" href="index.html">Volunteering Platform</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -95,10 +93,12 @@
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li>
-                                            <a class="dropdown-item" href="Volunteer_Account_Settings.html">Account Settings</a>
+                                            <a class="dropdown-item" href="Volunteer_Account_Settings.html">Account
+                                                Settings</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="Volunteer_Task_History.html">Volunteering History</a>
+                                            <a class="dropdown-item" href="Volunteer_Task_History.html">Volunteering
+                                                History</a>
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider" />
@@ -118,9 +118,9 @@
 
     <!-- Main Content -->
     <div class="container-fluid mt-5">
-        <div class="row justify-content-center"> <!-- Center the row -->
+        <div class="row justify-content-center">
             <!-- Filter Section -->
-            <aside class="col-md-3 filter-container"> <!-- Added filter-container class -->
+            <aside class="col-md-3 filter-container">
                 <div class="card p-3 mb-4">
                     <h5 class="text-center">Filter</h5>
                     <form>
@@ -160,24 +160,22 @@
 
             <!-- Opportunities Section -->
             <main class="col-md-6">
-                <div id="opportunityContainer" class="row row-cols-1">
+                <div class="opportunity-container row row-cols-1">
                     <h2 class="mt-4 text-center">Opportunities</h2>
                     <!-- Task List -->
                     <div class="row g-3 justify-content-center">
                         <!-- Task Card 1 -->
                         <div class="col-11">
-                            <div class="card shadow-sm">
+                            <div class="opportunity-card card shadow-sm">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h5 class="card-title">Beach Cleaning</h5>
-                                            <p class="card-text mb-1">Beach Solutions Pvt Ltd</p>
-                                            <p class="card-text small text-muted">Location: New York | Duration: 2
-                                                months</p>
-                                            <small class="text-muted">Posted: 2025-01-14</small>
+                                            <h5 class="card-title">Cat Grooming Campaign</h5>
+                                            <p class="card-text mb-1">Cat Solutions Pvt Ltd</p>
+                                            <p class="card-text small text-muted">Location: Remote</p>
+                                            <small class="text-muted">Event Date: 11-2-2025</small>
                                         </div>
-                                        <!-- <button class="btn btn-primary">View</button> -->
-                                         <a href="Volunteer_task_signup.html" class="btn btn-primary">View</a>
+                                        <a href="Volunteer_task_signup.html" class="btn btn-primary">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -185,17 +183,16 @@
 
                         <!-- Task Card 2 -->
                         <div class="col-11">
-                            <div class="card shadow-sm">
+                            <div class="opportunity-card card shadow-sm">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h5 class="card-title">Charity Event</h5>
                                             <p class="card-text mb-1">Happy Charity Org</p>
-                                            <p class="card-text small text-muted">Location: San Francisco | Duration: 3
-                                                months</p>
-                                            <small class="text-muted">Posted: 2025-01-12</small>
+                                            <p class="card-text small text-muted">Location: San Francisco</p>
+                                            <small class="text-muted">Event Date: 11-2-2025</small>
                                         </div>
-                                        <button class="btn btn-primary">View</button>
+                                        <a href="Volunteer_task_signup.html" class="btn btn-primary">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -203,17 +200,17 @@
 
                         <!-- Task Card 3 -->
                         <div class="col-11">
-                            <div class="card shadow-sm">
+                            <div class="opportunity-card card shadow-sm">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h5 class="card-title">Donation Drive</h5>
                                             <p class="card-text mb-1">Saviour Org</p>
-                                            <p class="card-text small text-muted">Location: Chicago | Duration: 3 months
+                                            <p class="card-text small text-muted">Location: Chicago
                                             </p>
-                                            <small class="text-muted">Posted: 2025-01-11</small>
+                                            <small class="text-muted">Event Date: 11-2-2025</small>
                                         </div>
-                                        <button class="btn btn-primary">View</button>
+                                        <a href="Volunteer_task_signup.html" class="btn btn-primary">View</a>
                                     </div>
                                 </div>
                             </div>
@@ -225,7 +222,7 @@
     </div>
 
     <!-- Footer -->
-    <footer class="p-sm-2 p-5 bg-dark text-white text-center position-relative">
+    <footer class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
         <div class="container d-flex justify-content-between align-items-center">
             <p class="lead m-0">
                 Copyright &copy; <span id="current-year"></span>

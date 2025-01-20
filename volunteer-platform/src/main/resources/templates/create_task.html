@@ -17,7 +17,7 @@
             background-color: #8fc7ff;
         }
 
-        #navContainer {
+        .nav-container {
             background-color: rgba(255, 255, 255, 0.85);
         }
 
@@ -25,7 +25,7 @@
             flex: 1;
         }
 
-        .card {
+        .task-card {
             border-radius: 10px !important;
         }
 
@@ -38,7 +38,7 @@
 
 <body>
     <!-- Navbar -->
-    <div id="navContainer" class="sticky-top">
+    <div class="nav-container sticky-top">
         <div class="container">
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
@@ -51,7 +51,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-0 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="current_tasks.html">Opportunities</a>
+                                <a class="nav-link" aria-current="page" href="current_tasks.html">Current Tasks</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -59,8 +59,12 @@
                                     Rankings
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="Org_Top_Organisations.html">Top Organizations</a></li>
-                                    <li><a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="Top_Organizations.html">Top Organizations</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -70,15 +74,23 @@
                                     <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-person-circle h3 me-2"></i>
-                                        Ash Ketchum
+                                        Umbrella Corps
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="organization_account_settings.html">Account Settings</a></li>
-                                        <li><a class="dropdown-item" href="organization_task_history.html">Volunteering History</a></li>
+                                        <li>
+                                            <a class="dropdown-item" href="organization_account_settings.html">Account
+                                                Settings</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="organization_task_history.html">Tasks
+                                                History</a>
+                                        </li>
                                         <li>
                                             <hr class="dropdown-divider" />
                                         </li>
-                                        <li><a class="dropdown-item text-danger" href="index.html">Logout</a></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="index.html">Logout</a>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -92,9 +104,9 @@
     <!-- Create Task Form -->
     <main>
         <div class="container my-5">
-            <div class="card shadow p-4 rounded-3 mx-auto col-md-6 col-lg-5">
+            <div class="task-card card shadow p-4 rounded-3 mx-auto col-md-6 col-lg-5">
                 <h2 class="text-center mb-4">Create Task</h2>
-                <form id="createTaskForm">
+                <form id="createTaskForm" class="task-form">
                     <div class="mb-3">
                         <label for="taskName" class="form-label">Task Name:</label>
                         <input type="text" class="form-control" id="taskName" placeholder="Enter task name" required>
@@ -117,14 +129,17 @@
                     </div>
                     <div class="mb-3">
                         <label for="description" class="form-label">Description:</label>
-                        <textarea class="form-control" id="description" rows="4" placeholder="Enter description" required></textarea>
+                        <textarea class="form-control" id="description" rows="4" placeholder="Enter description"
+                            required></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="skills" class="form-label">Skills Required:</label>
-                        <input id="skills" class="form-control" placeholder="Type and press Enter to add a skill" required>
+                        <input id="skills" class="form-control" placeholder="Type and press Enter to add a skill"
+                            required>
                     </div>
                     <div class="d-flex justify-content-between mt-4">
-                        <button type="button" class="btn btn-outline-danger" onclick="window.location.href='current_tasks.html'">Cancel</button>
+                        <button type="button" class="btn btn-outline-danger"
+                            onclick="window.location.href='current_tasks.html'">Cancel</button>
                         <button type="submit" class="btn btn-success">Post Task</button>
                     </div>
                 </form>
@@ -133,7 +148,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="p-sm-2 p-5 bg-dark text-white text-center position-relative">
+    <footer class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
         <div class="container d-flex justify-content-between align-items-center">
             <p class="lead m-0">
                 Copyright &copy; <span id="current-year"></span>
@@ -168,42 +183,40 @@
         document.getElementById("current-year").textContent = new Date().getFullYear();
 
         // Handle form submission
-        document.getElementById("createTaskForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-    
-    // Get current tasks array or create new one
-    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    
-    // Create new task object
-    const newTask = {
-        taskName: document.getElementById("taskName").value,
-        location: document.getElementById("location").value,
-        eventDate: document.getElementById("eventDate").value,
-        applicationDeadline: document.getElementById("applicationDeadline").value,
-        cancellationDeadline: document.getElementById("cancellationDeadline").value,
-        description: document.getElementById("description").value,
-        skills: tagify.value.map(skill => skill.value),
-        createdAt: new Date().toISOString(),
-        applicants: 0,
-        selected: 0,
-        status: 'Open'
-    };
-    
-    // Add new task to array
-    tasks.push(newTask);
-    
-    // Save updated array back to localStorage
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    
-    // Debug log
-    console.log('Task saved:', newTask);
-    console.log('All tasks:', tasks);
-    
-    // Redirect
-    window.location.href = "current_tasks.html";
-});
+        document.getElementById("createTaskForm").addEventListener("submit", function (event) {
+            event.preventDefault();
 
-    
+            // Get current tasks array or create new one
+            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+            // Create new task object
+            const newTask = {
+                taskName: document.getElementById("taskName").value,
+                location: document.getElementById("location").value,
+                eventDate: document.getElementById("eventDate").value,
+                applicationDeadline: document.getElementById("applicationDeadline").value,
+                cancellationDeadline: document.getElementById("cancellationDeadline").value,
+                description: document.getElementById("description").value,
+                skills: tagify.value.map(skill => skill.value),
+                createdAt: new Date().toISOString(),
+                applicants: 0,
+                selected: 0,
+                status: 'Open'
+            };
+
+            // Add new task to array
+            tasks.push(newTask);
+
+            // Save updated array back to localStorage
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+
+            // Debug log
+            console.log('Task saved:', newTask);
+            console.log('All tasks:', tasks);
+
+            // Redirect
+            window.location.href = "current_tasks.html";
+        });
     </script>
 </body>
 

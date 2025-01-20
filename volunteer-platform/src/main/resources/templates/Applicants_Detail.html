@@ -20,37 +20,31 @@
             flex: 1;
         }
 
-        #navContainer {
+        .nav-container {
             background-color: rgba(255, 255, 255, 0.85);
         }
 
-        .card {
+        .applicants-card {
             border: none;
             border-radius: 10px;
             box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgb(255, 255, 255);
+            padding: 15px;
         }
 
-        .section-title {
+        .applicants-section__title {
             text-align: center;
             margin: 20px 0;
             font-size: 1.5rem;
             font-weight: bold;
         }
 
-        .rating {
-            color: gold;
+        .applicants-rating {
+            color: rgb(255, 196, 0);
             cursor: pointer;
         }
 
-        .more-btn {
-            display: block;
-            width: 100%;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        #taskContainer {
+        .applicants-container {
             background-color: rgba(255, 255, 255, 0.5);
             border-radius: 10px;
             padding: 20px;
@@ -65,7 +59,7 @@
 
 <body>
     <!-- Navbar -->
-    <div id="navContainer" class="sticky-top">
+    <div class="nav-container sticky-top">
         <div class="container">
             <nav class="navbar navbar-expand-lg">
                 <div class="container-fluid">
@@ -105,10 +99,12 @@
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li>
-                                            <a class="dropdown-item" href="organization_account_settings.html">Account Settings</a>
+                                            <a class="dropdown-item" href="organization_account_settings.html">Account
+                                                Settings</a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="organization_task_history.html">Tasks History</a>
+                                            <a class="dropdown-item" href="organization_task_history.html">Tasks
+                                                History</a>
                                         </li>
                                         <li>
                                             <hr class="dropdown-divider" />
@@ -128,20 +124,19 @@
 
     <!-- Applicants Section -->
     <main>
-        <div class="container py-5 my-5" id="taskContainer">
+        <div class="container py-5 my-5 applicants-container">
             <div class="d-flex justify-content-start mb-3">
                 <button id="pending-btn" class="btn btn-primary me-2">Pending Applicants</button>
                 <button id="accepted-btn" class="btn btn-outline-primary">Accepted Applicants</button>
             </div>
 
-
             <div id="pending-applicants" class="row gy-4 justify-content-center">
-                <div class="section-title">Pending Applicants</div>
-                <div class="card col-10">
+                <div class="applicants-section__title">Pending Applicants</div>
+                <div class="applicants-card col-10">
                     <div class="card-body d-flex align-items-center">
                         <div class="me-auto">
                             <p>Volunteer Name worked in <strong>35 sessions</strong> before</p>
-                            <div class="rating" data-id="1">
+                            <div class="applicants-rating" data-id="1">
                                 <span data-value="1">&#9733;</span>
                                 <span data-value="2">&#9733;</span>
                                 <span data-value="3">&#9733;</span>
@@ -150,17 +145,17 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn btn-success accept-btn btn-fixed">Accept</button>
+                            <button class="btn btn-success applicants-card__accept-btn btn-fixed">Accept</button>
                             <a href="details.html" class="btn btn-primary btn-fixed">View</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="card col-10">
+                <div class="applicants-card col-10">
                     <div class="card-body d-flex align-items-center">
                         <div class="me-auto">
                             <p>Volunteer Name worked in <strong>15 sessions</strong> before</p>
-                            <div class="rating" data-id="2">
+                            <div class="applicants-rating" data-id="2">
                                 <span data-value="1">&#9733;</span>
                                 <span data-value="2">&#9733;</span>
                                 <span data-value="3">&#9733;</span>
@@ -169,17 +164,17 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn btn-success accept-btn btn-fixed">Accept</button>
+                            <button class="btn btn-success applicants-card__accept-btn btn-fixed">Accept</button>
                             <a href="details.html" class="btn btn-primary btn-fixed">View</a>
                         </div>
                     </div>
                 </div>
 
-                <div class="card col-10">
+                <div class="applicants-card col-10">
                     <div class="card-body d-flex align-items-center">
                         <div class="me-auto">
                             <p>Volunteer Name worked in <strong>2 sessions</strong> before</p>
-                            <div class="rating" data-id="3">
+                            <div class="applicants-rating" data-id="3">
                                 <span data-value="1">&#9733;</span>
                                 <span data-value="2">&#9734;</span>
                                 <span data-value="3">&#9734;</span>
@@ -188,7 +183,7 @@
                             </div>
                         </div>
                         <div>
-                            <button class="btn btn-success accept-btn btn-fixed">Accept</button>
+                            <button class="btn btn-success applicants-card__accept-btn btn-fixed">Accept</button>
                             <a href="details.html" class="btn btn-primary btn-fixed">View</a>
                         </div>
                     </div>
@@ -196,8 +191,9 @@
             </div>
 
             <div id="accepted-applicants" class="row gy-4 justify-content-center">
-                <div class="section-title">Accepted Applicants</div>
+                <div class="applicants-section__title">Accepted Applicants</div>
             </div>
+        </div>
     </main>
 
     <!-- Footer -->
@@ -226,7 +222,7 @@
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
     <script>
-        document.querySelectorAll('.rating').forEach(ratingDiv => {
+        document.querySelectorAll('.applicants-rating').forEach(ratingDiv => {
             const stars = ratingDiv.querySelectorAll('span');
             const id = ratingDiv.getAttribute('data-id');
 
@@ -249,10 +245,10 @@
             }
         });
 
-        document.querySelectorAll('.accept-btn').forEach(button => {
+        document.querySelectorAll('.applicants-card__accept-btn').forEach(button => {
             button.addEventListener('click', (e) => {
-                const card = e.target.closest('.card');
-                const ratingDiv = card.querySelector('.rating');
+                const card = e.target.closest('.applicants-card');
+                const ratingDiv = card.querySelector('.applicants-rating');
                 const acceptedSection = document.getElementById('accepted-applicants');
 
                 acceptedSection.appendChild(card);
