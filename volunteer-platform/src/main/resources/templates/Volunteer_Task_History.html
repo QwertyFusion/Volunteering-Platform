@@ -25,7 +25,7 @@
       top: 100%;
     }
 
-    #navContainer {
+    .nav-container {
       background-color: rgba(255, 255, 255, 0.85);
     }
 
@@ -35,7 +35,7 @@
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
-    #taskContainer {
+    .task-container {
       background-color: rgba(255, 255, 255, 0.5);
       border: none;
       border-radius: 10px;
@@ -45,66 +45,66 @@
 </head>
 
 <body>
-    <!-- Navbar -->
-    <div id="navContainer" class="sticky-top">
-      <div class="container">
-        <nav class="navbar navbar-expand-lg">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="#">Volunteering Platform</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-              aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <!-- Navbar -->
+  <div class="nav-container sticky-top">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Volunteering Platform</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="opportunities.html">Opportunities</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Rankings
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="Top_Organizations.html">Top Organizations</a></li>
+                  <li><a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a></li>
+                </ul>
+              </li>
+            </ul>
+            <div class="d-flex">
               <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-                <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="opportunities.html">Opportunities</a>
-                </li>
                 <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Rankings
+                  <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle h3 me-2"></i>
+                    Ash Ketchum
                   </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="Top_Organizations.html">Top Organizations</a></li>
-                    <li><a class="dropdown-item" href="Top_Volunteers.html">Top Volunteers</a></li>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="Volunteer_Account_Settings.html">Account Settings</a></li>
+                    <li><a class="dropdown-item" href="Volunteer_Task_History.html">Volunteering History</a></li>
+                    <li>
+                      <hr class="dropdown-divider" />
+                    </li>
+                    <li><a class="dropdown-item text-danger" href="index.html">Logout</a></li>
                   </ul>
                 </li>
               </ul>
-              <div class="d-flex">
-                <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-                  <li class="nav-item dropdown">
-                    <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="bi bi-person-circle h3 me-2"></i>
-                      Ash Ketchum
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="Volunteer_Account_Settings.html">Account Settings</a></li>
-                      <li><a class="dropdown-item" href="Volunteer_Task_History.html">Volunteering History</a></li>
-                      <li>
-                        <hr class="dropdown-divider" />
-                      </li>
-                      <li><a class="dropdown-item text-danger" href="index.html">Logout</a></li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
             </div>
           </div>
-        </nav>
-      </div>
+        </div>
+      </nav>
     </div>
+  </div>
 
   <!-- Task Cards -->
   <main>
-    <div id="taskContainer" class="container py-5 my-5">
+    <div class="container task-container py-5 my-5">
       <h2 class="text-center mb-4">Volunteering History List</h2>
       <div class="row gy-4 justify-content-center">
         <!-- Task Card -->
         <div class="col-10">
-          <div class="card">
+          <div class="card task-card">
             <div class="card-body d-flex align-items-center">
               <div class="me-auto">
                 <h4 class="card-title">Take care of the Animals</h4>
@@ -120,7 +120,7 @@
                   <span class="badge bg-success text-light">Completed</span>
                 </p>
               </div>
-              <button class="btn btn-primary p-auto" onclick="rateOrganization()">
+              <button class="btn btn-primary" onclick="rateOrganization()">
                 Rate Organization
               </button>
             </div>
@@ -128,7 +128,7 @@
         </div>
         <!-- Another Task Card -->
         <div class="col-10">
-          <div class="card">
+          <div class="card task-card">
             <div class="card-body d-flex align-items-center">
               <div class="me-auto">
                 <h4 class="card-title">Cleaning</h4>
@@ -152,7 +152,7 @@
         </div>
         <!-- Another Task Card -->
         <div class="col-10">
-          <div class="card">
+          <div class="card task-card">
             <div class="card-body d-flex align-items-center">
               <div class="me-auto">
                 <h4 class="card-title">Watering plants</h4>
@@ -176,7 +176,7 @@
         </div>
         <!-- Another Task Card -->
         <div class="col-10">
-          <div class="card">
+          <div class="card task-card">
             <div class="card-body d-flex align-items-center">
               <div class="me-auto">
                 <h4 class="card-title">Grooming Cats</h4>
@@ -192,7 +192,7 @@
                   <span class="badge bg-success text-light">Completed</span>
                 </p>
               </div>
-              <button class="btn btn-primary p-auto" onclick="rateOrganization()">
+              <button class="btn btn-primary" onclick="rateOrganization()">
                 Rate Organization
               </button>
             </div>
