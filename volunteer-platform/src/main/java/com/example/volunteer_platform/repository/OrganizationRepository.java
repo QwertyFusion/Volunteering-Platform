@@ -1,6 +1,8 @@
 package com.example.volunteer_platform.repository;
 
 import com.example.volunteer_platform.model.Organization;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
     // Additional query methods can be defined here if needed
+	Optional<Organization> findByEmailAndPassword(String email, String password);
 }
