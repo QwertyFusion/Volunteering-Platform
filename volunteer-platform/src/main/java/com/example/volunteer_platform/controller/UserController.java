@@ -81,18 +81,10 @@ public class UserController {
 	 * @return Registered organization or HTTP 400 for invalid input.
 	 */
 	@PostMapping("/organizations")
-	@Transactional
-	public ResponseEntity<Organization> registerOrganization(@RequestBody @Valid OrganizationDto orgDTO) {
+	public ResponseEntity<OrganizationDto> registerOrganization(@RequestBody @Valid OrganizationDto orgDTO) {
 		try {
-			Organization org = new Organization();
-			org.setName(orgDTO.getName());
-			org.setEmail(orgDTO.getEmail());
-			org.setPassword(orgDTO.getPassword());
-			org.setPhoneNumber(orgDTO.getPhoneNumber());
-			org.setAddress(orgDTO.getAddress());
-			org.setWebsite(orgDTO.getWebsite());
-			userService.saveUser(org);
-			return new ResponseEntity<>(org, HttpStatus.CREATED);
+			userService.saveOrganization(orgDTO);
+			return new ResponseEntity<>(orgDTO, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}

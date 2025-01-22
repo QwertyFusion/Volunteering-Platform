@@ -1,5 +1,6 @@
 package com.example.volunteer_platform.service;
 
+import com.example.volunteer_platform.dto.OrganizationDto;
 import com.example.volunteer_platform.dto.VolunteerDto;
 import com.example.volunteer_platform.model.Organization;
 import com.example.volunteer_platform.model.Volunteer;
@@ -7,6 +8,8 @@ import com.example.volunteer_platform.repository.OrganizationRepository;
 import com.example.volunteer_platform.repository.VolunteerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.volunteer_platform.model.User;
@@ -52,6 +55,23 @@ public class UserService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new RuntimeException("Could not create volunteer:" + e);
+        }
+    }
+
+    @Transactional
+    public void saveOrganization (OrganizationDto orgDTO) {
+        try {
+            Organization org = new Organization();
+            org.setName(orgDTO.getName());
+            org.setEmail(orgDTO.getEmail());
+            org.setPassword(orgDTO.getPassword());
+            org.setPhoneNumber(orgDTO.getPhoneNumber());
+            org.setAddress(orgDTO.getAddress());
+            org.setWebsite(orgDTO.getWebsite());
+            saveUser(org);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Could not create organization:" + e);
         }
     }
 
