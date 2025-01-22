@@ -10,6 +10,14 @@ import com.example.volunteer_platform.dto.*;
 import com.example.volunteer_platform.model.*;
 import com.example.volunteer_platform.service.TaskService;
 import com.example.volunteer_platform.service.TaskSignupService;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -111,31 +119,28 @@ public class UserController {
 				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	/**
-	 * Update an organization's details.
-	 *
-	 * @param organizationId Organization ID.
-	 * @param updatedOrg Updated organization details.
-	 * @return Updated organization or HTTP 404 if not found.
-	 */
 	@PutMapping("/organizations/{organizationId}")
-	@Transactional
-	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long organizationId, @RequestBody @Valid OrganizationPartialDto updatedOrg) {
-		Organization existingOrg = userService.findOrganizationById(organizationId).orElse(null);
-		if (existingOrg == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+    @Transactional
+    public ResponseEntity<Organization> updateOrganizationById(
+            @PathVariable Long organizationId, 
+            @RequestBody @Valid OrganizationPartialDto updatedOrg) {
+        
+        Organization existingOrg = userService.findOrganizationById(organizationId).orElse(null);
+        if (existingOrg == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-		existingOrg.setName(updatedOrg.getName() != null ? updatedOrg.getName() : existingOrg.getName());
-		existingOrg.setEmail(updatedOrg.getEmail() != null ? updatedOrg.getEmail() : existingOrg.getEmail());
-		existingOrg.setPassword(updatedOrg.getPassword() != null ? updatedOrg.getPassword() : existingOrg.getPassword());
-		existingOrg.setPhoneNumber(updatedOrg.getPhoneNumber() != null ? updatedOrg.getPhoneNumber() : existingOrg.getPhoneNumber());
-		existingOrg.setAddress(updatedOrg.getAddress() != null ? updatedOrg.getAddress() : existingOrg.getAddress());
-		existingOrg.setWebsite(updatedOrg.getWebsite() != null ? updatedOrg.getWebsite() : existingOrg.getWebsite());
+        // Set updated fields, or retain existing ones if not updated
+        existingOrg.setName(updatedOrg.getName() != null ? updatedOrg.getName() : existingOrg.getName());
+        existingOrg.setEmail(updatedOrg.getEmail() != null ? updatedOrg.getEmail() : existingOrg.getEmail());
+        existingOrg.setPassword(updatedOrg.getPassword() != null ? passwordEncoder.encode(updatedOrg.getPassword()) : existingOrg.getPassword());
+        existingOrg.setPhoneNumber(updatedOrg.getPhoneNumber() != null ? updatedOrg.getPhoneNumber() : existingOrg.getPhoneNumber());
+        existingOrg.setAddress(updatedOrg.getAddress() != null ? updatedOrg.getAddress() : existingOrg.getAddress());
+        existingOrg.setWebsite(updatedOrg.getWebsite() != null ? updatedOrg.getWebsite() : existingOrg.getWebsite());
 
-		userService.saveUser(existingOrg);
-		return new ResponseEntity<>(existingOrg, HttpStatus.OK);
-	}
+        userService.saveOrganization(existingOrg);  // Save the updated organization
+        return new ResponseEntity<>(existingOrg, HttpStatus.OK);
+    }
 
 	/**
 	 * Delete an organization by its ID.
@@ -212,29 +217,26 @@ public class UserController {
 				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
-	/**
-	 * Update a volunteer's details.
-	 *
-	 * @param volunteerId Volunteer ID.
-	 * @param updatedVol Updated volunteer details.
-	 * @return Updated volunteer or HTTP 404 if not found.
-	 */
 	@PutMapping("/volunteers/{volunteerId}")
-	@Transactional
-	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long volunteerId, @RequestBody @Valid VolunteerPartialDto updatedVol) {
-		Volunteer existingVol = userService.findVolunteerById(volunteerId).orElse(null);
-		if (existingVol == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+    @Transactional
+    public ResponseEntity<Volunteer> updateVolunteerById(
+            @PathVariable Long volunteerId, 
+            @RequestBody @Valid VolunteerPartialDto updatedVol) {
 
-		existingVol.setName(updatedVol.getName() != null ? updatedVol.getName() : existingVol.getName());
-		existingVol.setEmail(updatedVol.getEmail() != null ? updatedVol.getEmail() : existingVol.getEmail());
-		existingVol.setPassword(updatedVol.getPassword() != null ? updatedVol.getPassword() : existingVol.getPassword());
-		existingVol.setPhoneNumber(updatedVol.getPhoneNumber() != null ? updatedVol.getPhoneNumber() : existingVol.getPhoneNumber());
+        Volunteer existingVol = userService.findVolunteerById(volunteerId).orElse(null);
+        if (existingVol == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-		userService.saveUser (existingVol);
-		return new ResponseEntity<>(existingVol, HttpStatus.OK);
-	}
+        // Set updated fields, or retain existing ones if not updated
+        existingVol.setName(updatedVol.getName() != null ? updatedVol.getName() : existingVol.getName());
+        existingVol.setEmail(updatedVol.getEmail() != null ? updatedVol.getEmail() : existingVol.getEmail());
+        existingVol.setPassword(updatedVol.getPassword() != null ? passwordEncoder.encode(updatedVol.getPassword()) : existingVol.getPassword());
+        existingVol.setPhoneNumber(updatedVol.getPhoneNumber() != null ? updatedVol.getPhoneNumber() : existingVol.getPhoneNumber());
+
+        userService.saveVolunteer(existingVol);  // Save the updated volunteer
+        return new ResponseEntity<>(existingVol, HttpStatus.OK);
+    }
 
 	/**
 	 * Delete a volunteer by their ID.
@@ -259,4 +261,39 @@ public class UserController {
 		userService.deleteUserById(volunteerId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
+	
+	
+	// Authentication for login (existing methods remain unchanged)
+
+    @PostMapping("/login/volunteers")
+    public ResponseEntity<Object> loginVolunteer(@RequestBody @Valid LoginDto loginDto) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok().body("Logged in as " + userDetails.getUsername());
+    }
+
+    @PostMapping("/login/organizations")
+    public ResponseEntity<Object> loginOrganization(@RequestBody @Valid LoginDto loginDto) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+        }
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return ResponseEntity.ok().body("Logged in as " + userDetails.getUsername());
+    }
 }
