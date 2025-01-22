@@ -18,6 +18,10 @@ import com.example.volunteer_platform.service.UserService;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * UserServiceImplementation provides methods to manage users, including volunteers and organizations.
+ * This is an implementation of the UserService interface.
+ */
 @Service
 public class UserServiceImplementation implements UserService {
 
