@@ -1,10 +1,10 @@
 package com.example.volunteer_platform.model;
 
 import java.time.LocalDateTime;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,43 +23,68 @@ import lombok.NoArgsConstructor;
 @Builder
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@NotBlank
-	@Size(max = 100)
-	@Column(nullable = false)
-	private String name;
+    @NotBlank
+    @Size(max = 100)
+    @Column(nullable = false)
+    private String name;
 
-	@NotBlank
-	@Email
-	@Column(nullable = false, unique = true)
-	private String email;
+    @NotBlank
+    @Email
+    @Column(nullable = false, unique = true)
+    private String email;
 
-	@NotBlank
-	@Size(min = 8) // Assuming a minimum password length
-	@Column(nullable = false)
-	private String password;
+    @NotBlank
+    @Size(min = 8)
+    @Column(nullable = false)
+    private String password; // Ensure this is hashed before saving
 
-	@Column(nullable = false, unique = true) // Assuming phone numbers should be unique
-	private String phoneNumber;
+    @NotBlank
+    @Pattern(regexp = "\\+?\\d{10,15}", message = "Invalid phone number")
+    @Column(nullable = false, unique = true)
+    private String phoneNumber;
 
-	@Column(nullable = false, updatable = false)
-	private LocalDateTime createdAt;
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-	@Column(nullable = false)
-	private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
-	@PrePersist
-	public void prePersist() {
-		LocalDateTime now = LocalDateTime.now();
-		this.createdAt = now;
-		this.updatedAt = now;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role; // Use ENUM for role
 
-	@PreUpdate
-	public void preUpdate() {
-		this.updatedAt = LocalDateTime.now();
-	}
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // Custom Getter to integrate with Spring Security (with "ROLE_" prefix)
+    public String getRoleWithPrefix() {
+        return "ROLE_" + role.name();
+    }
+
+    // Custom setter to handle role from string input
+    public void setRoleFromString(String roleString) {
+        try {
+            this.role = Role.valueOf(roleString.toUpperCase());  // Convert string to enum value, ensuring it's uppercase
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid role: " + roleString);
+        }
+    }
+
+    // Role Enum
+    public enum Role {
+        VOLUNTEER, ORGANIZATION
+    }
 }
