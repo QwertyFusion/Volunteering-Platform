@@ -81,18 +81,10 @@ public class UserController {
 	 * @return Registered organization or HTTP 400 for invalid input.
 	 */
 	@PostMapping("/organizations")
-	@Transactional
-	public ResponseEntity<Organization> registerOrganization(@RequestBody @Valid OrganizationDto orgDTO) {
+	public ResponseEntity<OrganizationDto> registerOrganization(@RequestBody @Valid OrganizationDto orgDTO) {
 		try {
-			Organization org = new Organization();
-			org.setName(orgDTO.getName());
-			org.setEmail(orgDTO.getEmail());
-			org.setPassword(orgDTO.getPassword());
-			org.setPhoneNumber(orgDTO.getPhoneNumber());
-			org.setAddress(orgDTO.getAddress());
-			org.setWebsite(orgDTO.getWebsite());
-			userService.saveUser(org);
-			return new ResponseEntity<>(org, HttpStatus.CREATED);
+			userService.saveOrganization(orgDTO);
+			return new ResponseEntity<>(orgDTO, HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
@@ -119,22 +111,14 @@ public class UserController {
 	 * @return Updated organization or HTTP 404 if not found.
 	 */
 	@PutMapping("/organizations/{organizationId}")
-	@Transactional
 	public ResponseEntity<Organization> updateOrganizationById(@PathVariable Long organizationId, @RequestBody @Valid OrganizationPartialDto updatedOrg) {
-		Organization existingOrg = userService.findOrganizationById(organizationId).orElse(null);
-		if (existingOrg == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		try {
+			Optional<Organization> updatedOrganization = userService.updateOrganization(organizationId, updatedOrg);
+			return updatedOrganization.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+					.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		} catch (RuntimeException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		existingOrg.setName(updatedOrg.getName() != null ? updatedOrg.getName() : existingOrg.getName());
-		existingOrg.setEmail(updatedOrg.getEmail() != null ? updatedOrg.getEmail() : existingOrg.getEmail());
-		existingOrg.setPassword(updatedOrg.getPassword() != null ? updatedOrg.getPassword() : existingOrg.getPassword());
-		existingOrg.setPhoneNumber(updatedOrg.getPhoneNumber() != null ? updatedOrg.getPhoneNumber() : existingOrg.getPhoneNumber());
-		existingOrg.setAddress(updatedOrg.getAddress() != null ? updatedOrg.getAddress() : existingOrg.getAddress());
-		existingOrg.setWebsite(updatedOrg.getWebsite() != null ? updatedOrg.getWebsite() : existingOrg.getWebsite());
-
-		userService.saveUser(existingOrg);
-		return new ResponseEntity<>(existingOrg, HttpStatus.OK);
 	}
 
 	/**
@@ -144,28 +128,15 @@ public class UserController {
 	 * @return HTTP 204 if deleted, HTTP 404 if not found.
 	 */
 	@DeleteMapping("/organizations/{organizationId}")
-	@Transactional
 	public ResponseEntity<Void> deleteOrganizationById(@PathVariable Long organizationId) {
-		Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
-		if (organizationOpt.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-
-		Organization organization = organizationOpt.get();
-		List<Task> tasks = organization.getTasks();
-
-		for (Task task : tasks) {
-			List<TaskSignup> signups = taskSignupService.getTaskSignups(task.getId());
-
-			for (TaskSignup signup : signups) {
-				taskSignupService.deleteById(signup.getSignupId());
+		try {
+			if (userService.deleteOrganizationById(organizationId)) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
-
-			taskService.deleteByTaskId(task.getId());
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		userService.deleteUserById(organizationId);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	// Volunteer APIs
@@ -220,20 +191,14 @@ public class UserController {
 	 * @return Updated volunteer or HTTP 404 if not found.
 	 */
 	@PutMapping("/volunteers/{volunteerId}")
-	@Transactional
 	public ResponseEntity<Volunteer> updateVolunteerById(@PathVariable Long volunteerId, @RequestBody @Valid VolunteerPartialDto updatedVol) {
-		Volunteer existingVol = userService.findVolunteerById(volunteerId).orElse(null);
-		if (existingVol == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		try {
+			Optional<Volunteer> updatedVolunteer = userService.updateVolunteer(volunteerId, updatedVol);
+			return updatedVolunteer.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+					.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+		} catch (RuntimeException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		existingVol.setName(updatedVol.getName() != null ? updatedVol.getName() : existingVol.getName());
-		existingVol.setEmail(updatedVol.getEmail() != null ? updatedVol.getEmail() : existingVol.getEmail());
-		existingVol.setPassword(updatedVol.getPassword() != null ? updatedVol.getPassword() : existingVol.getPassword());
-		existingVol.setPhoneNumber(updatedVol.getPhoneNumber() != null ? updatedVol.getPhoneNumber() : existingVol.getPhoneNumber());
-
-		userService.saveUser (existingVol);
-		return new ResponseEntity<>(existingVol, HttpStatus.OK);
 	}
 
 	/**
@@ -243,20 +208,14 @@ public class UserController {
 	 * @return HTTP 204 if deleted, HTTP 404 if not found.
 	 */
 	@DeleteMapping("/volunteers/{volunteerId}")
-	@Transactional
 	public ResponseEntity<Void> deleteVolunteerById(@PathVariable Long volunteerId) {
-		Optional<Volunteer> volunteerOpt = userService.findVolunteerById(volunteerId);
-		if (volunteerOpt.isEmpty()) {
+		try {
+			if (userService.deleteVolunteerById(volunteerId)) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} catch (RuntimeException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		List<TaskSignup> signups = taskSignupService.getUserSignups(volunteerId);
-
-		for (TaskSignup signup : signups) {
-			taskSignupService.deleteById(signup.getSignupId());
-		}
-
-		userService.deleteUserById(volunteerId);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }

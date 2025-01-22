@@ -1,16 +1,10 @@
 package com.example.volunteer_platform.service;
 
+import com.example.volunteer_platform.dto.OrganizationDto;
+import com.example.volunteer_platform.dto.OrganizationPartialDto;
 import com.example.volunteer_platform.dto.VolunteerDto;
-import com.example.volunteer_platform.model.Organization;
-import com.example.volunteer_platform.model.Volunteer;
-import com.example.volunteer_platform.repository.OrganizationRepository;
-import com.example.volunteer_platform.repository.VolunteerRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.example.volunteer_platform.model.User;
-import com.example.volunteer_platform.repository.UserRepository;
+import com.example.volunteer_platform.dto.VolunteerPartialDto;
+import com.example.volunteer_platform.model.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,51 +12,37 @@ import java.util.Optional;
 /**
  * UserService provides methods to manage users, including volunteers and organizations.
  */
-@Service
-public class UserService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private OrganizationRepository organizationRepository;
-
-    @Autowired
-    private VolunteerRepository volunteerRepository;
+public interface UserService {
 
     /**
      * Register a new user.
      *
      * @param user User to be saved.
      */
-    public void saveUser (User user) {
-        userRepository.save(user);
-    }
+    void saveUser(User user);
 
-    @Transactional
-    public void saveVolunteer (VolunteerDto volunteerDTO) {
-        try {
-            Volunteer volunteer = new Volunteer();
-            volunteer.setName(volunteerDTO.getName());
-            volunteer.setEmail(volunteerDTO.getEmail());
-            volunteer.setPassword(volunteerDTO.getPassword());
-            volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
-            volunteer.setGender(volunteerDTO.getGender());
-            saveUser(volunteer);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            throw new RuntimeException("Could not create volunteer:" + e);
-        }
-    }
+    /**
+     * Save a new volunteer.
+     *
+     * @param volunteerDTO Data Transfer Object containing volunteer details.
+     * @throws RuntimeException if there is an error during saving.
+     */
+    void saveVolunteer(VolunteerDto volunteerDTO);
+
+    /**
+     * Save a new organization.
+     *
+     * @param orgDTO Data Transfer Object containing organization details.
+     * @throws RuntimeException if there is an error during saving.
+     */
+    void saveOrganization(OrganizationDto orgDTO);
 
     /**
      * Get all users in the system.
      *
      * @return List of users.
      */
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+    List<User> getAllUsers();
 
     /**
      * Find a user by their email.
@@ -70,9 +50,7 @@ public class UserService {
      * @param email Email of the user.
      * @return User object if found, otherwise null.
      */
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    User findByEmail(String email);
 
     /**
      * Find a user by their ID.
@@ -80,36 +58,28 @@ public class UserService {
      * @param id User ID.
      * @return Optional containing the user if found.
      */
-    public Optional<User> findUserById(Long id) {
-        return userRepository.findById(id);
-    }
+    Optional<User> findUserById(Long id);
 
     /**
      * Delete a user by their ID.
      *
      * @param id User ID.
      */
-    public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
-    }
+    void deleteUserById(Long id);
 
     /**
      * Get all organizations in the system.
      *
      * @return List of organizations.
      */
-    public List<Organization> getAllOrganizations() {
-        return organizationRepository.findAll();
-    }
+    List<Organization> getAllOrganizations();
 
     /**
      * Get all volunteers in the system.
      *
      * @return List of volunteers.
      */
-    public List<Volunteer> getAllVolunteers() {
-        return volunteerRepository.findAll();
-    }
+    List<Volunteer> getAllVolunteers();
 
     /**
      * Find an organization by its ID.
@@ -117,9 +87,7 @@ public class UserService {
      * @param id Organization ID.
      * @return Optional containing the organization if found.
      */
-    public Optional<Organization> findOrganizationById(Long id) {
-        return organizationRepository.findById(id);
-    }
+    Optional<Organization> findOrganizationById(Long id);
 
     /**
      * Find a volunteer by their ID.
@@ -127,7 +95,43 @@ public class UserService {
      * @param id Volunteer ID.
      * @return Optional containing the volunteer if found.
      */
-    public Optional<Volunteer> findVolunteerById(Long id) {
-        return volunteerRepository.findById(id);
-    }
+    Optional<Volunteer> findVolunteerById(Long id);
+
+    /**
+     * Update an organization's details.
+     *
+     * @param organizationId ID of the organization to update.
+     * @param updatedOrg Partial data for the organization update.
+     * @return Optional containing the updated organization if successful, otherwise empty.
+     * @throws RuntimeException if there is an error during the update.
+     */
+    Optional<Organization> updateOrganization(Long organizationId, OrganizationPartialDto updatedOrg);
+
+    /**
+     * Delete an organization by its ID.
+     *
+     * @param organizationId ID of the organization to delete.
+     * @return true if the organization was deleted, false if not found.
+     * @throws RuntimeException if there is an error during deletion.
+     */
+    boolean deleteOrganizationById(Long organizationId);
+
+    /**
+     * Update a volunteer's details.
+     *
+     * @param volunteerId ID of the volunteer to update.
+     * @param updatedVol Partial data for the volunteer update.
+     * @return Optional containing the updated volunteer if successful, otherwise empty.
+     * @throws RuntimeException if there is an error during the update.
+     */
+    Optional<Volunteer> updateVolunteer(Long volunteerId, VolunteerPartialDto updatedVol);
+
+    /**
+     * Delete a volunteer by their ID.
+     *
+     * @param volunteerId ID of the volunteer to delete.
+     * @return true if the volunteer was deleted, false if not found.
+     * @throws RuntimeException if there is an error during deletion.
+     */
+    boolean deleteVolunteerById(Long volunteerId);
 }
