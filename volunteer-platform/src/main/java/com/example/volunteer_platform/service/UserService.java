@@ -44,6 +44,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Save a new volunteer.
+     *
+     * @param volunteerDTO Data Transfer Object containing volunteer details.
+     * @throws RuntimeException if there is an error during saving.
+     */
     @Transactional
     public void saveVolunteer(VolunteerDto volunteerDTO) {
         try {
@@ -60,6 +66,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Save a new organization.
+     *
+     * @param orgDTO Data Transfer Object containing organization details.
+     * @throws RuntimeException if there is an error during saving.
+     */
     @Transactional
     public void saveOrganization(OrganizationDto orgDTO) {
         try {
@@ -153,6 +165,14 @@ public class UserService {
         return volunteerRepository.findById(id);
     }
 
+    /**
+     * Update an organization's details.
+     *
+     * @param organizationId ID of the organization to update.
+     * @param updatedOrg Partial data for the organization update.
+     * @return Optional containing the updated organization if successful, otherwise empty.
+     * @throws RuntimeException if there is an error during the update.
+     */
     @Transactional
     public Optional<Organization> updateOrganization(Long organizationId, OrganizationPartialDto updatedOrg) {
         try {
@@ -176,6 +196,13 @@ public class UserService {
         }
     }
 
+    /**
+     * Delete an organization by its ID.
+     *
+     * @param organizationId ID of the organization to delete.
+     * @return true if the organization was deleted, false if not found.
+     * @throws RuntimeException if there is an error during deletion.
+     */
     @Transactional
     public boolean deleteOrganizationById(Long organizationId) {
         try {
@@ -205,6 +232,14 @@ public class UserService {
         }
     }
 
+    /**
+     * Update a volunteer's details.
+     *
+     * @param volunteerId ID of the volunteer to update.
+     * @param updatedVol Partial data for the volunteer update.
+     * @return Optional containing the updated volunteer if successful, otherwise empty.
+     * @throws RuntimeException if there is an error during the update.
+     */
     @Transactional
     public Optional<Volunteer> updateVolunteer(Long volunteerId, VolunteerPartialDto updatedVol) {
         try {
@@ -226,6 +261,13 @@ public class UserService {
         }
     }
 
+    /**
+     * Delete a volunteer by their ID.
+     *
+     * @param volunteerId ID of the volunteer to delete.
+     * @return true if the volunteer was deleted, false if not found.
+     * @throws RuntimeException if there is an error during deletion.
+     */
     @Transactional
     public boolean deleteVolunteerById(Long volunteerId) {
         try {
