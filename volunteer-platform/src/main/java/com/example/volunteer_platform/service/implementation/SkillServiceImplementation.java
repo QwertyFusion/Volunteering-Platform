@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * SkillServiceImpl provides methods to manage skills in the system.
+ * SkillServiceImplementation provides methods to manage skills in the system.
  * This is an implementation of the SkillService interface.
  */
 @Service

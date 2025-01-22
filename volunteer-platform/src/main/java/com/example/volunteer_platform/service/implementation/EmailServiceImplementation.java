@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 import com.example.volunteer_platform.service.EmailService;
 
 /**
- * EmailServiceImpl provides methods to send emails in the system.
+ * EmailServiceImplementation provides methods to send emails in the system.
+ * This is an implementation of the EmailService interface.
  */
 @Service
 @RequiredArgsConstructor

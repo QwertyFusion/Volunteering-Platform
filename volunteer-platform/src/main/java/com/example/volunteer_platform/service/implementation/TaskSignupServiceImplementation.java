@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * TaskSignupServiceImpl provides methods to manage task signups in the system.
+ * TaskSignupServiceImplementation provides methods to manage task signups in the system.
  * This is an implementation of the TaskSignupService interface.
  */
 @Service
