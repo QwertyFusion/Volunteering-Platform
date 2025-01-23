@@ -14,6 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.volunteer_platform.repository.UserRepository;
 import com.example.volunteer_platform.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +30,13 @@ import java.util.Optional;
  * This is an implementation of the UserService interface.
  */
 @Service
-public class UserServiceImplementation implements UserService {
+public class UserServiceImplementation implements UserService, UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -44,7 +54,21 @@ public class UserServiceImplementation implements UserService {
     public void saveUser (User user) {
         userRepository.save(user);
     }
+    
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
 
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .roles("USER") // Assign roles dynamically if required
+                .build();
+    }
+    
     @Override
     @Transactional
     public void saveVolunteer(VolunteerDto volunteerDTO) {
@@ -52,7 +76,7 @@ public class UserServiceImplementation implements UserService {
             Volunteer volunteer = new Volunteer();
             volunteer.setName(volunteerDTO.getName());
             volunteer.setEmail(volunteerDTO.getEmail());
-            volunteer.setPassword(volunteerDTO.getPassword());
+            volunteer.setPassword(passwordEncoder.encode(volunteerDTO.getPassword()));
             volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
             volunteer.setGender(volunteerDTO.getGender());
             saveUser (volunteer);
