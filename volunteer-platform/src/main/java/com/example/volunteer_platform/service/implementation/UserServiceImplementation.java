@@ -34,9 +34,6 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
     @Autowired
     private UserRepository userRepository;
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private OrganizationRepository organizationRepository;
@@ -54,18 +51,18 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     public void saveUser (User user) {
         userRepository.save(user);
     }
-    
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
+            throw new UsernameNotFoundException("User  not found with email: " + email);
         }
 
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getEmail())
                 .password(user.getPassword())
-                .roles("USER") // Assign roles dynamically if required
+                .roles(user instanceof Organization ? "ORGANIZATION" : "VOLUNTEER") // Assign roles dynamically
                 .build();
     }
     
@@ -76,7 +73,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             Volunteer volunteer = new Volunteer();
             volunteer.setName(volunteerDTO.getName());
             volunteer.setEmail(volunteerDTO.getEmail());
-            volunteer.setPassword(passwordEncoder.encode(volunteerDTO.getPassword()));
+            volunteer.setPassword(volunteerDTO.getPassword());
             volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
             volunteer.setGender(volunteerDTO.getGender());
             saveUser (volunteer);
