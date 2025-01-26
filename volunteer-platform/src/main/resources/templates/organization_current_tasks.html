@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,47 +41,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<div class="nav-container sticky-top">
-  <div class="container">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="@{/index.html}">Volunteering Platform</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" aria-current="page" href="@{/index.html}">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="@{/index.html#about}">About</a></li>
-            <li class="nav-item"><a class="nav-link active" aria-current="page" href="@{/o/current_tasks}">Current Tasks</a></li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Rankings</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="@{/Top_Organizations.html}">Top Organizations</a></li>
-                <li><a class="dropdown-item" href="@{/Top_Volunteers.html}">Top Volunteers</a></li>
-              </ul>
-            </li>
-          </ul>
-          <div class="d-flex">
-            <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-              <li class="nav-item dropdown">
-                <a class="btn btn-light dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-person-circle h3 me-2"></i> Umbrella Corps
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li><a class="dropdown-item" href="@{/organization_account_settings.html}">Account Settings</a></li>
-                  <li><a class="dropdown-item" href="@{/organization_task_history.html}">Tasks History</a></li>
-                  <li><hr class="dropdown-divider" /></li>
-                  <li><a class="dropdown-item text-danger" th:href="@{/logout}">Logout</a></li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
-  </div>
-</div>
+<div th:replace="~{fragments/navbar::navbar}"></div>
 
 <!-- Main Content -->
 <main>
@@ -100,18 +60,7 @@
 </main>
 
 <!-- Footer -->
-<footer class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
-  <div class="container d-flex justify-content-between align-items-center">
-    <p class="lead m-0">Copyright &copy; <span id="current-year"></span> Volunteering Platform</p>
-    <a href="https://github.com/QwertyFusion/Volunteering-Platform" class="btn btn-dark d-flex align-items-center text-white text-decoration-none">
-      <i class="bi bi-github h3 me-2"></i>
-      <span class="lead m-0">GitHub Repository</span>
-    </a>
-  </div>
-  <a href="#" class="position-absolute bottom-0 end-0 p-3">
-    <i class="bi bi-arrow-up-circle h1 text-primary"></i>
-  </a>
-</footer>
+<footer th:replace="~{/fragments/footer::footer}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

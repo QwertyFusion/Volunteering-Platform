@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -68,57 +68,8 @@
   </head>
 
   <body>
-    <!-- Navbar -->
-    <div class="nav-container sticky-top">
-      <div class="container">
-        <nav class="navbar navbar-expand-lg">
-          <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/home}"
-              >Volunteering Platform</a
-            >
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-                <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    th:href="@{/home}"
-                    aria-current="page"
-                    >Home</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" th:href="@{/home#about}">About</a>
-                </li>
-              </ul>
-              <div class="d-flex">
-                <a
-                  class="btn btn-outline-primary"
-                  th:href="@{/signup/volunteer}"
-                  >Volunteer Sign Up</a
-                >
-                <a
-                  class="btn btn-outline-primary mx-2"
-                  th:href="@{/signup/organization}"
-                  >Organization Sign Up</a
-                >
-                <a class="btn btn-primary" th:href="@{/login}">Login</a>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </div>
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar::navbar}"></div>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -375,26 +326,7 @@
     </section>
 
     <!-- Footer -->
-    <footer
-      class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative"
-    >
-      <div class="container d-flex justify-content-between align-items-center">
-        <p class="lead m-0">
-          Copyright &copy; <span id="current-year"></span> Volunteering Platform
-        </p>
-        <a
-          href="https://github.com/QwertyFusion/Volunteering-Platform"
-          class="btn btn-dark d-flex align-items-center text-white text-decoration-none"
-        >
-          <i class="bi bi-github h3 me-2"></i>
-          <span class="lead m-0">GitHub Repository</span>
-        </a>
-      </div>
-
-      <a href="#" class="position-absolute bottom-0 end-0 p-3">
-        <i class="bi bi-arrow-up-circle h1 text-primary"></i>
-      </a>
-    </footer>
+    <footer th:replace="~{/fragments/footer::footer}"></footer>
 
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
