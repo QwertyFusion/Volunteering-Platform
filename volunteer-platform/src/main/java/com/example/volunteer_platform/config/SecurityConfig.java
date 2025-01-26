@@ -43,7 +43,8 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout=true") // Redirect to login after logout
+                        .logoutUrl("/logout") // Specify the logout URL
+                        .logoutSuccessUrl("/home") // Redirect to /home after logout
                         .permitAll()
                 );
 
