@@ -20,16 +20,6 @@ public class AuthController {
     private UserService userService;
 
     /**
-     * Display the login page.
-     *
-     * @return The name of the login view.
-     */
-    @GetMapping("/login")
-    public String login() {
-        return "login"; // Ensure you have login.html as a view template.
-    }
-
-    /**
      * Display the volunteer registration form.
      *
      * @param model Model object to pre-populate the form.

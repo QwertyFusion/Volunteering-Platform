@@ -13,14 +13,23 @@ public class ViewsController {
         return new ModelAndView("index");
     }
 
-    // Add the following mappings for registration
+    /**
+     * Display the login page.
+     *
+     * @return The name of the login view.
+     */
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
     @GetMapping("/signup/volunteer")
     public String registerVolunteer() {
-        return "volunteer_registration"; // Ensure this matches the template name
+        return "volunteer_registration";
     }
 
     @GetMapping("/signup/organization")
     public String registerOrganization() {
-        return "organisation_registration"; // Ensure this matches the template name
+        return "organisation_registration";
     }
 }

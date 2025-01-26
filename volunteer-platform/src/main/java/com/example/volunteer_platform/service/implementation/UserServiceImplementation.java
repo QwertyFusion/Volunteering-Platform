@@ -47,6 +47,9 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder; // Autowire PasswordEncoder
+
     @Override
     public void saveUser (User user) {
         userRepository.save(user);
@@ -73,7 +76,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             Volunteer volunteer = new Volunteer();
             volunteer.setName(volunteerDTO.getName());
             volunteer.setEmail(volunteerDTO.getEmail());
-            volunteer.setPassword(volunteerDTO.getPassword());
+            volunteer.setPassword(passwordEncoder.encode(volunteerDTO.getPassword()));
             volunteer.setPhoneNumber(volunteerDTO.getPhoneNumber());
             volunteer.setGender(volunteerDTO.getGender());
             saveUser (volunteer);
@@ -90,7 +93,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             Organization org = new Organization();
             org.setName(orgDTO.getName());
             org.setEmail(orgDTO.getEmail());
-            org.setPassword(orgDTO.getPassword());
+            org.setPassword(passwordEncoder.encode(orgDTO.getPassword()));
             org.setPhoneNumber(orgDTO.getPhoneNumber());
             org.setAddress(orgDTO.getAddress());
             org.setWebsite(orgDTO.getWebsite());
