@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,8 +45,8 @@
   </head>
 
   <body>
-  <!-- Navbar -->
-  <div th:replace="~{fragments/navbar::navbar}"></div>
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar::navbar}"></div>
 
     <!-- Volunteer Registration Form -->
     <main>
@@ -61,6 +65,7 @@
                       id="fullName"
                       name="name"
                       placeholder="Enter Full Name"
+                      maxlength="100"
                       required
                     />
                   </div>
@@ -77,14 +82,24 @@
                   </div>
                   <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="password"
-                      name="password"
-                      placeholder="Enter Password"
-                      required
-                    />
+                    <div class="input-group">
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        minlength="8"
+                        required
+                      />
+                      <button
+                        class="btn btn-outline-primary"
+                        type="button"
+                        id="togglePasswordVolunteer"
+                      >
+                        <i class="bi bi-eye" id="eyeIconVolunteer"></i>
+                      </button>
+                    </div>
                   </div>
                   <div class="mb-3">
                     <label for="phoneNumber" class="form-label"
@@ -96,6 +111,7 @@
                       id="phoneNumber"
                       name="phoneNumber"
                       placeholder="Enter Phone Number"
+                      maxlength="15"
                       required
                     />
                   </div>
@@ -111,7 +127,12 @@
                   </div>
                   <div class="mb-3">
                     <label for="gender" class="form-label">Gender</label>
-                    <select class="form-select" id="gender" name="gender" required>
+                    <select
+                      class="form-select"
+                      id="gender"
+                      name="gender"
+                      required
+                    >
                       <option value="" disabled selected>Select Gender</option>
                       <option value="MALE">Male</option>
                       <option value="FEMALE">Female</option>
@@ -145,6 +166,23 @@
     <script>
       document.getElementById("current-year").textContent =
         new Date().getFullYear();
+    </script>
+    <script>
+      document
+        .getElementById("togglePasswordVolunteer")
+        .addEventListener("click", function () {
+          const passwordInput = document.getElementById("password");
+          const eyeIcon = document.getElementById("eyeIconVolunteer");
+          if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            eyeIcon.classList.remove("bi-eye");
+            eyeIcon.classList.add("bi-eye-slash");
+          } else {
+            passwordInput.type = "password";
+            eyeIcon.classList.remove("bi-eye-slash");
+            eyeIcon.classList.add("bi-eye");
+          }
+        });
     </script>
   </body>
 </html>

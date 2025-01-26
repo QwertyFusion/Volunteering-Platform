@@ -73,14 +73,19 @@
                   </div>
                   <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input
-                            type="password"
-                            class="form-control"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            required
-                    />
+                    <div class="input-group">
+                      <input
+                              type="password"
+                              class="form-control"
+                              id="password"
+                              name="password"
+                              placeholder="Enter your password"
+                              required
+                      />
+                      <button class="btn btn-outline-primary" type="button" id="togglePassword">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                      </button>
+                    </div>
                   </div>
                   <button type="submit" class="btn btn-primary w-100">
                     Login
@@ -90,14 +95,17 @@
                   <div th:if="${param.error}" class="alert alert-danger" role="alert">
                     Invalid username or password.
                   </div>
-                  <a href="#" class="text-decoration-none">Forgot Password?</a>
+                  <!-- <a href="#" class="text-decoration-none">Forgot Password?</a>-->
                 </div>
                 <hr />
                 <div class="text-center">
                   <p>
                     New to the platform?
-                    <a th:href="@{/index}" class="text-decoration-none"
-                      >Sign Up</a
+                    <a th:href="@{/signup/organization}" class="text-decoration-none"
+                      >Sign Up as Organization</a
+                    >
+                    <a th:href="@{/signup/volunteer}" class="text-decoration-none"
+                    >Sign Up as Volunteer</a
                     >
                   </p>
                 </div>
@@ -125,5 +133,20 @@
       document.getElementById("current-year").textContent =
         new Date().getFullYear();
     </script>
+  <script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+      }
+    });
+  </script>
   </body>
 </html>
