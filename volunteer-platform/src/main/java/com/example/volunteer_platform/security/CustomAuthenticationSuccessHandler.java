@@ -1,5 +1,7 @@
 package com.example.volunteer_platform.security;
 
+import com.example.volunteer_platform.model.User;
+import com.example.volunteer_platform.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +15,12 @@ import java.io.IOException;
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
+    private final UserService userService;
+
+    public CustomAuthenticationSuccessHandler(UserService userService) {
+        this.userService = userService;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
@@ -25,6 +33,14 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 .findFirst() // Get the first role
                 .orElse(null); // Default to null if no role found
         request.getSession().setAttribute("role", role); // Store role in session
+
+        // Fetch the user details from the database
+        User userObj = userService.findByEmail(username);
+        if (userObj != null) {
+            // Store user details in the session
+            request.getSession().setAttribute("userId", userObj.getId());
+            request.getSession().setAttribute("name", userObj.getName());
+        }
 
         String redirectUrl;
 

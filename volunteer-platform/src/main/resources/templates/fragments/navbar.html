@@ -49,7 +49,7 @@
                                 <div class="btn-group">
                                     <button class="btn btn-light dropdown-toggle" type="button" id="navbarDropdownUser " data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-person-circle h3 me-2"></i>
-                                        <span th:text="${session.user}">User </span>
+                                        <span th:text="${session.name}">User </span>
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser ">
                                         <li th:if="${session.role == 'ROLE_VOLUNTEER'}">

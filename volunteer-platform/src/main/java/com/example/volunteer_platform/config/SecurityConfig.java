@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .successHandler(successHandler) // Use the custom success handler
-                        .failureUrl("/login?error=true") // Redirect to login with error
+                        .failureUrl("/login?error=true") // Redirect to log in with error
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -54,8 +54,8 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userServiceImplementation); // Use the autowired UserServiceImplementation
-        provider.setPasswordEncoder(passwordEncoder); // Use the autowired PasswordEncoder
+        provider.setUserDetailsService(userServiceImplementation);
+        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
 
