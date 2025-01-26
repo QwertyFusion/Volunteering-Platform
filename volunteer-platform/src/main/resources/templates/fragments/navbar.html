@@ -34,8 +34,8 @@
                                     Rankings
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" th:href="@{/Top_Organizations.html}">Top Organizations</a></li>
-                                    <li><a class="dropdown-item" th:href="@{/Top_Volunteers.html}">Top Volunteers</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/rankings/organizations}">Top Organizations</a></li>
+                                    <li><a class="dropdown-item" th:href="@{/rankings/volunteers}">Top Volunteers</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -53,10 +53,16 @@
                                     </button>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser ">
                                         <li th:if="${session.role == 'ROLE_VOLUNTEER'}">
-                                            <a class="dropdown-item" th:href="@{/v/account/settings}">Account Settings</a>
+                                            <a class="dropdown-item" th:href="@{/v/profile}">Profile</a>
                                         </li>
                                         <li th:if="${session.role == 'ROLE_ORGANIZATION'}">
-                                            <a class="dropdown-item" th:href="@{/o/account/settings}">Account Settings</a>
+                                            <a class="dropdown-item" th:href="@{/o/profile}">Profile</a>
+                                        </li>
+                                        <li th:if="${session.role == 'ROLE_VOLUNTEER'}">
+                                            <a class="dropdown-item" th:href="@{/v/profile/edit}">Profile Settings</a>
+                                        </li>
+                                        <li th:if="${session.role == 'ROLE_ORGANIZATION'}">
+                                            <a class="dropdown-item" th:href="@{/o/profile/edit}">Profile Settings</a>
                                         </li>
                                         <li th:if="${session.role == 'ROLE_VOLUNTEER'}">
                                             <a class="dropdown-item" th:href="@{/v/history}">Volunteering History</a>

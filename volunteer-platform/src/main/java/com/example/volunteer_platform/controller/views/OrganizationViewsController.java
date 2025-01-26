@@ -12,4 +12,19 @@ public class OrganizationViewsController {
     public ModelAndView currentTasks() {
         return new ModelAndView("organization_current_tasks");
     }
+
+    @GetMapping("/o/history")
+    public ModelAndView tasksHistory() {
+        return new ModelAndView("organization_task_history");
+    }
+
+    @GetMapping("/o/profile/edit")
+    public ModelAndView profileSettings() {
+        return new ModelAndView("organization_profile_settings");
+    }
+
+    @GetMapping("/o/profile")
+    public ModelAndView profile() {
+        return new ModelAndView("organization_profile");
+    }
 }

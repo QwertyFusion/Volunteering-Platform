@@ -12,4 +12,19 @@ public class VolunteerViewsController {
     public ModelAndView viewOpportunities() {
         return new ModelAndView("volunteer_opportunities");
     }
+
+    @GetMapping("/v/history")
+    public ModelAndView tasksHistory() {
+        return new ModelAndView("volunteer_history");
+    }
+
+    @GetMapping("/v/profile/edit")
+    public ModelAndView profileSettings() {
+        return new ModelAndView("volunteer_profile_settings");
+    }
+
+    @GetMapping("/v/profile")
+    public ModelAndView profile() {
+        return new ModelAndView("volunteer_profile");
+    }
 }

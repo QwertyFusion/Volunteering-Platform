@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Applicants Page</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+          crossorigin="anonymous"
+  />
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+  />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #8fc7ff;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .nav-container {
+      background-color: rgba(255, 255, 255, 0.85);
+    }
+
+    .applicants-card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: rgb(255, 255, 255);
+      padding: 15px;
+    }
+
+    .applicants-section__title {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .applicants-rating {
+      color: rgb(255, 196, 0);
+      cursor: pointer;
+    }
+
+    .applicants-container {
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-fixed {
+      width: 120px;
+    }
+  </style>
+</head>
+
+<body>
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar::navbar}"></div>
+
+<!-- Applicants Section -->
+<main>
+  <div class="container py-5 my-5 applicants-container">
+    <div class="d-flex justify-content-start mb-3">
+      <button id="pending-btn" class="btn btn-primary me-2">
+        Pending Applicants
+      </button>
+      <button id="accepted-btn" class="btn btn-outline-primary">
+        Accepted Applicants
+      </button>
+    </div>
+
+    <div id="pending-applicants" class="row gy-4 justify-content-center">
+      <div class="applicants-section__title">Pending Applicants</div>
+      <div class="applicants-card col-10">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-auto">
+            <p>
+              Volunteer Name worked in <strong>35 sessions</strong> before
+            </p>
+            <div class="applicants-rating" data-id="1">
+              <span data-value="1">&#9733;</span>
+              <span data-value="2">&#9733;</span>
+              <span data-value="3">&#9733;</span>
+              <span data-value="4">&#9733;</span>
+              <span data-value="5">&#9734;</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-success applicants-card__accept-btn btn-fixed">
+              Accept
+            </button>
+            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="applicants-card col-10">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-auto">
+            <p>
+              Volunteer Name worked in <strong>15 sessions</strong> before
+            </p>
+            <div class="applicants-rating" data-id="2">
+              <span data-value="1">&#9733;</span>
+              <span data-value="2">&#9733;</span>
+              <span data-value="3">&#9733;</span>
+              <span data-value="4">&#9734;</span>
+              <span data-value="5">&#9734;</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-success applicants-card__accept-btn btn-fixed">
+              Accept
+            </button>
+            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="applicants-card col-10">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-auto">
+            <p>
+              Volunteer Name worked in <strong>2 sessions</strong> before
+            </p>
+            <div class="applicants-rating" data-id="3">
+              <span data-value="1">&#9733;</span>
+              <span data-value="2">&#9734;</span>
+              <span data-value="3">&#9734;</span>
+              <span data-value="4">&#9734;</span>
+              <span data-value="5">&#9734;</span>
+            </div>
+          </div>
+          <div>
+            <button class="btn btn-success applicants-card__accept-btn btn-fixed">
+              Accept
+            </button>
+            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="accepted-applicants" class="row gy-4 justify-content-center">
+      <div class="applicants-section__title">Accepted Applicants</div>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer th:replace="~{/fragments/footer::footer}"></footer>
+
+<script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"
+></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"
+></script>
+<script>
+  document.querySelectorAll(".applicants-rating").forEach((ratingDiv) => {
+    const stars = ratingDiv.querySelectorAll("span");
+    const id = ratingDiv.getAttribute("data-id");
+
+    stars.forEach((star) => {
+      star.addEventListener("click", () => {
+        const value = parseInt(star.getAttribute("data-value"));
+        updateRating(ratingDiv, value);
+      });
+    });
+
+    function updateRating(ratingDiv, value) {
+      const stars = ratingDiv.querySelectorAll("span");
+      stars.forEach((star, index) => {
+        if (index < value) {
+          star.innerHTML = "&#9733;";
+        } else {
+          star.innerHTML = "&#9734;";
+        }
+      });
+    }
+  });
+
+  document
+          .querySelectorAll(".applicants-card__accept-btn")
+          .forEach((button) => {
+            button.addEventListener("click", (e) => {
+              const card = e.target.closest(".applicants-card");
+              const ratingDiv = card.querySelector(".applicants-rating");
+              const acceptedSection = document.getElementById(
+                      "accepted-applicants"
+              );
+
+              acceptedSection.appendChild(card);
+              button.setAttribute("disabled", "true");
+              button.textContent = "Accepted";
+              button.classList.replace("btn-success", "btn-secondary");
+            });
+          });
+
+  // Button toggle functionality
+  const pendingBtn = document.getElementById("pending-btn");
+  const acceptedBtn = document.getElementById("accepted-btn");
+
+  pendingBtn.addEventListener("click", () => {
+    pendingBtn.classList.add("btn-primary");
+    pendingBtn.classList.remove("btn-outline-primary");
+    acceptedBtn.classList.add("btn-outline-primary");
+    acceptedBtn.classList.remove("btn-primary");
+
+    document
+            .getElementById("pending-applicants")
+            .classList.remove("d-none");
+    document.getElementById("accepted-applicants").classList.add("d-none");
+  });
+
+  acceptedBtn.addEventListener("click", () => {
+    acceptedBtn.classList.add("btn-primary");
+    acceptedBtn.classList.remove("btn-outline-primary");
+    pendingBtn.classList.add("btn-outline-primary");
+    pendingBtn.classList.remove("btn-primary");
+
+    document
+            .getElementById("accepted-applicants")
+            .classList.remove("d-none");
+    document.getElementById("pending-applicants").classList.add("d-none");
+  });
+
+  // Set initial state
+  document.getElementById("accepted-applicants").classList.add("d-none");
+
+  document.getElementById("current-year").textContent =
+          new Date().getFullYear();
+
+  function rateVolunteers() {
+    alert("Rate Volunteers functionality will be implemented soon.");
+  }
+</script>
+</body>
+</html>

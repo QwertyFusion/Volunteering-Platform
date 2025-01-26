@@ -24,7 +24,7 @@ public class Volunteer extends User {
     @Column(nullable = false)
     private Gender gender; // Gender of the volunteer
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "volunteer_skills", // Join table name
             joinColumns = @JoinColumn(name = "volunteer_id"), // Column in the join table referencing Volunteer

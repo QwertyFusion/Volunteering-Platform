@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer Profile - Community Volunteering Platform</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+  />
+  <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css"
+  />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #8fc7ff;
+      font-family: "Arial", sans-serif;
+    }
+
+    .nav-container {
+      background-color: rgba(255, 255, 255, 0.85);
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .profile-container {
+      margin-top: 20px;
+    }
+
+    .profile-container__section {
+      margin-bottom: 30px;
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s;
+    }
+
+    .profile-container__section--profile {
+      display: flex;
+      gap: 20px;
+    }
+
+    .profile-container__picture {
+      width: 100px;
+      height: 100px;
+      background-color: #3d94eb;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-container__name {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .star {
+      color: gold;
+      font-size: 1.5rem;
+    }
+
+    .profile-container__ratings span {
+      cursor: default;
+    }
+
+    .profile-container__review {
+      border-top: 1px solid #ddd;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+
+    .profile-container__review-title {
+      font-weight: bold;
+    }
+
+    footer {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+
+<body>
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar::navbar}"></div>
+
+<main class="container my-5 profile-container">
+  <div class="profile-container__section profile-container__section--profile">
+    <div class="profile-container__picture">
+      <i class="bi bi-person-circle" style="font-size: 50px; color: white"></i>
+    </div>
+    <div>
+      <h2 class="profile-container__name"><span th:text="${session.name}">User </span></h2>
+      <p>
+        <strong>Gender:</strong> <span id="volunteer-gender" th:text="${session.gender}"> No Gender Specified </span>
+      </p>
+      <p>
+        <strong>Skills:</strong>
+        <span th:if="${#lists.isEmpty(session.skills)}">No skills added.</span>
+        <span th:unless="${#lists.isEmpty(session.skills)}" id="volunteer-skills" th:each="skill : ${session.skills}">
+          <span class="badge bg-secondary" th:text="${skill.getName()}"></span>
+        </span>
+      </p>
+      <div class="profile-container__ratings" id="profile-rating">
+        <span data-value="1" class="star">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+        <span id="rating-value">5000+ ratings</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="profile-container__section ratings-section">
+    <h3>Ratings by Users</h3>
+    <div>
+      <input
+              type="text"
+              id="review-title"
+              class="form-control"
+              placeholder="Review Title"
+      />
+      <textarea
+              id="review-description"
+              class="form-control mt-2"
+              rows="3"
+              placeholder="Review Description"
+      ></textarea>
+      <div class="mt-2 profile-container__ratings" id="user-rating">
+        <span data-value="1" class="star"><strong>&#9734;&#9734;&#9734;&#9734;&#9734;</strong></span>
+      </div>
+      <button class="btn btn-success btn-sm mt-2" id="submit-review">
+        Submit Review
+      </button>
+    </div>
+
+    <div id="user-reviews" class="mt-4">
+      <p>No reviews yet.</p>
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer th:replace="~{/fragments/footer::footer}"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById("current-year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
