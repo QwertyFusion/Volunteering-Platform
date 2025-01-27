@@ -1,62 +1,69 @@
 package com.example.volunteer_platform.config;
+
+import com.example.volunteer_platform.security.CustomAuthenticationSuccessHandler;
+import com.example.volunteer_platform.service.implementation.UserServiceImplementation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import lombok.AllArgsConstructor;
-
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
 @Configuration
 @EnableWebSecurity
-@AllArgsConstructor
 public class SecurityConfig {
-	
-	
-    private final UserDetailsService userDetailsService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    @Autowired
+    private UserServiceImplementation userServiceImplementation;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CustomAuthenticationSuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/register", "/css/**").permitAll()
-                .requestMatchers("/organization/**").hasRole("ORGANIZATION")
-                .requestMatchers("/volunteer/**").hasRole("VOLUNTEER")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .permitAll()
-            );
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "/home", "/login", "/signup/**", "/api/**", "/register/**").permitAll() // Ensure these are permitted
+                        .requestMatchers("/o/**").hasRole("ORGANIZATION")
+                        .requestMatchers("/v/**").hasRole("VOLUNTEER")
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .successHandler(successHandler) // Use the custom success handler
+                        .failureUrl("/login?error=true") // Redirect to log in with error
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // Specify the logout URL
+                        .logoutSuccessUrl("/home") // Redirect to /home after logout
+                        .permitAll()
+                );
+
         return http.build();
     }
-    
+
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userServiceImplementation);
+        provider.setPasswordEncoder(passwordEncoder);
         return provider;
     }
-    
+
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
-        return authConfig.getAuthenticationManager();
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.userDetailsService(userServiceImplementation).passwordEncoder(passwordEncoder);
+        return authenticationManagerBuilder.build();
     }
 }

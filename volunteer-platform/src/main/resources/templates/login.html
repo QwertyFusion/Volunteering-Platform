@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,34 +19,27 @@
         min-height: 100vh;
         background-color: #8fc7ff;
       }
-
       .nav-container {
         background-color: rgba(255, 255, 255, 0.85);
       }
-
       main {
         flex: 1;
       }
-
       .form-label {
         font-weight: 600;
       }
-
       .login-container {
         margin-top: 100px;
       }
-
       .login-card {
         border: none;
         border-radius: 10px;
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
       }
-
       .btn-primary {
         background-color: #007bff;
         border-color: #007bff;
       }
-
       .btn-primary:hover {
         background-color: #0056b3;
         border-color: #0056b3;
@@ -55,52 +48,8 @@
   </head>
 
   <body>
-    <!-- Navbar -->
-    <div class="nav-container sticky-top">
-      <div class="container">
-        <nav class="navbar navbar-expand-lg">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="index.html">Volunteering Platform</a>
-            <button
-              class="navbar-toggler"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#navbarSupportedContent"
-              aria-controls="navbarSupportedContent"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav me-auto mb-0 mb-lg-0">
-                <li class="nav-item">
-                  <a class="nav-link" aria-current="page" href="index.html"
-                    >Home</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="index.html#about">About</a>
-                </li>
-              </ul>
-              <div class="d-flex">
-                <a
-                  class="btn btn-outline-primary"
-                  href="volunteer_registration.html"
-                  >Volunteer Sign Up</a
-                >
-                <a
-                  class="btn btn-outline-primary mx-2"
-                  href="Organisation_Registration.html"
-                  >Organization Sign Up</a
-                >
-                <a class="btn btn-primary" href="login.html">Login</a>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </div>
-    </div>
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar::navbar}"></div>
 
     <!-- Login Form -->
     <main>
@@ -110,50 +59,53 @@
             <div class="card login-card">
               <div class="card-body">
                 <h3 class="card-title text-center mb-4">Login</h3>
-                <form  action="/login" method="post">
+                <form th:action="@{/login}" method="post">
                   <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
                     <input
-                      type="email"
-                      class="form-control"
-                      id="email"
-                      placeholder="Enter your email"
-                      required
+                            type="email"
+                            class="form-control"
+                            id="email"
+                            name="username"
+                    placeholder="Enter your email"
+                    required
                     />
                   </div>
                   <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="password"
-                      placeholder="Enter your password"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3 form-check">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      id="rememberMe"
-                    />
-                    <label class="form-check-label" for="rememberMe"
-                      >Remember Me</label
-                    >
+                    <div class="input-group">
+                      <input
+                              type="password"
+                              class="form-control"
+                              id="password"
+                              name="password"
+                              placeholder="Enter your password"
+                              required
+                      />
+                      <button class="btn btn-outline-primary" type="button" id="togglePassword">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                      </button>
+                    </div>
                   </div>
                   <button type="submit" class="btn btn-primary w-100">
                     Login
                   </button>
                 </form>
                 <div class="text-center mt-3">
-                  <a href="#" class="text-decoration-none">Forgot Password?</a>
+                  <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                    Invalid username or password.
+                  </div>
+                  <!-- <a href="#" class="text-decoration-none">Forgot Password?</a>-->
                 </div>
                 <hr />
                 <div class="text-center">
                   <p>
                     New to the platform?
-                    <a href="index.html" class="text-decoration-none"
-                      >Sign Up</a
+                    <a th:href="@{/signup/organization}" class="text-decoration-none"
+                      >Sign Up as Organization</a
+                    >
+                    <a th:href="@{/signup/volunteer}" class="text-decoration-none"
+                    >Sign Up as Volunteer</a
                     >
                   </p>
                 </div>
@@ -165,27 +117,7 @@
     </main>
 
     <!-- Footer -->
-    <footer
-      class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative"
-    >
-      <div class="container d-flex justify-content-between align-items-center">
-        <p class="lead m-0">
-          Copyright &copy; <span id="current-year"></span>
-          Volunteering Platform
-        </p>
-        <a
-          href="https://github.com/QwertyFusion/Volunteering-Platform"
-          class="btn btn-dark d-flex align-items-center text-white text-decoration-none"
-        >
-          <i class="bi bi-github h3 me-2"></i>
-          <span class="lead m-0">GitHub Repository</span>
-        </a>
-      </div>
-
-      <a href="#" class="position-absolute bottom-0 end-0 p-3">
-        <i class="bi bi-arrow-up-circle h1 text-primary"></i>
-      </a>
-    </footer>
+    <footer th:replace="~{/fragments/footer::footer}"></footer>
 
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
@@ -201,5 +133,20 @@
       document.getElementById("current-year").textContent =
         new Date().getFullYear();
     </script>
+  <script>
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('bi-eye');
+        eyeIcon.classList.add('bi-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('bi-eye-slash');
+        eyeIcon.classList.add('bi-eye');
+      }
+    });
+  </script>
   </body>
 </html>
