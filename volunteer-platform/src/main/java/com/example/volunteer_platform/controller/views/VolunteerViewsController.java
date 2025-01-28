@@ -1,91 +1,73 @@
 package com.example.volunteer_platform.controller.views;
 
+import com.example.volunteer_platform.controller.TaskController;
+import com.example.volunteer_platform.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.example.volunteer_platform.model.Task;
+import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Controller for rendering volunteer views.
+ */
 @Controller
 @Slf4j
-
-
-
 public class VolunteerViewsController {
-	
-	 @Autowired
-	    private RestTemplate restTemplate; // Inject RestTemplate
 
-	    @GetMapping("/v/opportunities")
-	    public ModelAndView viewOpportunities() {
-	        String taskApiUrl = "http://localhost:8080/api/tasks"; // Replace with your Task API URL
+    private final TaskController taskController;
 
-	        ModelAndView mav = new ModelAndView("volunteer_opportunities");
+    @Autowired  // Dependency injection using constructor
+    public VolunteerViewsController(TaskController taskController) {
+        this.taskController = taskController;
+    }
 
-	        try {
-	            ResponseEntity<Task[]> response = restTemplate.getForEntity(taskApiUrl, Task[].class); // Fetch tasks as an array
+    /**
+     * Displays all available volunteer opportunities.
+     */
+    @GetMapping("/v/opportunities")
+    public ModelAndView viewOpportunities() {
+        ModelAndView mav = new ModelAndView("volunteer_opportunities");
 
-	            // Handle status codes
-	            if (response.getStatusCode() == HttpStatus.OK) {
-	                Task[] tasks = response.getBody();
-	                mav.addObject("tasks", tasks);
-	                log.info("Tasks fetched successfully: {}", (tasks != null ? tasks.length : 0));
-	            } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
-	                log.error("No tasks found (404).");
-	                mav.addObject("errorMessage", "No tasks available currently.");
-	            } else if (response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-	                log.error("Server error occurred (500).");
-	                mav.addObject("errorMessage", "An error occurred while fetching tasks. Please try again later.");
-	            }
-	        } catch (Exception e) {
-	            log.error("Exception occurred while fetching tasks: {}", e.getMessage(), e);
-	            mav.addObject("errorMessage", "Unable to load tasks. Please check back later.");
-	        }
+        ResponseEntity<List<Task>> response = taskController.getAllTasks(); // Get tasks as List<Task>
 
-	        return mav;
-	    }
-	    
-	    
-	   /** @GetMapping("/v//tasks/{id}/view")
-	    public ModelAndView viewTaskDetails(@PathVariable Long id) {
-	        String taskDetailsApiUrl = "http://localhost:8080/api/tasks/" + id; // Replace with your Task Details API URL
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<Task> tasks = response.getBody();
+            mav.addObject("tasks", (tasks != null ? tasks.toArray(new Task[0]) : new Task[0])); // Convert to Task[]
+            log.info("Tasks fetched successfully: {}", (tasks != null ? tasks.size() : 0));
+        } else {
+            mav.addObject("errorMessage", "Unable to load tasks. Please try again later.");
+            log.error("Failed to fetch tasks, status code: {}", response.getStatusCode());
+        }
 
-	        ModelAndView mav = new ModelAndView("volunteer_task_view");
+        return mav;
+    }
 
-	        try {
-	            ResponseEntity<Task> response = restTemplate.getForEntity(taskDetailsApiUrl, Task.class); // Fetch specific task by ID
+    /**
+     * Displays the details of a specific task by ID.
+     */
+    @GetMapping("/v/tasks/{taskId}")
+    public ModelAndView viewTaskDetails(@PathVariable Long taskId) {
+        ModelAndView mav = new ModelAndView("volunteer_task_view");
 
-	            // Handle status codes
-	            if (response.getStatusCode() == HttpStatus.OK) {
-	                Task task = response.getBody();
-	                mav.addObject("task", task);
-	                log.info("Task details fetched successfully for ID: {}", id);
-	            } else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
-	                log.error("Task not found for ID: {} (404).", id);
-	                mav.addObject("errorMessage", "The requested task could not be found.");
-	            } else if (response.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
-	                log.error("Server error occurred while fetching task ID: {} (500).", id);
-	                mav.addObject("errorMessage", "An error occurred while fetching the task. Please try again later.");
-	            }
-	        } catch (Exception e) {
-	            log.error("Exception occurred while fetching task ID: {}: {}", id, e.getMessage(), e);
-	            mav.addObject("errorMessage", "Unable to load the task details. Please check back later.");
-	        }
+        ResponseEntity<Task> response = taskController.getTaskById(taskId); // Fetch task by ID
 
-	        return mav;
-	    }
-	
-	**/
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Task task = response.getBody();
+            mav.addObject("task", task);
+            log.info("Task details fetched successfully for ID: {}", taskId);
+        } else {
+            mav.addObject("errorMessage", "The requested task could not be found.");
+            log.error("Failed to fetch task ID: {}, status code: {}", taskId, response.getStatusCode());
+        }
 
-	
-   
+        return mav;
+    }
 
     @GetMapping("/v/history")
     public ModelAndView tasksHistory() {
