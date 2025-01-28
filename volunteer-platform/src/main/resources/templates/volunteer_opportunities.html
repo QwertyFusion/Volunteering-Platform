@@ -116,7 +116,7 @@
                     <small class="text-muted" th:text="'Event Date: ' + ${task.eventDate}">Event Date</small>
                   </div>
                   <!--<a href="volunteer_task_view.html" class="btn btn-primary">View</a>-->
-				  <a th:href="@{/v/task/{id}(id=${task.id})}" class="btn btn-primary">View</a>
+				  <a th:href="@{/v/tasks/{taskId}(taskId=${task.id})}" class="btn btn-primary">View</a>
                 </div>
               </div>
             </div>
