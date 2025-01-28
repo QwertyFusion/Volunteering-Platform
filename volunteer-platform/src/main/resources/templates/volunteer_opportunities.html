@@ -95,6 +95,9 @@
         </form>
       </div>
     </aside>
+	<div th:if="${errorMessage != null}">
+	    <p th:text="${errorMessage}" class="error-message"></p>
+	</div>
 
     <!-- Opportunities Section -->
     <main class="col-md-6">
@@ -102,17 +105,18 @@
         <h2 class="mt-4 text-center">Opportunities</h2>
         <div class="row g-3 justify-content-center">
           <!-- Task Cards will be dynamically inserted here -->
-          <div class="col-11">
+          <div class="col-11" th:each="task : ${tasks}" >
             <div class="opportunity-card card shadow-sm">
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                   <div>
-                    <h5 class="card-title">Cat Grooming Campaign</h5>
-                    <p class="card-text mb-1">Cat Solutions Pvt Ltd</p>
-                    <p class="card-text small text-muted">Location: Remote</p>
-                    <small class="text-muted">Event Date: 11-2-2025</small>
+                    <h5 class="card-title" th:text="${task.title}">Task Title</h5>
+                    <p class="card-text mb-1" th:text="${task.organization != null ? task.organization.name : 'No Organization'}">Organization Name</p>
+                    <p class="card-text small text-muted" th:text = "'Location: ' + ${task.location}">Location</p>
+                    <small class="text-muted" th:text="'Event Date: ' + ${task.eventDate}">Event Date</small>
                   </div>
-                  <a href="volunteer_task_view.html" class="btn btn-primary">View</a>
+                  <!--<a href="volunteer_task_view.html" class="btn btn-primary">View</a>-->
+				  <a th:href="@{/v/task/{id}(id=${task.id})}" class="btn btn-primary">View</a>
                 </div>
               </div>
             </div>
