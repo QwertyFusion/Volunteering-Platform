@@ -45,87 +45,105 @@
 <!-- Navbar -->
 <div th:replace="~{fragments/navbar::navbar}"></div>
 
+
 <!-- Task Details Section -->
-<main class="container my-5">
-  <div class="task-card card shadow">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Cat Grooming Campaign</h5>
-    </div>
+<main class="container-fluid my-5">
+  <section class="task-card card shadow" th:if="${task}">
+    <header class="card-header bg-primary text-white">
+      <h5 class="mb-0" th:text="${task.title}">Title</h5>
+    </header>
     <div class="card-body">
-      <div class="row mb-4">
+      <div class="row g-4 mb-4">
         <div class="col-md-6">
           <p>
             <strong><i class="bi bi-calendar-event"></i> Event Date:</strong>
-            11/2/2025
-            <span id="eventDate"></span>
+			<span th:text="${task.eventDate}"></span>
           </p>
           <p>
             <strong><i class="bi bi-clock"></i> Application Deadline:</strong>
-            1/2/2025
-            <span id="applicationDeadline"></span>
-          </p>
+			<span th:text="${task.cancellationDeadline}"></span>          </p>
           <p>
             <strong><i class="bi bi-clock-history"></i> Cancellation Deadline:</strong>
-            1/2/2025
-            <span id="cancellationDeadline"></span>
-          </p>
+			<span  th:text="${task.applicationDeadline}"></span>          </p>
         </div>
         <div class="col-md-6">
           <p>
-            <strong><i class="bi bi-geo-alt"></i> Location: </strong> Remote
-            <span id="taskLocation"></span>
+            <strong><i class="bi bi-geo-alt"></i> Location:</strong>
+            <span th:text="${task.location}" th:if="${task.location} != null">Remote</span>
           </p>
-
+          <!--<p>
+            <strong><i class="bi bi-people"></i> Applicants:</strong>
+            <span th:text="${task.applicantsCount}"></span>
+          </p>-->
           <p>
-            <strong><i class="bi bi-people"></i> Applicants: </strong>
-            <span id="applicantsCount">1054</span>
-          </p>
-          <p>
-            <strong><i class="bi bi-check-circle"></i> Status: </strong>
-            <span id="taskStatus" class="badge bg-success">Open</span>
+            <strong><i class="bi bi-check-circle"></i> Status:</strong>
+            <span
+              th:text="${task.status}"
+              class="badge badge-status"
+              th:classappend="${task.status == 'Open' ? ' bg-success' : ' bg-danger'}"
+            ></span>
           </p>
         </div>
       </div>
 
       <div class="mb-4">
-        <h6 class="mb-2">
+        <h6>
           <strong><i class="bi bi-tools"></i> Required Skills:</strong>
         </h6>
         <div id="skillsList" class="ms-4">
-          <span class="badge bg-secondary me-2">Grooming</span>
-          <span class="badge bg-secondary me-2">Friendship</span>
-          <span class="badge bg-secondary me-2">Cleaning</span>
+          <span
+            th:each="skill : ${task.skills}"
+            class="badge bg-secondary me-2"
+            th:text="${skill}"
+          ></span>
         </div>
       </div>
 
       <hr />
 
       <div class="mb-4">
-        <h6 class="mb-2">
+        <h6>
           <strong><i class="bi bi-card-text"></i> Description:</strong>
         </h6>
-        <p id="taskDescription" class="ms-4">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Autem
-          tempora aut aliquam.
+        <p id="taskDescription" class="ms-4" th:text="${task.description}">
+          Description here...
         </p>
       </div>
 
       <!-- Success Message -->
-      <div id="successMessage" class="alert alert-success mt-3" style="display: none">
+      <div
+        id="successMessage"
+        class="alert alert-success mt-3"
+        style="display: none"
+        role="alert"
+        aria-live="polite"
+      >
         Task signed up successfully!
       </div>
 
       <div class="d-flex gap-2 mt-4">
-        <button id="applyButton" class="btn btn-primary" onclick="applyForTask()">
+        <button
+          id="applyButton"
+          class="btn btn-primary"
+          onclick="applyForTask()"
+          aria-hidden="false"
+        >
           <i class="bi bi-check-circle"></i> Apply Now
         </button>
-        <button id="cancelButton" class="btn btn-danger" style="display: none" onclick="cancelParticipation()">
+        <button
+          id="cancelButton"
+          class="btn btn-danger"
+          style="display: none"
+          onclick="cancelParticipation()"
+          aria-hidden="true"
+        >
           <i class="bi bi-x-circle"></i> Cancel Participation
         </button>
       </div>
     </div>
-  </div>
+  </section>
 </main>
+
 
 <!-- Footer -->
 <footer th:replace="~{/fragments/footer::footer}" class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
@@ -150,85 +168,19 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Get task index from URL
-  const params = new URLSearchParams(window.location.search);
-  const taskIndex = params.get("task");
+   function applyForTask() {
+     document.getElementById("successMessage").style.display = "block";
+     document.getElementById("applyButton").style.display = "none";
+     document.getElementById("cancelButton").style.display = "block";
+     document.getElementById("cancelButton").setAttribute("aria-hidden", "false");
+   }
 
-  // Function to load task details
-  function loadTaskDetails() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    if (taskIndex !== null && taskIndex >= 0 && taskIndex < tasks.length) {
-      const task = tasks[taskIndex];
-
-      // Display task details
-      document.getElementById("taskNameDisplay").textContent = task.taskName;
-      document.getElementById("taskLocation").textContent = task.location;
-      document.getElementById("eventDate").textContent = new Date(task.eventDate).toLocaleDateString();
-      document.getElementById("applicationDeadline").textContent = new Date(task.applicationDeadline).toLocaleDateString();
-      document.getElementById("cancellationDeadline").textContent = new Date(task.cancellationDeadline).toLocaleDateString();
-      document.getElementById("taskDescription").textContent = task.description;
-
-      // Display skills
-      const skillsList = document.getElementById("skillsList");
-      skillsList.innerHTML = task.skills
-              .map(skill => `<span class="badge bg-secondary me-2">${skill}</span>`)
-              .join("");
-
-      // Set form values for editing
-      document.getElementById("taskNameInput").value = task.taskName;
-      document.getElementById("locationInput").value = task.location;
-      document.getElementById("eventDateInput").value = task.eventDate;
-      document.getElementById("applicationDeadlineInput").value = task.applicationDeadline;
-      document.getElementById("cancellationDeadlineInput").value = task.cancellationDeadline;
-      document.getElementById("descriptionInput").value = task.description;
-    }
-  }
-
-  // Function to save edited task details
-  function saveTaskDetails() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    if (taskIndex !== null && taskIndex >= 0 && taskIndex < tasks.length) {
-      // Update task object
-      tasks[taskIndex] = {
-        ...tasks[taskIndex],
-        taskName: document.getElementById("taskNameInput").value,
-        location: document.getElementById("locationInput").value,
-        eventDate: document.getElementById("eventDateInput").value,
-        applicationDeadline: document.getElementById("applicationDeadlineInput").value,
-        cancellationDeadline: document.getElementById("cancellationDeadlineInput").value,
-        description: document.getElementById("descriptionInput").value,
-      };
-
-      // Save back to localStorage
-      localStorage.setItem("tasks", JSON.stringify(tasks));
-
-      // Reload task details
-      loadTaskDetails();
-
-      // Hide modal
-      const modal = bootstrap.Modal.getInstance(document.getElementById("editTaskModal"));
-      modal.hide();
-
-      // Show success toast
-      const toast = new bootstrap.Toast(document.getElementById("toast"));
-      toast.show();
-    }
-  }
-
-  // Function to delete task
-  function deleteTask() {
-    if (confirm("Are you sure you want to delete this task?")) {
-      const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-      if (taskIndex !== null && taskIndex >= 0 && taskIndex < tasks.length) {
-        tasks.splice(taskIndex, 1);
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-        window.location.href = "organization_current_tasks.html";
-      }
-    }
-  }
-
-  // Load task details when page loads
-  document.addEventListener("DOMContentLoaded", loadTaskDetails);
-</script>
+   function cancelParticipation() {
+     document.getElementById("cancelButton").style.display = "none";
+     document.getElementById("applyButton").style.display = "block";
+     document.getElementById("successMessage").style.display = "none";
+     document.getElementById("applyButton").setAttribute("aria-hidden", "false");
+   }
+ </script>
 </body>
 </html>
