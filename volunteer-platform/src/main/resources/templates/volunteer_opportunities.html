@@ -99,7 +99,7 @@
 	    <p th:text="${errorMessage}" class="error-message"></p>
 	</div>
 
-    <!-- Opportunities Section -->
+    <!-- Opportunities Section -->.
     <main class="col-md-6">
       <div class="opportunity-container row row-cols-1">
         <h2 class="mt-4 text-center">Opportunities</h2>
@@ -114,9 +114,11 @@
                     <p class="card-text mb-1" th:text="${task.organization != null ? task.organization.name : 'No Organization'}">Organization Name</p>
                     <p class="card-text small text-muted" th:text = "'Location: ' + ${task.location}">Location</p>
                     <small class="text-muted" th:text="'Event Date: ' + ${task.eventDate}">Event Date</small>
+					
+
                   </div>
                   <!--<a href="volunteer_task_view.html" class="btn btn-primary">View</a>-->
-				  <a th:href="@{/v/tasks/{taskId}(taskId=${task.id})}" class="btn btn-primary">View</a>
+				  <a th:href="@{/v/opportunities/{taskId}(taskId=${task.id})}" class="btn btn-primary">View</a>
                 </div>
               </div>
             </div>
