@@ -20,6 +20,7 @@ import com.example.volunteer_platform.dto.TaskSignupDto;
 import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.model.TaskSignup;
 import com.example.volunteer_platform.model.Volunteer;
+import com.example.volunteer_platform.service.TaskSignupService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,13 +31,15 @@ public class VolunteerViewsController {
     private final TaskController taskController;
     private final TaskSignupController taskSignupController;
     private final UserController userController;
-
+    private final TaskSignupService tasksignupservice;
     @Autowired
-    public VolunteerViewsController(TaskController taskController, TaskSignupController taskSignupController, UserController userController) {
+    public VolunteerViewsController(TaskController taskController, TaskSignupController taskSignupController, UserController userController,TaskSignupService tasksignupservice) {
         this.taskController = taskController;
         this.taskSignupController = taskSignupController;
         this.userController = userController;
+		this.tasksignupservice = tasksignupservice;
     }
+    
 
     @GetMapping("/v/opportunities")
     public ModelAndView viewOpportunities() {
@@ -63,9 +66,9 @@ public class VolunteerViewsController {
         if (response.getStatusCode().is2xxSuccessful()) {
             Task task = response.getBody();
             mav.addObject("task", task);
-            mav.addObject("signups", task.getSignups());
+            mav.addObject("signups", tasksignupservice.getTaskSignups(taskId));
       
-            int applicantsCount = task.getSignups().size();
+            int applicantsCount = tasksignupservice.getTaskSignups(taskId).size();
             mav.addObject("applicantsCount", applicantsCount);
             
             log.info("Task details fetched successfully for ID: {}", taskId);
@@ -139,8 +142,8 @@ public class VolunteerViewsController {
 
         return "redirect:/v/opportunities/" + taskId;
     }
-
-  /**  @GetMapping("/v/profile")
+    
+    @GetMapping("/v/profile")
     public ModelAndView profile(Principal principal) {
         String email = principal.getName();
         ResponseEntity<Volunteer> volunteerResponse = userController.findVolunteerByEmailOptional(email);
@@ -153,10 +156,9 @@ public class VolunteerViewsController {
             modelAndView.addObject("errorMessage", "Profile not found!");
             log.error("Profile not found for volunteer with email: {}", email);
         }
-
         return modelAndView;
     }
-    **/
+  
     @GetMapping("/v/history")
     public ModelAndView tasksHistory() {
         return new ModelAndView("volunteer_history");
@@ -166,9 +168,10 @@ public class VolunteerViewsController {
     public ModelAndView profileSettings() {
         return new ModelAndView("volunteer_profile_settings");
     }
+    
 
-    @GetMapping("/v/profile")
+    /**@GetMapping("/v/profile")
     public ModelAndView profile() {
         return new ModelAndView("volunteer_profile");
-    }
+    }**/
 }
