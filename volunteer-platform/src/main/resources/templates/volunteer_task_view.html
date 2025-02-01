@@ -42,145 +42,135 @@
 </head>
 
 <body>
-<!-- Navbar -->
-<div th:replace="~{fragments/navbar::navbar}"></div>
+    <!-- Navbar -->
+    <div th:replace="~{fragments/navbar::navbar}"></div>
+
+    <!-- Task Details Section -->
+    <main class="container my-5">
+        <section class="task-card card shadow" th:if="${task}">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0" th:text="${task.title}">Title</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <p><strong><i class="bi bi-calendar-event"></i> Event Date: </strong>
+                            <span id="eventDate" th:text="${task.eventDate}"></span>
+                        </p>
+                        <p><strong><i class="bi bi-clock"></i> Application Deadline: </strong>
+                            <span id="applicationDeadline" th:text="${task.applicationDeadline}"></span>
+                        </p>
+                        <p><strong><i class="bi bi-clock-history"></i> Cancellation Deadline: </strong>
+                            <span id="cancellationDeadline" th:text="${task.cancellationDeadline}"></span>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong><i class="bi bi-geo-alt"></i> Location: </strong>
+                            <span id="taskLocation" th:text="${task.location}" th:if="${task.location} != null"></span>
+                        </p>
+
+                        <p><strong><i class="bi bi-people"></i> Applicants: </strong>
+                            <span id="applicantsCount" th:text="${applicantsCount}"></span>
+                        </p>
+                        <p><strong><i class="bi bi-check-circle"></i> Status: </strong>
+                            <span id="taskStatus" class="badge"
+                                  th:text="${task.status}" th:classappend="${task.status == 'Open' ? ' bg-success' : ' bg-danger'}"></span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="mb-2"><strong><i class="bi bi-tools"></i> Required Skills:</strong></h6>
+                    <div id="skillsList" class="ms-4">
+                        <span th:each="skill : ${task.skills}"
+                              class="badge bg-secondary me-2"
+                              th:text="${skill}"></span>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="mb-4">
+                    <h6 class="mb-2"><strong><i class="bi bi-card-text"></i> Description:</strong></h6>
+                    <p id="taskDescription" class="ms-4" th:text="${task.description}">
+                    </p>
+                </div>
+
+                <!-- Success Message -->
+                <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
+                    Task signed up successfully!
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <!-- Apply Now Button -->
+					<form th:action="@{/v/opportunities/{taskId}/apply(taskId=${task.id})}" method="post" id="applyForm" style="display: inline-block;" th:if="${task.status == 'Open' && !alreadySignedUp}">
+                        <button id="applyButton" class="btn btn-primary" type="submit" onclick="applyForTask()">
+                            <i class="bi bi-check-circle"></i> Apply Now
+                        </button>
+                    </form>
+
+                    <!-- Cancel Participation Button -->
+					<form th:action="@{/v/opportunities/{taskId}/cancel(taskId=${task.id})}" method="post" id="cancelForm" style="display: inline-block;" th:if="${alreadySignedUp}">
+                        <button id="cancelButton" class="btn btn-danger" type="submit" onclick="cancelParticipation()">
+                            <i class="bi bi-x-circle"></i> Cancel Participation
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+    </main>
 
 
-<!-- Task Details Section -->
-<main class="container-fluid my-5">
-  <section class="task-card card shadow" th:if="${task}">
-    <header class="card-header bg-primary text-white">
-      <h5 class="mb-0" th:text="${task.title}">Title</h5>
-    </header>
-    <div class="card-body">
-      <div class="row g-4 mb-4">
-        <div class="col-md-6">
-          <p>
-            <strong><i class="bi bi-calendar-event"></i> Event Date:</strong>
-			<span th:text="${task.eventDate}"></span>
-          </p>
-          <p>
-            <strong><i class="bi bi-clock"></i> Application Deadline:</strong>
-			<span th:text="${task.cancellationDeadline}"></span>          </p>
-          <p>
-            <strong><i class="bi bi-clock-history"></i> Cancellation Deadline:</strong>
-			<span  th:text="${task.applicationDeadline}"></span>          </p>
-        </div>
-        <div class="col-md-6">
-          <p>
-            <strong><i class="bi bi-geo-alt"></i> Location:</strong>
-            <span th:text="${task.location}" th:if="${task.location} != null">Remote</span>
-          </p>
-          <!--<p>
-            <strong><i class="bi bi-people"></i> Applicants:</strong>
-            <span th:text="${task.applicantsCount}"></span>
-          </p>-->
-          <p>
-            <strong><i class="bi bi-check-circle"></i> Status:</strong>
-            <span
-              th:text="${task.status}"
-              class="badge badge-status"
-              th:classappend="${task.status == 'Open' ? ' bg-success' : ' bg-danger'}"
-            ></span>
-          </p>
-        </div>
-      </div>
 
-      <div class="mb-4">
-        <h6>
-          <strong><i class="bi bi-tools"></i> Required Skills:</strong>
-        </h6>
-        <div id="skillsList" class="ms-4">
-          <span
-            th:each="skill : ${task.skills}"
-            class="badge bg-secondary me-2"
-            th:text="${skill}"
-          ></span>
-        </div>
-      </div>
 
-      <hr />
-
-      <div class="mb-4">
-        <h6>
-          <strong><i class="bi bi-card-text"></i> Description:</strong>
-        </h6>
-        <p id="taskDescription" class="ms-4" th:text="${task.description}">
-          Description here...
-        </p>
-      </div>
-
-      <!-- Success Message -->
-      <div
-        id="successMessage"
-        class="alert alert-success mt-3"
-        style="display: none"
-        role="alert"
-        aria-live="polite"
-      >
-        Task signed up successfully!
-      </div>
-
-      <div class="d-flex gap-2 mt-4">
-        <button
-          id="applyButton"
-          class="btn btn-primary"
-          onclick="applyForTask()"
-          aria-hidden="false"
-        >
-          <i class="bi bi-check-circle"></i> Apply Now
-        </button>
-        <button
-          id="cancelButton"
-          class="btn btn-danger"
-          style="display: none"
-          onclick="cancelParticipation()"
-          aria-hidden="true"
-        >
-          <i class="bi bi-x-circle"></i> Cancel Participation
-        </button>
-      </div>
+  <!-- Footer -->
+  <footer class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
+    <div class="container d-flex justify-content-between align-items-center">
+      <p class="lead m-0">
+        Copyright &copy; <span id="current-year"></span>
+        Volunteering Platform
+      </p>
+      <a href="https://github.com/QwertyFusion/Volunteering-Platform"
+        class="btn btn-dark d-flex align-items-center text-white text-decoration-none">
+        <i class="bi bi-github h3 me-2"></i>
+        <span class="lead m-0">GitHub Repository</span>
+      </a>
     </div>
-  </section>
-</main>
 
-
-<!-- Footer -->
-<footer th:replace="~{/fragments/footer::footer}" class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
-  <div class="container d-flex justify-content-between align-items-center">
-    <p class="lead m-0">
-      Copyright &copy; <span id="current-year"></span>
-      Volunteering Platform
-    </p>
-    <a
-            href="https://github.com/QwertyFusion/Volunteering-Platform"
-            class="btn btn-dark d-flex align-items-center text-white text-decoration-none"
-    >
-      <i class="bi bi-github h3 me-2"></i>
-      <span class="lead m-0">GitHub Repository</span>
+    <a href="#" class="position-absolute bottom-0 end-0 p-3">
+      <i class="bi bi-arrow-up-circle h1 text-primary"></i>
     </a>
-  </div>
+  </footer>
 
-  <a href="#" class="position-absolute bottom-0 end-0 p-3">
-    <i class="bi bi-arrow-up-circle h1 text-primary"></i>
-  </a>
-</footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+ 
+  <script>
+	function applyForTask() {
+	     document.getElementById("successMessage").style.display = "block";
+	     document.getElementById("applyButton").style.display = "none";
+	     document.getElementById("cancelButton").style.display = "block";
+	   }
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-   function applyForTask() {
-     document.getElementById("successMessage").style.display = "block";
-     document.getElementById("applyButton").style.display = "none";
-     document.getElementById("cancelButton").style.display = "block";
-     document.getElementById("cancelButton").setAttribute("aria-hidden", "false");
-   }
+	   function cancelParticipation() {
+	     document.getElementById("cancelButton").style.display = "none";
+	     document.getElementById("applyButton").style.display = "block";
+	     document.getElementById("successMessage").style.display = "none";
+	   }
 
-   function cancelParticipation() {
-     document.getElementById("cancelButton").style.display = "none";
-     document.getElementById("applyButton").style.display = "block";
-     document.getElementById("successMessage").style.display = "none";
-     document.getElementById("applyButton").setAttribute("aria-hidden", "false");
-   }
- </script>
+	   window.onload = function() {
+	       // Dynamically adjust button visibility
+	       var alreadySignedUp =  /*[[${alreadySignedUp}]]*/;
+	       if (alreadySignedUp) {
+	           document.getElementById("applyButton").style.display = "none";
+	           document.getElementById("cancelButton").style.display = "inline-block";
+	       } else {
+	           document.getElementById("applyButton").style.display = "inline-block";
+	           document.getElementById("cancelButton").style.display = "none";
+	       }
+	   }
+	     
+   </script>
 </body>
+
 </html>
