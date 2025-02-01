@@ -24,6 +24,8 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	
 
 	@Autowired
 	private TaskService taskService;
@@ -183,6 +185,8 @@ public class UserController {
 				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
+
+	
 	/**
 	 * Update a volunteer's details.
 	 *
@@ -218,4 +222,15 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	
+	
+	@GetMapping("/volunteers/email/{email}")
+	public ResponseEntity<Volunteer> findVolunteerByEmailOptional(@PathVariable String email) {
+	    Optional<Volunteer> volunteerOpt = userService.findVolunteerByEmailOptional(email);
+	    
+	    return volunteerOpt.map(ResponseEntity::ok) // If volunteer is found, return 200 OK
+	                      .orElseGet(() -> ResponseEntity.notFound().build()); // If not found, return 404
+	}
+
 }

@@ -25,12 +25,16 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * TaskSignupController handles API endpoints for managing task signups by volunteers.
  */
 @RestController
 @RequestMapping("/api/task-signups")
 public class TaskSignupController {
+    private static final Logger log = LoggerFactory.getLogger(TaskSignupController.class);
+
 
     @Autowired
     private TaskSignupService taskSignupService;
@@ -95,6 +99,15 @@ public class TaskSignupController {
         }
         return new ResponseEntity<>(signups, HttpStatus.OK);
     }
+    
+    @GetMapping("/task/{taskId}/volunteer/{volunteerId}")
+    public ResponseEntity<Boolean> isVolunteerSignedUp(@PathVariable Long taskId, @PathVariable Long volunteerId) {
+        boolean exists = taskSignupService.isVolunteerSignedUpForTask(volunteerId, taskId);
+        return new ResponseEntity<>(exists, HttpStatus.OK);
+    }
+    
+    
+
 
     /**
      * Sign up a volunteer for a task.
@@ -137,28 +150,33 @@ public class TaskSignupController {
         }
     }
 
-    /**
-     * Cancel a volunteer's signup for a task by volunteer ID and task ID.
-     *
-     * @param volunteerId Volunteer ID.
-     * @param taskId Task ID.
-     * @return Success message or HTTP 404 if signup not found.
-     */
     @DeleteMapping("/volunteer/{volunteerId}/task/{taskId}")
     @Transactional
     public ResponseEntity<Void> cancelSignup(@PathVariable Long volunteerId, @PathVariable Long taskId) {
+        //log.info("Received request to cancel signup for volunteer {} and task {}", volunteerId, taskId);
+    	log.info("Checking signup for volunteer {} and task {}", volunteerId, taskId);
         Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(taskId, volunteerId);
         if (existingSignup.isEmpty()) {
+           // log.warn("No signup found for volunteer {} and task {}", volunteerId, taskId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+       // log.info("Checking signup for volunteer {} and task {}", volunteerId, taskId);
+       
+        log.info("Signup found: {}", existingSignup.isPresent());
+
         TaskSignup signup = existingSignup.get();
         Task task = signup.getTask();
 
+        log.info("Current date: {}, Task cancellation deadline: {}", LocalDate.now(), task.getCancellationDeadline());
+
         if (LocalDate.now().isAfter(task.getCancellationDeadline())) {
+            log.warn("Cannot cancel signup for task {}: Cancellation deadline has passed ({}).", taskId, task.getCancellationDeadline());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
+        //log.info("Deleting signup with ID: {}", signup.getSignupId());
         taskSignupService.deleteById(signup.getSignupId());
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

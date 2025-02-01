@@ -99,15 +99,16 @@
       <i class="bi bi-person-circle" style="font-size: 50px; color: white"></i>
     </div>
     <div>
-      <h2 class="profile-container__name"><span th:text="${session.name}">User </span></h2>
+      <h2 class="profile-container__name"><span th:text="${volunteer.name}">User</span></h2>
       <p>
-        <strong>Gender:</strong> <span id="volunteer-gender" th:text="${session.gender}"> No Gender Specified </span>
+        <strong>Gender:</strong> <span id="volunteer-gender" th:text="${volunteer.gender}"> No Gender Specified </span>
       </p>
       <p>
         <strong>Skills:</strong>
-        <span th:if="${#lists.isEmpty(session.skills)}">No skills added.</span>
-        <span th:unless="${#lists.isEmpty(session.skills)}" id="volunteer-skills" th:each="skill : ${session.skills}">
-          <span class="badge bg-secondary" th:text="${skill.getName()}"></span>
+        <!--<span th:if="${#lists.isEmpty(session.skills)}">No skills added.</span>
+        <span th:unless="${#lists.isEmpty(session.skills)}" id="volunteer-skills" th:each="skill : ${session.skills}">-->
+			
+          <span th:each="skill : ${volunteer.skills}"class="badge bg-secondary" th:text="${skill.name()}"></span>
         </span>
       </p>
       <div class="profile-container__ratings" id="profile-rating">

@@ -50,7 +50,13 @@ public interface TaskSignupService {
      * @return Optional containing the task signup if found.
      */
     Optional<TaskSignup> findByTaskIdAndVolunteerId(Long taskId, Long id);
-
+    
+    
+    
+    
+    public boolean isVolunteerSignedUpForTask(Long volunteerId, Long taskId);
+    
+    
     /**
      * Save a task signup to the database.
      *

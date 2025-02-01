@@ -6,11 +6,15 @@ import com.example.volunteer_platform.dto.VolunteerDto;
 import com.example.volunteer_platform.dto.VolunteerPartialDto;
 import com.example.volunteer_platform.model.*;
 import com.example.volunteer_platform.repository.OrganizationRepository;
+import com.example.volunteer_platform.repository.SkillRepository;
+import com.example.volunteer_platform.repository.TaskSignupRepository;
 import com.example.volunteer_platform.repository.VolunteerRepository;
 import com.example.volunteer_platform.service.TaskService;
 import com.example.volunteer_platform.service.TaskSignupService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.example.volunteer_platform.repository.UserRepository;
 import com.example.volunteer_platform.service.UserService;
@@ -20,10 +24,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-
-
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * UserServiceImplementation provides methods to manage users, including volunteers and organizations.
@@ -46,6 +50,12 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 
     @Autowired
     private TaskService taskService;
+    
+    @Autowired
+    private SkillRepository skillRepository;
+    
+    @Autowired
+    private TaskSignupRepository taskSignupRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder; // Autowire PasswordEncoder
@@ -55,6 +65,16 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
         userRepository.save(user);
     }
 
+    
+    
+    
+   /** @Override
+    public List<Task> getVolunteeringHistory(Long volunteerId) {
+        return taskSignupRepository.findCompletedTasksByVolunteerId(volunteerId);
+    }**/
+
+    
+    
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
@@ -103,7 +123,9 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             throw new RuntimeException("Could not create organization: " + e.getMessage());
         }
     }
-
+    
+   
+    
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -143,7 +165,14 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     public Optional<Volunteer> findVolunteerById(Long id) {
         return volunteerRepository.findById(id);
     }
+    
+    @Override
+    public Optional<Volunteer> findVolunteerByEmailOptional(String email) {
+        return volunteerRepository.findByEmail(email); // Direct return
+    }
 
+
+    
     @Override
     @Transactional
     public Optional<Organization> updateOrganization(Long organizationId, OrganizationPartialDto updatedOrg) {
@@ -159,7 +188,10 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             existingOrg.setPhoneNumber(updatedOrg.getPhoneNumber() != null ? updatedOrg.getPhoneNumber() : existingOrg.getPhoneNumber());
             existingOrg.setAddress(updatedOrg.getAddress() != null ? updatedOrg.getAddress() : existingOrg.getAddress());
             existingOrg.setWebsite(updatedOrg.getWebsite() != null ? updatedOrg.getWebsite() : existingOrg.getWebsite());
-
+            
+            
+           
+            
             saveUser (existingOrg);
             return Optional.of(existingOrg);
         } catch (Exception e) {
@@ -202,24 +234,45 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
     @Transactional
     public Optional<Volunteer> updateVolunteer(Long volunteerId, VolunteerPartialDto updatedVol) {
         try {
-            Volunteer existingVol = findVolunteerById(volunteerId).orElse(null);
-            if (existingVol == null) {
-                return Optional.empty();
+            Optional<Volunteer> optionalVol = findVolunteerById(volunteerId);
+            if (optionalVol.isEmpty()) {
+                return Optional.empty(); // Return empty Optional instead of ResponseEntity
             }
 
-            existingVol.setName(updatedVol.getName() != null ? updatedVol.getName() : existingVol.getName());
-            existingVol.setEmail(updatedVol.getEmail() != null ? updatedVol.getEmail() : existingVol.getEmail());
-            existingVol.setPassword(updatedVol.getPassword() != null ? updatedVol.getPassword() : existingVol.getPassword());
-            existingVol.setPhoneNumber(updatedVol.getPhoneNumber() != null ? updatedVol.getPhoneNumber() : existingVol.getPhoneNumber());
+            Volunteer existingVol = optionalVol.get();
 
-            saveUser (existingVol);
+            // Update fields if provided
+            if (updatedVol.getName() != null) existingVol.setName(updatedVol.getName());
+            if (updatedVol.getEmail() != null) existingVol.setEmail(updatedVol.getEmail());
+            if (updatedVol.getPhoneNumber() != null) existingVol.setPhoneNumber(updatedVol.getPhoneNumber());
+
+            // Handle password update properly
+            if (updatedVol.getPassword() != null && !updatedVol.getPassword().isEmpty()) {
+                String hashedPassword = passwordEncoder.encode(updatedVol.getPassword());
+                existingVol.setPassword(hashedPassword);
+            }
+
+            // Update skills if provided
+          /**  if (updatedVol.getSkillIds() != null && !updatedVol.getSkillIds().isEmpty()) {
+                Set<Skill> updatedSkills = new HashSet<>();
+                for (Long skillId : updatedVol.getSkillIds()) {
+                    skillRepository.findById(skillId).ifPresent(updatedSkills::add);
+                }
+                existingVol.setSkills(updatedSkills);
+            }**/
+
+            // Save changes
+            saveUser(existingVol);
             return Optional.of(existingVol);
         } catch (Exception e) {
-            System.out.println("Error updating volunteer: " + e.getMessage());
-            throw new RuntimeException("Could not update volunteer: " + e.getMessage());
+            // Log the error
+            // log.error("Error updating volunteer: {}", e.getMessage());
+            return Optional.empty(); // Return empty Optional on failure
         }
     }
 
+    
+   
     @Override
     @Transactional
     public boolean deleteVolunteerById(Long volunteerId) {
@@ -242,4 +295,6 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
             throw new RuntimeException("Could not delete volunteer: " + e.getMessage());
         }
     }
+
+
 }

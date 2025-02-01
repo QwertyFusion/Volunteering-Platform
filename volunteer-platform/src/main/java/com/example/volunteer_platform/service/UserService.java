@@ -43,7 +43,11 @@ public interface UserService {
      * @return List of users.
      */
     List<User> getAllUsers();
+    
+    
 
+    
+    //Optional<Volunteer> findByEmail(String email); 
     /**
      * Find a user by their email.
      *
@@ -125,6 +129,9 @@ public interface UserService {
      * @throws RuntimeException if there is an error during the update.
      */
     Optional<Volunteer> updateVolunteer(Long volunteerId, VolunteerPartialDto updatedVol);
+    
+    
+   // List<Task> getVolunteeringHistory(Long volunteerId);
 
     /**
      * Delete a volunteer by their ID.
@@ -134,4 +141,6 @@ public interface UserService {
      * @throws RuntimeException if there is an error during deletion.
      */
     boolean deleteVolunteerById(Long volunteerId);
+
+	Optional<Volunteer> findVolunteerByEmailOptional(String email);
 }
