@@ -59,14 +59,16 @@
     <div class="task-card card shadow p-4 rounded-3 mx-auto col-md-6 col-lg-5">
       <h2 class="text-center mb-4">Create Task</h2>
       <form id="createTaskForm" class="task-form">
+        <input type="hidden" name="organizationId" th:value="${session.userId}" />
         <div class="mb-3">
           <label for="taskName" class="form-label">Task Name:</label>
           <input
                   type="text"
                   class="form-control"
                   id="taskName"
-                  placeholder="Enter task name"
-                  required
+                  name="title" <!-- Bind to TaskDto title -->
+          placeholder="Enter task name"
+          required
           />
         </div>
         <div class="mb-3">
@@ -75,13 +77,14 @@
                   type="text"
                   class="form-control"
                   id="location"
-                  placeholder="Enter location"
-                  required
+                  name="location" <!-- Bind to TaskDto location -->
+          placeholder="Enter location"
+          required
           />
         </div>
         <div class="mb-3">
           <label for="eventDate" class="form-label">Event Date:</label>
-          <input type="date" class="form-control" id="eventDate" required />
+          <input type="date" class="form-control" id="eventDate" name="eventDate" required />
         </div>
         <div class="mb-3">
           <label for="applicationDeadline" class="form-label">Application Deadline:</label>
@@ -89,7 +92,8 @@
                   type="date"
                   class="form-control"
                   id="applicationDeadline"
-                  required
+                  name="applicationDeadline" <!-- Bind to TaskDto applicationDeadline -->
+          required
           />
         </div>
         <div class="mb-3">
@@ -98,7 +102,8 @@
                   type="date"
                   class="form-control"
                   id="cancellationDeadline"
-                  required
+                  name="cancellationDeadline" <!-- Bind to TaskDto cancellationDeadline -->
+          required
           />
         </div>
         <div class="mb-3">
@@ -106,9 +111,10 @@
           <textarea
                   class="form-control"
                   id="description"
-                  rows="4"
-                  placeholder="Enter description"
-                  required
+                  name="description" <!-- Bind to TaskDto description -->
+          rows="4"
+          placeholder="Enter description"
+          required
           ></textarea>
         </div>
         <div class="mb-3">
@@ -124,7 +130,7 @@
           <button
                   type="button"
                   class="btn btn-outline-danger"
-                  onclick="window.location.href='current_tasks.html'"
+                  th:href="@{/o/current_tasks}"
           >
             Cancel
           </button>
@@ -155,47 +161,42 @@
   const input = document.querySelector("#skills");
   const tagify = new Tagify(input);
 
-  // Set current year
-  document.getElementById("current-year").textContent =
-          new Date().getFullYear();
-
   // Handle form submission
-  document
-          .getElementById("createTaskForm")
-          .addEventListener("submit", function (event) {
-            event.preventDefault();
+  document.getElementById("createTaskForm").addEventListener("submit", function (event) {
+    event.preventDefault(); // Prevent the default form submission
 
-            // Get current tasks array or create new one
-            let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const formData = new FormData(this);
+    const taskData = {
+      title: formData.get("title"),
+      description: formData.get("description"),
+      location: formData.get("location"),
+      eventDate: formData.get("eventDate"),
+      applicationDeadline: formData.get("applicationDeadline"),
+      cancellationDeadline: formData.get("cancellationDeadline"),
+      skills: tagify.value.map(skill => skill.value) // Directly include skills as an array
+    };
 
-            // Create new task object
-            const newTask = {
-              taskName: document.getElementById("taskName").value,
-              location: document.getElementById("location").value,
-              eventDate: document.getElementById("eventDate").value,
-              applicationDeadline: document.getElementById("applicationDeadline").value,
-              cancellationDeadline: document.getElementById("cancellationDeadline").value,
-              description: document.getElementById("description").value,
-              skills: tagify.value.map((skill) => skill.value),
-              createdAt: new Date().toISOString(),
-              applicants: 0,
-              selected: 0,
-              status: "Open",
-            };
+    console.log("Task Data:", taskData); // Log the task data
 
-            // Add new task to array
-            tasks.push(newTask);
-
-            // Save updated array back to localStorage
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-
-            // Debug log
-            console.log("Task saved:", newTask);
-            console.log("All tasks:", tasks);
-
-            // Redirect
-            window.location.href = "current_tasks.html";
-          });
+    fetch(`/api/organizations/${formData.get("organizationId")}/tasks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(taskData) // Send the entire taskData object as JSON
+    })
+            .then(response => {
+              console.log("Response Status:", response.status); // Log the response status
+              if (response.ok) {
+                // Handle success
+                window.location.href = "/o/current_tasks"; // Redirect or show success message
+              } else {
+                // Handle error
+                console.error('Error:', response);
+              }
+            })
+            .catch(error => console.error('Error:', error));
+  });
 </script>
 </body>
 </html>

@@ -1,6 +1,10 @@
 package com.example.volunteer_platform.controller;
 
 import com.example.volunteer_platform.enums.TaskStatus;
+import com.example.volunteer_platform.service.SkillService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,8 @@ import com.example.volunteer_platform.service.TaskService;
 
 import jakarta.validation.Valid;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +39,8 @@ public class TaskController {
 
     @Autowired
     private TaskSignupService taskSignupService;
+    @Autowired
+    private SkillService skillService;
 
     /**
      * Get all tasks posted by any organization.
@@ -132,23 +140,27 @@ public class TaskController {
      */
     @PostMapping("/organizations/{organizationId}/tasks")
     @Transactional
-    public ResponseEntity<Task> addTaskToOrganization(@PathVariable Long organizationId, @RequestBody @Valid TaskDto taskDto) {
+    public ResponseEntity<Task> addTaskToOrganization(
+            @PathVariable Long organizationId,
+            @RequestBody @Valid TaskDto taskDto) {
+
         Optional<Organization> organizationOpt = userService.findOrganizationById(organizationId);
         if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (taskDto.getApplicationDeadline().isBefore(LocalDate.now()) ||
-                taskDto.getCancellationDeadline().isBefore(LocalDate.now())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        // Create Skill objects from the list of skill names
+        List<Skill> skillObjects = new ArrayList<>();
+        for (String skillName : taskDto.getSkills()) { // Use skills from taskDto
+            Skill skill = skillService.findByName(skillName).orElse(null);
+            if (skill == null) {
+                skill = new Skill();
+                skill.setName(skillName);
+                skillService.saveSkill(skill);
+            }
+            skillObjects.add(skill);
         }
 
-        if (taskDto.getApplicationDeadline().isAfter(taskDto.getEventDate()) ||
-                taskDto.getCancellationDeadline().isAfter(taskDto.getEventDate())) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        Organization organization = organizationOpt.get();
         Task task = new Task();
         try {
             task.setTitle(taskDto.getTitle());
@@ -157,14 +169,16 @@ public class TaskController {
             task.setEventDate(taskDto.getEventDate());
             task.setCancellationDeadline(taskDto.getCancellationDeadline());
             task.setApplicationDeadline(taskDto.getApplicationDeadline());
-            taskService.saveTask(task);
+            task.setSkills(new HashSet<>(skillObjects)); // Set skills to the task
+            task.setOrganizationId(organizationId); // Set organization ID
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        organization.getTasks().add(task);
-        userService.saveUser(organization);
+
+        taskService.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
+
 
     /**
      * Update an existing task in an organization.

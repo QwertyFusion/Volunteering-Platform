@@ -57,14 +57,9 @@ public class Task {
 	@Enumerated(EnumType.STRING) // Store the enum as a string in the database
 	@Column(nullable = false)
 	private TaskStatus status; // Use the TaskStatus enum
-	
-	
-	 @ManyToOne // Assuming an organization owns this task
-	 private Organization organization;
-	 
 
+ 	private Long organizationId;
 
-	 
 	@ManyToMany
 	@JoinTable(
 			name = "task_skills", // Join table name
