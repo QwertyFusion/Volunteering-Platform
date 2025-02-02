@@ -149,6 +149,16 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        if (taskDto.getApplicationDeadline().isBefore(LocalDate.now()) ||
+                taskDto.getCancellationDeadline().isBefore(LocalDate.now())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        if (taskDto.getApplicationDeadline().isAfter(taskDto.getEventDate()) ||
+                taskDto.getCancellationDeadline().isAfter(taskDto.getEventDate())) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         // Create Skill objects from the list of skill names
         List<Skill> skillObjects = new ArrayList<>();
         for (String skillName : taskDto.getSkills()) { // Use skills from taskDto
@@ -161,6 +171,7 @@ public class TaskController {
             skillObjects.add(skill);
         }
 
+        Organization organization = organizationOpt.get();
         Task task = new Task();
         try {
             task.setTitle(taskDto.getTitle());
@@ -171,11 +182,13 @@ public class TaskController {
             task.setApplicationDeadline(taskDto.getApplicationDeadline());
             task.setSkills(new HashSet<>(skillObjects)); // Set skills to the task
             task.setOrganizationId(organizationId); // Set organization ID
+            taskService.saveTask(task);
+            organization.getTasks().add(task);
+            userService.saveUser(organization);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        taskService.saveTask(task);
         return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
