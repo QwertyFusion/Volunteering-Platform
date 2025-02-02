@@ -55,103 +55,60 @@
 <!-- Navbar -->
 <div th:replace="~{fragments/navbar::navbar}"></div>
 
-<!-- Account Settings Form -->
 <main>
-  <div class="container login-container py-5">
+  <div class="container login-container  py-5">
     <div class="row justify-content-center">
       <div class="col-md-6 col-lg-5">
         <div class="card login-card">
           <div class="card-body">
             <h3 class="card-title text-center mb-4">Account Settings</h3>
-            <div id="formFields">
+            <form th:action="@{/v/profile/update}" method="post">
               <label for="username" class="form-label">Name</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="username"
-                        th:value="${session.name}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'username')"
-                >
-                  Edit
-                </button>
+                <input type="text" class="form-control me-2" id="username" name="name" th:value="${volunteer.name}" disabled />
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'username')">Edit</button>
               </div>
               <label for="email" class="form-label">Email</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="email"
-                        class="form-control me-2"
-                        id="email"
-                        th:value="${session.email}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'email')"
-                >
-                  Edit
-                </button>
+                <input type="email" class="form-control me-2" id="email" name="email" th:value="${volunteer.email}" disabled />
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'email')">Edit</button>
               </div>
               <label for="phone" class="form-label">Phone Number</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="phone"
-                        th:value="${session.phone}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'phone')"
-                >
-                  Edit
-                </button>
+                <input type="text" class="form-control me-2" id="phoneNumber" name="phoneNumber" th:value="${volunteer.phoneNumber}" disabled />
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'phone')">Edit</button>
               </div>
-              <label for="gender" class="form-label">Gender</label>
-              <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="gender"
-                        th:value="${session.gender}"
-                        disabled
-                />
-              </div>
+			  <label for="gender" class="form-label">Gender</label>
+			                <div class="mb-3 d-flex align-items-center">
+			                  <input
+			                          type="text"
+			                          class="form-control me-2"
+			                          id="gender"
+			                          th:value="${volunteer.gender}"
+			                          disabled
+			                  />
+			                </div>
               <label for="skills" class="form-label">Skills</label>
-              <div class="mb-3 d-flex align-items-center">
-                <input
-                        id="skills"
-                        class="form-control me-2"
-                        placeholder="Type and press Enter to add a skill"
-                        th:value="${session.skillNames}"
-                        required
-                />
-              </div>
-              <label class="form-label">Password</label>
               <div class="mb-3">
-                <button
-                        class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#changePasswordModal"
-                >
-                  Change Password
-                </button>
+                <input id="skills" class="form-control" name="skills" placeholder="Type and press Enter to add a skill" th:value="${volunteer.skills}" required />
               </div>
-              <hr />
-              <label class="form-label lead">Remove Account</label>
-              <p>
-                Once an account is deleted, all tasks will be lost and there
-                is no way of retrieval.
-              </p>
-              <button type="button" class="btn btn-outline-danger">
-                Delete Account
-              </button>
-            </div>
+			  <label class="form-label">Password</label>
+			               <div class="mb-3">
+			                 <button
+			                         class="btn btn-outline-primary"
+			                         data-bs-toggle="modal"
+			                         data-bs-target="#changePasswordModal"
+			                 >
+			                   Change Password
+			                 </button>
+			               </div>
+			               <hr />
+              <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+            </form>
+            <hr />
+            <label class="form-label lead">Remove Account</label>
+            <p>Once an account is deleted, all tasks will be lost and there is no way of retrieval.</p>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete Account</button>
           </div>
         </div>
       </div>
@@ -159,25 +116,8 @@
   </div>
 </main>
 
-<!-- Footer -->
-<footer th:replace="~{/fragments/footer::footer}" class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
-  <div class="container d-flex justify-content-between align-items-center">
-    <p class="lead m-0">
-      Copyright &copy; <span id="current-year"></span>
-      Volunteering Platform
-    </p>
-    <a
-            href="https://github.com/QwertyFusion/Volunteering-Platform"
-            class="btn btn-dark d-flex align-items-center text-white text-decoration-none"
-    >
-      <i class="bi bi-github h3 me-2"></i>
-      <span class="lead m-0">GitHub Repository</span>
-    </a>
-  </div>
-
-  <a href="#" class="position-absolute bottom-0 end-0 p-3">
-    <i class="bi bi-arrow-up-circle h1 text-primary"></i>
-  </a>
+<footer th:replace="~{/fragments/footer::footer}" class="footer p-3 bg-dark text-white text-center">
+  <p class="lead m-0">&copy; <span id="current-year"></span> Volunteering Platform</p>
 </footer>
 
 <!-- Change Password Modal -->
@@ -231,20 +171,31 @@
   </div>
 </div>
 
+
+
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Account Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form th:action="@{/v/profile/delete}" method="post">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-<script
-        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"
-></script>
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-        crossorigin="anonymous"
-></script>
 <script>
   document.getElementById("current-year").textContent = new Date().getFullYear();
-
   function toggleEdit(button, fieldId) {
     const field = document.getElementById(fieldId);
     if (field.disabled) {
@@ -255,10 +206,7 @@
       button.textContent = "Edit";
     }
   }
-
-  // Initialize Tagify for skills input
-  const skillsInput = document.querySelector("#skills");
-  new Tagify(skillsInput);
+  new Tagify(document.querySelector("#skills"));
 </script>
 </body>
 </html>

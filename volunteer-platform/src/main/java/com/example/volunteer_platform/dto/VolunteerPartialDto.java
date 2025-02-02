@@ -1,5 +1,7 @@
 package com.example.volunteer_platform.dto;
 
+import java.util.Set;
+
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +24,6 @@ public class VolunteerPartialDto {
 
     @Size(max = 15, message = "Phone number cannot exceed 15 characters")
     private String phoneNumber;
+    
+   private Set<Long> skillIds;
 }

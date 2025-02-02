@@ -35,7 +35,7 @@ public class TaskDto {
      */
     @NotNull(message = "Cancellation deadline cannot be null")
     @Future(message = "Cancellation deadline must be a future date")
-    private final LocalDate cancellationDeadline;
+    private  LocalDate cancellationDeadline;
 
     /**
      * Application deadline for the task signup.
@@ -43,5 +43,5 @@ public class TaskDto {
      */
     @NotNull(message = "Application deadline cannot be null")
     @Future(message = "Application deadline must be a future date")
-    private final LocalDate applicationDeadline;
+    private  LocalDate applicationDeadline;
 }

@@ -1,5 +1,6 @@
 package com.example.volunteer_platform.repository;
 
+import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.model.TaskSignup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -48,6 +49,12 @@ public interface TaskSignupRepository extends JpaRepository<TaskSignup, Long> {
      * @return Optional containing the task signup if found.
      */
     Optional<TaskSignup> findByTaskIdAndVolunteerId(Long taskId, Long volunteerId);
+    
+   // @Query("SELECT t.task FROM TaskSignup t WHERE t.volunteer.id = :volunteerId AND t.task.completed = true")
+    //List<Task> findCompletedTasksByVolunteerId(@Param("volunteerId") Long volunteerId);
+
+    
+    boolean existsByVolunteerIdAndTaskId(Long volunteerId, Long taskId);
 
     /**
      * Find upcoming task signups for tasks happening on a specific event date

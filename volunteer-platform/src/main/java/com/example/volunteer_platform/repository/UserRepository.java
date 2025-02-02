@@ -18,4 +18,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	 * @return User object if found.
 	 */
 	User findByEmail(String email);
+
 }

@@ -5,6 +5,7 @@ import com.example.volunteer_platform.service.implementation.UserServiceImplemen
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -33,7 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/home", "/login", "/signup/**", "/api/**", "/register/**").permitAll() // Ensure these are permitted
                         .requestMatchers("/o/**").hasRole("ORGANIZATION")
-                        .requestMatchers("/v/**").hasRole("VOLUNTEER")
+                        .requestMatchers("/v/**").hasRole("VOLUNTEER") 
+                        .requestMatchers(HttpMethod.DELETE, "/v/**").hasRole("VOLUNTEER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -66,4 +69,10 @@ public class SecurityConfig {
         authenticationManagerBuilder.userDetailsService(userServiceImplementation).passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
+    
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
+    }
+
 }

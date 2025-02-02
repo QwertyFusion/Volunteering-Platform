@@ -2,6 +2,7 @@ package com.example.volunteer_platform.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import com.example.volunteer_platform.enums.TaskStatus;
@@ -56,7 +57,14 @@ public class Task {
 	@Enumerated(EnumType.STRING) // Store the enum as a string in the database
 	@Column(nullable = false)
 	private TaskStatus status; // Use the TaskStatus enum
+	
+	
+	 @ManyToOne // Assuming an organization owns this task
+	 private Organization organization;
+	 
 
+
+	 
 	@ManyToMany
 	@JoinTable(
 			name = "task_skills", // Join table name

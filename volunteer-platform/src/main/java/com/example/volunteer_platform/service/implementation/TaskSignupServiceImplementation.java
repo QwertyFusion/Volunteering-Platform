@@ -1,5 +1,7 @@
 package com.example.volunteer_platform.service.implementation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
+
 /**
  * TaskSignupServiceImplementation provides methods to manage task signups in the system.
  * This is an implementation of the TaskSignupService interface.
@@ -21,6 +25,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TaskSignupServiceImplementation implements TaskSignupService {
+	
+	
+	private static final Logger logger = LoggerFactory.getLogger(TaskSignupServiceImplementation.class);
 
     @Autowired
     private TaskSignupRepository taskSignupRepository;
@@ -29,7 +36,13 @@ public class TaskSignupServiceImplementation implements TaskSignupService {
     public List<TaskSignup> getAllSignups() {
         return taskSignupRepository.findAll();
     }
-
+    
+    
+    @Autowired
+    public TaskSignupServiceImplementation(TaskSignupRepository taskSignupRepository) {
+        this.taskSignupRepository = taskSignupRepository;
+    }
+    
     @Override
     public List<TaskSignup> getUserSignups(Long volunteerId) {
         return taskSignupRepository.findByVolunteerId(volunteerId);
@@ -49,7 +62,15 @@ public class TaskSignupServiceImplementation implements TaskSignupService {
     public Optional<TaskSignup> findByTaskIdAndVolunteerId(Long taskId, Long id) {
         return taskSignupRepository.findByTaskIdAndVolunteerId(taskId, id);
     }
+    
+    
+    
+    public boolean isVolunteerSignedUpForTask(Long volunteerId, Long taskId) {
+        return taskSignupRepository.existsByVolunteerIdAndTaskId(volunteerId, taskId);
+    }
 
+    
+   
     @Override
     public void save(TaskSignup taskSignup) {
         taskSignupRepository.save(taskSignup);
@@ -57,6 +78,9 @@ public class TaskSignupServiceImplementation implements TaskSignupService {
 
     @Override
     public void deleteById(Long signupId) {
+        //taskSignupRepository.deleteById(signupId);
+        Optional<TaskSignup> signup = taskSignupRepository.findById(signupId);
+        signup.ifPresent(s -> logger.info("Volunteer {} canceled signup for task {}", s.getVolunteer().getId(), s.getTask().getId()));
         taskSignupRepository.deleteById(signupId);
     }
 

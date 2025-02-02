@@ -48,4 +48,6 @@ public interface TaskService {
      * @return List of tasks matching the search criteria.
      */
     List<Task> searchTasks(String title, String location, String description);
+    
+   
 }
