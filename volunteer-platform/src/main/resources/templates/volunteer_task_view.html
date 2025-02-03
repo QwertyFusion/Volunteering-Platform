@@ -74,7 +74,7 @@
                         </p>
                         <p><strong><i class="bi bi-check-circle"></i> Status: </strong>
                             <span id="taskStatus" class="badge"
-                                  th:text="${task.status}" th:classappend="${task.status == 'Open' ? ' bg-success' : ' bg-danger'}"></span>
+                                  th:text="${task.status}" th:classappend="${task.status == 'AVAILABLE' ? ' bg-success' : ' bg-danger'}"></span>
                         </p>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
 
                 <div class="d-flex gap-2 mt-4">
                     <!-- Apply Now Button -->
-					<form th:action="@{/v/opportunities/{taskId}/apply(taskId=${task.id})}" method="post" id="applyForm" style="display: inline-block;" th:if="${task.status == 'Open' && !alreadySignedUp}">
+					<form th:action="@{/v/opportunities/{taskId}/apply(taskId=${task.id})}" method="post" id="applyForm" style="display: inline-block;" th:if="${task.status == 'AVAILABLE' && !alreadySignedUp}">
                         <button id="applyButton" class="btn btn-primary" type="submit" onclick="applyForTask()">
                             <i class="bi bi-check-circle"></i> Apply Now
                         </button>

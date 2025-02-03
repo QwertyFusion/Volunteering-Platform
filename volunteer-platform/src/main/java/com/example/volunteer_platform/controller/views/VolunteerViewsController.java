@@ -2,7 +2,7 @@ package com.example.volunteer_platform.controller.views;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,31 +28,22 @@ import com.example.volunteer_platform.service.TaskSignupService;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.example.volunteer_platform.controller.TaskController;
-import com.example.volunteer_platform.controller.TaskSignupController;
-import com.example.volunteer_platform.controller.UserController;
-import com.example.volunteer_platform.dto.TaskSignupDto;
-import com.example.volunteer_platform.model.Task;
-import com.example.volunteer_platform.model.TaskSignup;
-import com.example.volunteer_platform.model.Volunteer;
-
-import lombok.extern.slf4j.Slf4j;
-
 @Controller
 @Slf4j
 public class VolunteerViewsController {
 
-    private final TaskController taskController;
-    private final TaskSignupController taskSignupController;
-    private final UserController userController;
-    private final TaskSignupService tasksignupservice;
     @Autowired
-    public VolunteerViewsController(TaskController taskController, TaskSignupController taskSignupController, UserController userController,TaskSignupService tasksignupservice) {
-        this.taskController = taskController;
-        this.taskSignupController = taskSignupController;
-        this.userController = userController;
-		this.tasksignupservice = tasksignupservice;
-    }
+    private TaskController taskController;
+
+    @Autowired
+    private TaskSignupController taskSignupController;
+
+    @Autowired
+    private UserController userController;
+
+    @Autowired
+    private TaskSignupService taskSignupService;
+
 
 
     @GetMapping("/v/opportunities")
@@ -81,9 +72,9 @@ public class VolunteerViewsController {
             Task task = response.getBody();
             mav.addObject("task", task);
 
-            mav.addObject("signups", tasksignupservice.getTaskSignups(taskId));
+            mav.addObject("signups", taskSignupService.getTaskSignups(taskId));
       
-            int applicantsCount = tasksignupservice.getTaskSignups(taskId).size();
+            int applicantsCount = taskSignupService.getTaskSignups(taskId).size();
 
             mav.addObject("applicantsCount", applicantsCount);
             
