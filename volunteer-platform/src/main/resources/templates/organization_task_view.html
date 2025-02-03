@@ -124,6 +124,8 @@
       </div>
       <div class="modal-body">
         <form id="editTaskForm">
+          <input type="hidden" id="organizationId" th:value="${session.userId}" />
+          <input type="hidden" id="taskId" th:value="${task.id}" />
           <div class="mb-3">
             <label for="taskNameInput" class="form-label">Task Name</label>
             <input type="text" class="form-control" id="taskNameInput" th:value="${task.title}" required />
@@ -160,9 +162,11 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- Toast Notification -->
-<div class=" toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
     <div class="d-flex">
       <div class="toast-body">Changes saved successfully!</div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -170,6 +174,59 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function saveTaskDetails() {
+    const organizationId = document.getElementById("organizationId").value;
+    const taskId = document.getElementById("taskId").value;
+
+    const updatedTask = {
+      title: document.getElementById("taskNameInput").value,
+      location: document.getElementById("locationInput").value,
+      eventDate: document.getElementById("eventDateInput").value,
+      applicationDeadline: document.getElementById("applicationDeadlineInput").value,
+      cancellationDeadline: document.getElementById("cancellationDeadlineInput").value,
+      description: document.getElementById("descriptionInput").value
+    };
+
+    fetch(`/api/organizations/${organizationId}/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedTask)
+    })
+            .then(response => {
+              const toast = document.getElementById("toast");
+              if (response.ok) {
+                // Show success toast
+                toast.classList.remove("text-bg-danger");
+                toast.classList.add("text-bg-success");
+                toast.querySelector(".toast-body").textContent = "Changes saved successfully!";
+                toast.style.display = "block";
+                new bootstrap.Toast(toast).show();
+                setTimeout(() => {
+                  window.location.reload(); // Reload the page to reflect changes
+                }, 2000);
+              } else {
+                // Show error toast
+                toast.classList.remove("text-bg-success");
+                toast.classList.add("text-bg-danger");
+                toast.querySelector(".toast-body").textContent = "Error saving changes!";
+                toast.style.display = "block";
+                new bootstrap.Toast(toast).show();
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              const toast = document.getElementById("toast");
+              toast.classList.remove("text-bg-success");
+              toast.classList.add("text-bg-danger");
+              toast.querySelector(".toast-body").textContent = "Error saving changes!";
+              toast.style.display = "block";
+              new bootstrap.Toast(toast).show();
+            });
+  }
+</script>
+
 </body>
 </html>

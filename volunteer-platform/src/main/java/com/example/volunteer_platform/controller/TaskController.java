@@ -208,7 +208,7 @@ public class TaskController {
         if (organizationOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Organization organization = organizationOpt.get();
+
         Task existingTask = taskService.findById(taskId).orElse(null);
         if (existingTask == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -217,6 +217,9 @@ public class TaskController {
             existingTask.setTitle(updatedTask.getTitle() != null ? updatedTask.getTitle() : existingTask.getTitle());
             existingTask.setDescription(updatedTask.getDescription() != null ? updatedTask.getDescription() : existingTask.getDescription());
             existingTask.setLocation(updatedTask.getLocation() != null ? updatedTask.getLocation() : existingTask.getLocation());
+            existingTask.setEventDate(updatedTask.getEventDate() != null ? updatedTask.getEventDate() : existingTask.getEventDate());
+            existingTask.setCancellationDeadline(updatedTask.getCancellationDeadline() != null ? updatedTask.getCancellationDeadline() : existingTask.getCancellationDeadline());
+            existingTask.setApplicationDeadline(updatedTask.getApplicationDeadline() != null ? updatedTask.getApplicationDeadline() : existingTask.getApplicationDeadline());
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
