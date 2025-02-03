@@ -1,8 +1,11 @@
 package com.example.volunteer_platform.controller.views;
 
 import com.example.volunteer_platform.controller.TaskController;
+import com.example.volunteer_platform.controller.TaskSignupController;
 import com.example.volunteer_platform.dto.TaskDto;
 import com.example.volunteer_platform.model.Task;
+import com.example.volunteer_platform.model.TaskSignup;
+import com.example.volunteer_platform.model.Volunteer;
 import com.example.volunteer_platform.service.TaskSignupService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,9 @@ public class OrganizationViewsController {
 
     @Autowired
     private TaskSignupService taskSignupService;
+
+    @Autowired
+    private TaskSignupController taskSignupController;
 
     @GetMapping("/o/current_tasks")
     public ModelAndView currentTasks(HttpServletRequest request) {
@@ -60,7 +66,7 @@ public class OrganizationViewsController {
     @GetMapping("/o/task/view")
     public ModelAndView viewTask(@RequestParam Long taskId) {
         ModelAndView mav = new ModelAndView("organization_task_view");
-        ResponseEntity<Task> response = taskController.getTaskById(taskId); // Assuming you have this method in TaskController
+        ResponseEntity<Task> response = taskController.getTaskById(taskId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             int applicantsCount = taskSignupService.getTaskSignups(taskId).size();
@@ -68,6 +74,22 @@ public class OrganizationViewsController {
             Task task = response.getBody();
             mav.addObject("task", task);
             log.info("Task fetched successfully: {}", task);
+        } else {
+            mav.addObject("errorMessage", "Unable to load task details. Please try again later.");
+            log.error("Failed to fetch task, status code: {}", response.getStatusCode());
+        }
+
+        return mav;
+    }
+
+    @GetMapping("/o/task/applicants")
+    public ModelAndView viewTaskApplicants(@RequestParam Long taskId) {
+        ModelAndView mav = new ModelAndView("organization_task_applicants");
+        ResponseEntity<List<TaskSignup>> response = taskSignupController.getTaskSignups(taskId);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<TaskSignup> taskSignups = response.getBody();
+            mav.addObject("task", taskSignups != null ? taskSignups.toArray(new TaskSignup[0]) : new TaskSignup[0]); // Get volunteer details like for each loop taskSignup: taskSignups, then taskSignup.getVolunteer().getName()
         } else {
             mav.addObject("errorMessage", "Unable to load task details. Please try again later.");
             log.error("Failed to fetch task, status code: {}", response.getStatusCode());
