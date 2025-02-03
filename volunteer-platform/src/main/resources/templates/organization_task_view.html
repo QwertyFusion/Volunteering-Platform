@@ -73,7 +73,8 @@
           </p>
           <p>
             <strong><i class="bi bi-check-circle"></i> Status: </strong>
-            <span th:text="${task.status}" class="badge bg-success"></span>
+            <span id="taskStatus" class="badge"
+                  th:text="${task.status}" th:classappend="${task.status == task.status.AVAILABLE ? ' bg-success' : ' bg-danger'}"></span>
           </p>
         </div>
       </div>
@@ -96,16 +97,20 @@
         <p th:text="${task.description}" class="ms-4"></p>
       </div>
 
+      <hr />
+
       <div class="d-flex gap-2 mt-4">
         <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal">
           <i class="bi bi-pencil"></i> Edit
         </button>
-        <button class="btn btn-danger" onclick="deleteTask()">
-          <i class="bi bi-trash"></i> Delete
-        </button>
-        <a th:href="@{/o/task/applicants(taskId=${task.id})}" class="btn btn-primary">
+        <a th:href="@{/o/task/applicants(taskId=${task.id})}" class="btn btn-outline-primary">
           <i class="bi bi-people"></i> View Applicants
         </a>
+        <div class="ms-auto">
+          <button class="btn btn-outline-danger" onclick="confirmDeleteTask()">
+            <i class="bi bi-trash"></i> Delete
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -124,6 +129,8 @@
       </div>
       <div class="modal-body">
         <form id="editTaskForm">
+          <input type="hidden" id="organizationId" th:value="${session.userId}" />
+          <input type="hidden" id="taskId" th:value="${task.id}" />
           <div class="mb-3">
             <label for="taskNameInput" class="form-label">Task Name</label>
             <input type="text" class="form-control" id="taskNameInput" th:value="${task.title}" required />
@@ -160,9 +167,30 @@
   </div>
 </div>
 
+<!-- Confirmation Modal for Deletion -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this task? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 <!-- Toast Notification -->
-<div class=" toast-container position-fixed bottom-0 end-0 p-3">
-  <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
     <div class="d-flex">
       <div class="toast-body">Changes saved successfully!</div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -170,6 +198,129 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function confirmDeleteTask() {
+    const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+    confirmDeleteModal.show();
+  }
+
+  function deleteTask() {
+    const organizationId = document.getElementById("organizationId").value;
+    const taskId = document.getElementById("taskId").value;
+
+    fetch(`/api/organizations/${organizationId}/tasks/${taskId}`, {
+      method: 'DELETE'
+    })
+            .then(response => {
+              const toast = document.getElementById("toast");
+              if (response.ok) {
+                // Redirect to current tasks page
+                window.location.href = "/o/current_tasks";
+              } else if (response.status === 403) {
+                // Show message that task cannot be deleted due to signups
+                alert("This task cannot be deleted because there are applicants signed up for it.");
+                // Show cancel task button
+                const cancelButton = document.createElement("button");
+                cancelButton.className = "btn btn-warning";
+                cancelButton.innerText = "Cancel Task";
+                cancelButton.onclick = () => cancelTask(taskId, organizationId);
+                document.querySelector(".modal-body").appendChild(cancelButton);
+              } else {
+                // Handle other errors
+                alert("An error occurred while trying to delete the task.");
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert("An error occurred while trying to delete the task.");
+            });
+  }
+
+  function cancelTask(taskId, organizationId) {
+    fetch(`/api/organizations/${organizationId}/tasks/${taskId}/cancel`, {
+      method: 'PUT'
+    })
+            .then(response => {
+              const toast = document.getElementById("toast");
+              if (response.ok) {
+                // Show success message
+                toast.classList.remove("text-bg-danger");
+                toast.classList.add("text-bg-success");
+                toast.querySelector(".toast-body").textContent = "Task cancelled successfully!";
+                toast.style.display = "block";
+                new bootstrap.Toast(toast).show();
+              } else {
+                // Show error message
+                toast.classList.remove("text-bg-success");
+                toast.classList.add("text-bg-danger");
+                toast.querySelector(".toast-body").textContent = "Error cancelling task!";
+                toast.style.display = "block";
+                new bootstrap.Toast(toast).show();
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              const toast = document.getElementById("toast");
+              toast.classList.remove("text-bg-success");
+              toast.classList.add("text-bg-danger");
+              toast.querySelector(".toast-body").textContent = "Error cancelling task!";
+              toast.style.display = "block";
+              new bootstrap.Toast(toast).show();
+            });
+  }
+
+  function saveTaskDetails() {
+    const organizationId = document.getElementById("organizationId").value;
+    const taskId = document.getElementById("taskId").value;
+
+    const updatedTask = {
+      title: document.getElementById("taskNameInput").value,
+      location: document.getElementById("locationInput").value,
+      eventDate: document.getElementById("eventDateInput").value,
+      applicationDeadline: document.getElementById("applicationDeadlineInput").value,
+      cancellationDeadline: document.getElementById("cancellationDeadlineInput").value,
+      description: document.getElementById("descriptionInput").value
+    };
+
+    fetch(`/api/organizations/${organizationId}/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedTask)
+    })
+            .then(response => {
+              const toast = document.getElementById("toast");
+              if (response.ok) {
+                // Show success toast
+                toast.classList.remove("text-bg-danger");
+                toast.classList.add("text-bg-success");
+                toast.querySelector(".toast-body").textContent = "Changes saved successfully!";
+                toast.style.display = "block";
+                new bootstrap.Toast(toast).show();
+                setTimeout(() => {
+                  window.location.reload(); // Reload the page to reflect changes
+                }, 2000);
+              } else {
+                // Show error toast
+                toast.classList.remove("text-bg-success");
+                toast.classList.add("text-bg-danger");
+                toast.querySelector(".toast-body").textContent = "Error saving changes!";
+                toast.style.display = "block";
+                new bootstrap.Toast(toast).show();
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              const toast = document.getElementById("toast");
+              toast.classList.remove("text-bg-success");
+              toast.classList.add("text-bg-danger");
+              toast.querySelector(".toast-body").textContent = "Error saving changes!";
+              toast.style.display = "block";
+              new bootstrap.Toast(toast).show();
+            });
+  }
+</script>
+
 </body>
 </html>

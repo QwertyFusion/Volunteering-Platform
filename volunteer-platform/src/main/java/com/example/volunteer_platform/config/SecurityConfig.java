@@ -34,8 +34,9 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/home", "/login", "/signup/**", "/api/**", "/register/**").permitAll() // Ensure these are permitted
+                        .requestMatchers("/o/profile/**", "/v/profile/**").authenticated()
                         .requestMatchers("/o/**").hasRole("ORGANIZATION")
-                        .requestMatchers("/v/**").hasRole("VOLUNTEER") 
+                        .requestMatchers("/v/**").hasRole("VOLUNTEER")
                         .requestMatchers(HttpMethod.DELETE, "/v/**").hasRole("VOLUNTEER")
                         .anyRequest().authenticated()
                 )

@@ -21,4 +21,10 @@ public class TaskPartialDto {
 
     @Future(message = "Event date must be in the future")
     private LocalDate eventDate; // When the event will be hosted
+
+    @Future(message = "Cancellation deadline must be a future date")
+    private  LocalDate cancellationDeadline;
+
+    @Future(message = "Application deadline must be a future date")
+    private  LocalDate applicationDeadline;
 }

@@ -56,7 +56,7 @@
                                             <a class="dropdown-item" th:href="@{/v/profile}">Profile</a>
                                         </li>
                                         <li th:if="${session.role == 'ROLE_ORGANIZATION'}">
-                                            <a class="dropdown-item" th:href="@{/o/profile}">Profile</a>
+                                            <a class="dropdown-item" th:href="@{/o/profile(id=${session.userId})}">Profile</a>
                                         </li>
                                         <li th:if="${session.role == 'ROLE_VOLUNTEER'}">
                                             <a class="dropdown-item" th:href="@{/v/profile/edit}">Profile Settings</a>

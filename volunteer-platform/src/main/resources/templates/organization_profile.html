@@ -50,7 +50,7 @@
         .profile-container__picture {
             width: 100px;
             height: 100px;
-            background-color: #3d94eb;
+            background-color: #ef5b25;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -89,22 +89,17 @@
     >
         <div class="profile-container__picture">
             <i
-                    class="bi bi-person-circle"
+                    class="bi bi-building"
                     style="font-size: 50px; color: white"
             ></i>
         </div>
         <div>
-            <h2 class="profile-container__name"><span th:text="${session.name}">User </span></h2>
+            <h2 class="profile-container__name"><span th:text="${orgName}">User </span></h2>
             <p>
-                <strong>Address:</strong> <span th:text="${session.address}"> No Address </span>
-            </p>
-            <p>
-                <strong>Address:</strong> <a th:href="${session.website}" th:text="${session.website}"> No Website </a>
-            </p>
-            <p>
-                <strong>Tasks:</strong>
-                <!-- Card display of tasks -->
-
+                <strong>Address:</strong> <span th:text="${orgAddress}"> No Address </span> <br>
+                <strong>Website:</strong> <a th:href="${orgWebsite}" th:text="${orgWebsite}"> No Website </a> <br>
+                <strong>Email:</strong> <a th:href="${orgEmail}" th:text="${orgEmail}"> No Email ID</a> <br>
+                <strong>Contact No.:</strong> <span th:text="${orgPhone}"> No Email ID</span>
             </p>
             <div class="profile-container__ratings" id="profile-rating">
             <span data-value="1" class="star"
@@ -117,25 +112,26 @@
 
     <div class="profile-container__section ratings-section">
         <h3>Ratings by Users</h3>
+        <hr />
         <div>
             <input
                     type="text"
                     id="review-title"
                     class="form-control"
                     placeholder="Review Title"
+                    th:hidden="${orgId == session.userId}"
             />
             <textarea
                     id="review-description"
                     class="form-control mt-2"
                     rows="3"
                     placeholder="Review Description"
+                    th:hidden="${orgId == session.userId}"
             ></textarea>
-            <div class="mt-2 profile-container__ratings" id="user-rating">
-            <span data-value="1" class="star"
-            ><strong>&#9734;&#9734;&#9734;&#9734;&#9734;</strong></span
-            >
+            <div class="mt-2 profile-container__ratings" id="user-rating" th:hidden="${orgId == session.userId}">
+            <span data-value="1" class="star"><strong>&#9734;&#9734;&#9734;&#9734;&#9734;</strong></span>
             </div>
-            <button class="btn btn-success btn-sm mt-2" id="submit-review">
+            <button class="btn btn-success btn-sm mt-2" id="submit-review" th:hidden="${orgId == session.userId}">
                 Submit Review
             </button>
         </div>
