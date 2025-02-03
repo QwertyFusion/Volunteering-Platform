@@ -2,10 +2,11 @@ package com.example.volunteer_platform.controller.views;
 
 import com.example.volunteer_platform.controller.TaskController;
 import com.example.volunteer_platform.controller.TaskSignupController;
+import com.example.volunteer_platform.controller.UserController;
 import com.example.volunteer_platform.dto.TaskDto;
+import com.example.volunteer_platform.model.Organization;
 import com.example.volunteer_platform.model.Task;
 import com.example.volunteer_platform.model.TaskSignup;
-import com.example.volunteer_platform.model.Volunteer;
 import com.example.volunteer_platform.service.TaskSignupService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,9 @@ public class OrganizationViewsController {
 
     @Autowired
     private TaskSignupController taskSignupController;
+
+    @Autowired
+    private UserController userController;
 
     @GetMapping("/o/current_tasks")
     public ModelAndView currentTasks(HttpServletRequest request) {
@@ -109,7 +113,24 @@ public class OrganizationViewsController {
     }
 
     @GetMapping("/o/profile")
-    public ModelAndView profile() {
-        return new ModelAndView("organization_profile");
+    public ModelAndView profile(@RequestParam Long id) {
+        ModelAndView mav = new ModelAndView("organization_profile");
+        log.info("Fetching profile for orgId: {}", id);
+        ResponseEntity<Organization> response = userController.getOrganizationById(id);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Organization org = response.getBody();
+            mav.addObject("orgId", id);
+            assert org != null;
+            mav.addObject("orgName", org.getName());
+            mav.addObject("orgEmail", org.getEmail());
+            mav.addObject("orgAddress", org.getAddress());
+            mav.addObject("orgWebsite", org.getWebsite());
+            mav.addObject("orgPhone", org.getPhoneNumber());
+        } else {
+            mav.addObject("errorMessage", "Unable to load organization details. Please try again later.");
+            log.error("Failed to fetch task, status code: {}", response.getStatusCode());
+        }
+        return mav;
     }
 }
