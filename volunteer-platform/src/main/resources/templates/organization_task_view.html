@@ -73,7 +73,8 @@
           </p>
           <p>
             <strong><i class="bi bi-check-circle"></i> Status: </strong>
-            <span th:text="${task.status}" class="badge bg-success"></span>
+            <span id="taskStatus" class="badge"
+                  th:text="${task.status}" th:classappend="${task.status == task.status.AVAILABLE ? ' bg-success' : ' bg-danger'}"></span>
           </p>
         </div>
       </div>
