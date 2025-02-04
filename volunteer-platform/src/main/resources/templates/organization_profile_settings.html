@@ -60,105 +60,40 @@
           <div class="card-body">
             <h3 class="card-title text-center mb-4">Account Settings</h3>
             <div id="formFields">
-              <label for="username" class="form-label">Username</label>
+              <input type="hidden" name="organizationId" th:value="${session.userId}" />
+              <label for="name" class="form-label">Username</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="username"
-                        th:value="${session.name}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'username')"
-                >
-                  Edit
-                </button>
+                <input type="text" class="form-control me-2" id="name" th:value="${session.name}" disabled />
+                <button class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'name')">Edit</button>
               </div>
               <label for="email" class="form-label">Email</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="email"
-                        class="form-control me-2"
-                        id="email"
-                        th:value="${session.email}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'email')"
-                >
-                  Edit
-                </button>
+                <input type="email" class="form-control me-2" id="email" th:value="${session.email}" disabled />
+                <button class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'email')">Edit</button>
               </div>
-              <label for="phone" class="form-label">Phone Number</label>
+              <label for="phoneNumber" class="form-label">Phone Number</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="phone"
-                        th:value="${session.phone}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'phone')"
-                >
-                  Edit
-                </button>
+                <input type="text" class="form-control me-2" id="phoneNumber" th:value="${session.phone}" disabled />
+                <button class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'phoneNumber')">Edit</button>
               </div>
               <label for="address" class="form-label">Address</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="address"
-                        th:value="${session.address}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'address')"
-                >
-                  Edit
-                </button>
+                <input type="text" class="form-control me-2" id="address" th:value="${session.address}" disabled />
+                <button class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'address')">Edit</button>
               </div>
               <label for="website" class="form-label">Website</label>
               <div class="mb-3 d-flex align-items-center">
-                <input
-                        type="text"
-                        class="form-control me-2"
-                        id="website"
-                        th:value="${session.website}"
-                        disabled
-                />
-                <button
-                        class="btn btn-outline-primary btn-sm"
-                        onclick="toggleEdit(this, 'website')"
-                >
-                  Edit
-                </button>
+                <input type="text" class="form-control me-2" id="website" th:value="${session.website}" disabled />
+                <button class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'website')">Edit</button>
               </div>
               <label class="form-label">Password</label>
               <div class="mb-3">
-                <button
-                        class="btn btn-outline-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#changePasswordModal"
-                >
-                  Change Password
-                </button>
+                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">Change Password</button>
               </div>
               <hr />
               <label class="form-label lead">Remove Account</label>
-              <p>
-                Once an account is deleted, all tasks will be lost and there
-                is no way of retrieval.
-              </p>
-              <button type="button" class="btn btn-outline-danger">
-                Delete Account
-              </button>
+              <p>Once an account is deleted, all tasks will be lost and there is no way of retrieval.</p>
+              <button type="button" class="btn btn-outline-danger">Delete Account</button>
             </div>
           </div>
         </div>
@@ -166,6 +101,16 @@
     </div>
   </div>
 </main>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+    <div class="d-flex">
+      <div class="toast-body">Changes saved successfully!</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
 
 <!-- Footer -->
 <footer th:replace="~{/fragments/footer::footer}"></footer>
@@ -237,13 +182,63 @@
 
   function toggleEdit(button, fieldId) {
     const field = document.getElementById(fieldId);
-    if (field.disabled) {
-      field.disabled = false;
-      button.textContent = "Save";
+    const isEditing = !field.disabled;
+
+    if (isEditing) {
+      // Save the changes
+      saveField(fieldId);
+      button.textContent = "Edit"; // Change button text back to Edit
     } else {
-      field.disabled = true;
-      button.textContent = "Edit";
+      // Enable editing
+      field.disabled = false;
+      button.textContent = "Save"; // Change button text to Save
     }
+  }
+
+  function saveField(fieldId) {
+    const field = document.getElementById(fieldId);
+    const organizationId = document.querySelector('input[name="organizationId"]').value;
+
+    // Prepare the data to send
+    const updatedData = {
+      [fieldId]: field.value
+    };
+
+    fetch(`/api/organizations/${organizationId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedData)
+    })
+            .then(response => {
+              if (response.ok) {
+                showToast('Changes saved successfully!');
+                field.disabled = true; // Disable the field after saving
+              } else {
+                showToast('Error updating profile. Please try again.', 'danger');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              showToast('Error updating profile. Please try again.', 'danger');
+            });
+  }
+
+  function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    toast.querySelector('.toast-body').textContent = message;
+    toast.classList.remove('text-bg-success', 'text-bg-danger');
+    toast.classList.add(`text-bg-${type}`);
+    toast.style.display = 'block'; // Show the toast
+
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+
+    // Hide the toast after a delay
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 3000); // Adjust the duration as needed
   }
 </script>
 </body>
