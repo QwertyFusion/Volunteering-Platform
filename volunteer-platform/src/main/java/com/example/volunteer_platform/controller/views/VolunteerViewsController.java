@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.example.volunteer_platform.enums.TaskStatus;
 import com.example.volunteer_platform.model.Organization;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,9 +86,10 @@ public class VolunteerViewsController {
     }
 
     @GetMapping("/v/opportunities/{taskId}")
-    public ModelAndView viewTaskDetails(@PathVariable Long taskId) {
+    public ModelAndView viewTaskDetails(@PathVariable Long taskId, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("volunteer_task_view");
         ResponseEntity<Task> response = taskController.getTaskById(taskId);
+        Long volunteerId = (Long) request.getSession().getAttribute("userId");
 
         if (response.getStatusCode().is2xxSuccessful()) {
             Task task = response.getBody();
@@ -97,6 +100,8 @@ public class VolunteerViewsController {
             int applicantsCount = taskSignupService.getTaskSignups(taskId).size();
 
             mav.addObject("applicantsCount", applicantsCount);
+
+            mav.addObject("alreadySignedUp", taskSignupController.isVolunteerSignedUp(taskId, volunteerId).getBody());
             
             log.info("Task details fetched successfully for ID: {}", taskId);
         } else {
