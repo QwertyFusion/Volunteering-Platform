@@ -3,16 +3,13 @@ package com.example.volunteer_platform.controller.views;
 import java.security.Principal;
 import java.util.List;
 
+import com.example.volunteer_platform.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -151,20 +148,25 @@ public class VolunteerViewsController {
     }
 
     @GetMapping("/v/profile")
+    public ModelAndView profile(@RequestParam Long id) {
+        ModelAndView mav = new ModelAndView("volunteer_profile");
+        log.info("Fetching profile for volId: {}", id);
+        ResponseEntity<Volunteer> response = userController.getVolunteerById(id);
 
-    public ModelAndView profile(Principal principal) {
-        String email = principal.getName();
-        ResponseEntity<Volunteer> volunteerResponse = userController.findVolunteerByEmailOptional(email);
-        ModelAndView modelAndView = new ModelAndView("volunteer_profile");
-
-        if (volunteerResponse != null && volunteerResponse.getBody() != null) {
-            modelAndView.addObject("volunteer", volunteerResponse.getBody());
-            log.info("Profile fetched successfully for volunteer with email: {}", email);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Volunteer volunteer = response.getBody();
+            mav.addObject("volId", id);
+            assert volunteer != null;
+            mav.addObject("volName", volunteer.getName());
+            mav.addObject("volEmail", volunteer.getEmail());
+            mav.addObject("volGender", volunteer.getGender());
+            mav.addObject("volSkills", volunteer.getSkills());
+            mav.addObject("volPhone", volunteer.getPhoneNumber());
         } else {
-            modelAndView.addObject("errorMessage", "Profile not found!");
-            log.error("Profile not found for volunteer with email: {}", email);
+            mav.addObject("errorMessage", "Unable to load volunteer details. Please try again later.");
+            log.error("Failed to fetch task, status code: {}", response.getStatusCode());
         }
-        return modelAndView;
+        return mav;
     }
   
     @GetMapping("/v/history")
