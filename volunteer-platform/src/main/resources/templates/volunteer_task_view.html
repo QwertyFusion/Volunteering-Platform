@@ -47,32 +47,38 @@
 
     <!-- Task Details Section -->
     <main class="container my-5">
-        <section class="task-card card shadow" th:if="${task}">
+        <div class="task-card card shadow">
             <div class="card-header bg-primary text-white">
-                <h5 class="mb-0" th:text="${task.title}">Title</h5>
+                <h5 class="mb-0" th:text="${task.title}">Task Title</h5>
             </div>
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <p><strong><i class="bi bi-calendar-event"></i> Event Date: </strong>
-                            <span id="eventDate" th:text="${task.eventDate}"></span>
+                        <p>
+                            <strong><i class="bi bi-calendar-event"></i> Event Date:</strong>
+                            <span th:text="${task.eventDate}"></span>
                         </p>
-                        <p><strong><i class="bi bi-clock"></i> Application Deadline: </strong>
-                            <span id="applicationDeadline" th:text="${task.applicationDeadline}"></span>
+                        <p>
+                            <strong><i class="bi bi-clock"></i> Application Deadline:</strong>
+                            <span th:text="${task.applicationDeadline}"></span>
                         </p>
-                        <p><strong><i class="bi bi-clock-history"></i> Cancellation Deadline: </strong>
-                            <span id="cancellationDeadline" th:text="${task.cancellationDeadline}"></span>
+                        <p>
+                            <strong><i class="bi bi-clock-history"></i> Cancellation Deadline:</strong>
+                            <span th:text="${task.cancellationDeadline}"></span>
                         </p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong><i class="bi bi-geo-alt"></i> Location: </strong>
-                            <span id="taskLocation" th:text="${task.location}" th:if="${task.location} != null"></span>
+                        <p>
+                            <strong><i class="bi bi-geo-alt"></i> Location: </strong>
+                            <span th:text="${task.location}"></span>
                         </p>
 
-                        <p><strong><i class="bi bi-people"></i> Applicants: </strong>
-                            <span id="applicantsCount" th:text="${applicantsCount}"></span>
+                        <p>
+                            <strong><i class="bi bi-people"></i> Applicants: </strong>
+                            <span th:text="${applicantsCount}">0</span>
                         </p>
-                        <p><strong><i class="bi bi-check-circle"></i> Status: </strong>
+                        <p>
+                            <strong><i class="bi bi-check-circle"></i> Status: </strong>
                             <span id="taskStatus" class="badge"
                                   th:text="${task.status}" th:classappend="${task.status == task.status.AVAILABLE ? ' bg-success' : ' bg-danger'}"></span>
                         </p>
@@ -80,51 +86,58 @@
                 </div>
 
                 <div class="mb-4">
-                    <h6 class="mb-2"><strong><i class="bi bi-tools"></i> Required Skills:</strong></h6>
+                    <h6 class="mb-2">
+                        <strong><i class="bi bi-tools"></i> Required Skills:</strong>
+                    </h6>
                     <div id="skillsList" class="ms-4">
-                        <span th:each="skill : ${task.skills}"
-                              class="badge bg-secondary me-2"
-                              th:text="${skill}"></span>
+                        <span th:each="skill : ${task.skills}" class="badge bg-secondary me-1 mb-1" th:text="${skill.name}"></span>
                     </div>
                 </div>
 
-                <hr>
+                <hr />
 
                 <div class="mb-4">
-                    <h6 class="mb-2"><strong><i class="bi bi-card-text"></i> Description:</strong></h6>
-                    <p id="taskDescription" class="ms-4" th:text="${task.description}">
-                    </p>
+                    <h6 class="mb-2">
+                        <strong><i class="bi bi-card-text"></i> Description:</strong>
+                    </h6>
+                    <p th:text="${task.description}" class="ms-4"></p>
                 </div>
 
-                <!-- Success Message -->
-                <div id="successMessage" class="alert alert-success mt-3" style="display: none;">
-                    Task signed up successfully!
-                </div>
+                <hr />
 
                 <div class="d-flex gap-2 mt-4">
                     <!-- Apply Now Button -->
-					<form th:action="@{/v/opportunities/{taskId}/apply(taskId=${task.id})}" method="post" id="applyForm" style="display: inline-block;" th:if="${task.status == 'AVAILABLE' && !alreadySignedUp}">
+					<form th:action="@{/v/opportunities/{taskId}/apply(taskId=${task.id})}" method="post" id="applyForm" style="display: inline-block;" th:if="${task.status == task.status.AVAILABLE && !alreadySignedUp}">
                         <button id="applyButton" class="btn btn-primary" type="submit" onclick="applyForTask()">
                             <i class="bi bi-check-circle"></i> Apply Now
                         </button>
                     </form>
 
                     <!-- Cancel Participation Button -->
-					<form th:action="@{/v/opportunities/{taskId}/cancel(taskId=${task.id})}" method="post" id="cancelForm" style="display: inline-block;" th:if="${alreadySignedUp}">
-                        <button id="cancelButton" class="btn btn-danger" type="submit" onclick="cancelParticipation()">
+					<form th:action="@{/volunteer/${session.userId}/task/${taskId}}" method="delete" id="cancelForm" style="display: inline-block;" th:if="${alreadySignedUp}">
+                        <button id="cancelButton" class="btn btn-danger" type="button"
+                                onclick="cancelParticipation()" th:if="${alreadySignedUp}">
                             <i class="bi bi-x-circle"></i> Cancel Participation
                         </button>
                     </form>
                 </div>
 
             </div>
-        </section>
+        </div>
     </main>
 
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+            <div class="d-flex">
+                <div class="toast-body">Task Signed up successfully!</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 
 
-
-  <!-- Footer -->
+    <!-- Footer -->
   <footer class="footer p-sm-2 p-5 bg-dark text-white text-center position-relative">
     <div class="container d-flex justify-content-between align-items-center">
       <p class="lead m-0">
@@ -144,33 +157,75 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
- 
+
   <script>
 	function applyForTask() {
-	     document.getElementById("successMessage").style.display = "block";
-	     document.getElementById("applyButton").style.display = "none";
+        showToast("Task signup successful!", "success");
+        setTimeout(() => {
+            window.location.reload(); // Reload the page to reflect changes
+        }, 2000);
+	     document.getElementById("applyButton").hidden=true;
 	     document.getElementById("cancelButton").style.display = "block";
 	   }
 
-	   function cancelParticipation() {
-	     document.getElementById("cancelButton").style.display = "none";
-	     document.getElementById("applyButton").style.display = "block";
-	     document.getElementById("successMessage").style.display = "none";
-	   }
+    function cancelParticipation() {
+        const userId = "[[${session.userId}]]";  // Check if Thymeleaf is replacing this correctly
+        const taskId = "[[${task.id}]]";  // Check if Thymeleaf is replacing this correctly
 
-	   window.onload = function() {
-	       // Dynamically adjust button visibility
-	       var alreadySignedUp =  /*[[${alreadySignedUp}]]*/;
-	       if (alreadySignedUp) {
-	           document.getElementById("applyButton").style.display = "none";
-	           document.getElementById("cancelButton").style.display = "inline-block";
-	       } else {
-	           document.getElementById("applyButton").style.display = "inline-block";
-	           document.getElementById("cancelButton").style.display = "none";
-	       }
-	   }
-	     
-   </script>
+        console.log("Attempting to cancel participation for:", userId, taskId); // Debugging log
+
+        fetch(`/api/task-signups/volunteer/${userId}/task/${taskId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => {
+                console.log("Response status:", response.status); // Debugging log
+                if (response.ok) {
+
+                    // Only hide elements if they exist
+                    const cancelButton = document.getElementById("cancelButton");
+                    if (cancelButton) cancelButton.style.display = "none";
+
+                    const applyButton = document.getElementById("applyButton");
+                    if (applyButton) applyButton.hidden = false;
+                    window.location.reload(); // Reload the page to reflect changes
+                    showToast("Successfully canceled participation!", "success");
+                } else if (response.status === 400) {
+                    showToast("Cancellation deadline has passed!", "danger");
+                } else if (response.status === 404) {
+                    showToast("Task signup does not exist.", "warning");
+                } else {
+                    showToast("An error occurred, please try again.", "danger");
+                }
+            })
+            .catch(error => {
+                console.error("Error canceling participation:", error);
+                showToast("Failed to cancel participation.", "danger");
+            });
+    }
+
+
+    function showToast(message, type) {
+        const toastElement = document.getElementById("toast");
+
+        // Ensure the toast's Bootstrap instance is properly initialized
+        const toast = new bootstrap.Toast(toastElement);
+
+        // Update toast message
+        toastElement.querySelector(".toast-body").textContent = message;
+
+        // Update toast background color
+        toastElement.classList.remove("text-bg-success", "text-bg-danger", "text-bg-warning");
+        toastElement.classList.add(`text-bg-${type}`);
+
+        // Show the toast
+        toast.show();
+    }
+
+
+  </script>
 </body>
 </html>
 

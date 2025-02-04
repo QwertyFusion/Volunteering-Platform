@@ -106,8 +106,6 @@ public class TaskSignupController {
         return new ResponseEntity<>(exists, HttpStatus.OK);
     }
     
-    
-
 
     /**
      * Sign up a volunteer for a task.
@@ -156,7 +154,7 @@ public class TaskSignupController {
         //log.info("Received request to cancel signup for volunteer {} and task {}", volunteerId, taskId);
     	log.info("Checking signup for volunteer {} and task {}", volunteerId, taskId);
         Optional<TaskSignup> existingSignup = taskSignupService.findByTaskIdAndVolunteerId(taskId, volunteerId);
-        if (existingSignup.isEmpty()) {
+        if (existingSignup.get().getSignupId() == null) {
            // log.warn("No signup found for volunteer {} and task {}", volunteerId, taskId);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -177,7 +175,7 @@ public class TaskSignupController {
         //log.info("Deleting signup with ID: {}", signup.getSignupId());
         taskSignupService.deleteById(signup.getSignupId());
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**

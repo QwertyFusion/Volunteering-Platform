@@ -1,18 +1,21 @@
 package com.example.volunteer_platform.controller.views;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.example.volunteer_platform.enums.TaskStatus;
+import com.example.volunteer_platform.model.Organization;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -44,8 +47,6 @@ public class VolunteerViewsController {
     @Autowired
     private TaskSignupService taskSignupService;
 
-
-
     @GetMapping("/v/opportunities")
     public ModelAndView viewOpportunities() {
         ModelAndView mav = new ModelAndView("volunteer_opportunities");
@@ -53,8 +54,29 @@ public class VolunteerViewsController {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             List<Task> tasks = response.getBody();
-            mav.addObject("tasks", tasks != null ? tasks.toArray(new Task[0]) : new Task[0]);
-            log.info("Tasks fetched successfully: {}", tasks != null ? tasks.size() : 0);
+            List<Task> availableTasks = tasks != null ?
+                    tasks.stream()
+                            .filter(task -> TaskStatus.AVAILABLE.equals(task.getStatus()))
+                            .toList() :
+                    new ArrayList<>();
+
+            // Create a map to hold organization names
+            Map<Long, String> organizationNames = new HashMap<>();
+
+            // Fetch organization names for each task
+            for (Task task : availableTasks) {
+                ResponseEntity<Organization> orgResponse = userController.getOrganizationById(task.getOrganizationId());
+                if (orgResponse.getStatusCode().is2xxSuccessful() && orgResponse.getBody() != null) {
+                    organizationNames.put(task.getOrganizationId(), orgResponse.getBody().getName());
+                } else {
+                    log.error("Organization not found with id: {}", task.getOrganizationId());
+                    organizationNames.put(task.getOrganizationId(), "Unknown Organization"); // Fallback if organization not found
+                }
+            }
+
+            mav.addObject("tasks", availableTasks.toArray(new Task[0]));
+            mav.addObject("organizationNames", organizationNames); // Add the map to the model
+            log.info("Tasks fetched successfully: {}", availableTasks.size());
         } else {
             mav.addObject("errorMessage", "Unable to load tasks. Please try again later.");
             log.error("Failed to fetch tasks, status code: {}", response.getStatusCode());
@@ -64,9 +86,10 @@ public class VolunteerViewsController {
     }
 
     @GetMapping("/v/opportunities/{taskId}")
-    public ModelAndView viewTaskDetails(@PathVariable Long taskId) {
+    public ModelAndView viewTaskDetails(@PathVariable Long taskId, HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("volunteer_task_view");
         ResponseEntity<Task> response = taskController.getTaskById(taskId);
+        Long volunteerId = (Long) request.getSession().getAttribute("userId");
 
         if (response.getStatusCode().is2xxSuccessful()) {
             Task task = response.getBody();
@@ -77,6 +100,8 @@ public class VolunteerViewsController {
             int applicantsCount = taskSignupService.getTaskSignups(taskId).size();
 
             mav.addObject("applicantsCount", applicantsCount);
+
+            mav.addObject("alreadySignedUp", taskSignupController.isVolunteerSignedUp(taskId, volunteerId).getBody());
             
             log.info("Task details fetched successfully for ID: {}", taskId);
         } else {
@@ -151,20 +176,25 @@ public class VolunteerViewsController {
     }
 
     @GetMapping("/v/profile")
+    public ModelAndView profile(@RequestParam Long id) {
+        ModelAndView mav = new ModelAndView("volunteer_profile");
+        log.info("Fetching profile for volId: {}", id);
+        ResponseEntity<Volunteer> response = userController.getVolunteerById(id);
 
-    public ModelAndView profile(Principal principal) {
-        String email = principal.getName();
-        ResponseEntity<Volunteer> volunteerResponse = userController.findVolunteerByEmailOptional(email);
-        ModelAndView modelAndView = new ModelAndView("volunteer_profile");
-
-        if (volunteerResponse != null && volunteerResponse.getBody() != null) {
-            modelAndView.addObject("volunteer", volunteerResponse.getBody());
-            log.info("Profile fetched successfully for volunteer with email: {}", email);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Volunteer volunteer = response.getBody();
+            mav.addObject("volId", id);
+            assert volunteer != null;
+            mav.addObject("volName", volunteer.getName());
+            mav.addObject("volEmail", volunteer.getEmail());
+            mav.addObject("volGender", volunteer.getGender());
+            mav.addObject("volSkills", volunteer.getSkills());
+            mav.addObject("volPhone", volunteer.getPhoneNumber());
         } else {
-            modelAndView.addObject("errorMessage", "Profile not found!");
-            log.error("Profile not found for volunteer with email: {}", email);
+            mav.addObject("errorMessage", "Unable to load volunteer details. Please try again later.");
+            log.error("Failed to fetch task, status code: {}", response.getStatusCode());
         }
-        return modelAndView;
+        return mav;
     }
   
     @GetMapping("/v/history")
