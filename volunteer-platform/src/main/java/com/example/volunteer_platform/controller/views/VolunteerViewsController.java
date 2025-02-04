@@ -1,8 +1,12 @@
 package com.example.volunteer_platform.controller.views;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.example.volunteer_platform.enums.TaskStatus;
 import com.example.volunteer_platform.model.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,8 +45,6 @@ public class VolunteerViewsController {
     @Autowired
     private TaskSignupService taskSignupService;
 
-
-
     @GetMapping("/v/opportunities")
     public ModelAndView viewOpportunities() {
         ModelAndView mav = new ModelAndView("volunteer_opportunities");
@@ -50,8 +52,29 @@ public class VolunteerViewsController {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             List<Task> tasks = response.getBody();
-            mav.addObject("tasks", tasks != null ? tasks.toArray(new Task[0]) : new Task[0]);
-            log.info("Tasks fetched successfully: {}", tasks != null ? tasks.size() : 0);
+            List<Task> availableTasks = tasks != null ?
+                    tasks.stream()
+                            .filter(task -> TaskStatus.AVAILABLE.equals(task.getStatus()))
+                            .toList() :
+                    new ArrayList<>();
+
+            // Create a map to hold organization names
+            Map<Long, String> organizationNames = new HashMap<>();
+
+            // Fetch organization names for each task
+            for (Task task : availableTasks) {
+                ResponseEntity<Organization> orgResponse = userController.getOrganizationById(task.getOrganizationId());
+                if (orgResponse.getStatusCode().is2xxSuccessful() && orgResponse.getBody() != null) {
+                    organizationNames.put(task.getOrganizationId(), orgResponse.getBody().getName());
+                } else {
+                    log.error("Organization not found with id: {}", task.getOrganizationId());
+                    organizationNames.put(task.getOrganizationId(), "Unknown Organization"); // Fallback if organization not found
+                }
+            }
+
+            mav.addObject("tasks", availableTasks.toArray(new Task[0]));
+            mav.addObject("organizationNames", organizationNames); // Add the map to the model
+            log.info("Tasks fetched successfully: {}", availableTasks.size());
         } else {
             mav.addObject("errorMessage", "Unable to load tasks. Please try again later.");
             log.error("Failed to fetch tasks, status code: {}", response.getStatusCode());
