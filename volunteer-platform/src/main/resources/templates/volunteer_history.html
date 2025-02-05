@@ -60,30 +60,26 @@
     <h2 class="text-center mb-4">Volunteering History List</h2>
     <div class="row gy-4 justify-content-center">
       <!-- Task Card -->
-      <div class="col-10" th:each="task : ${volunteeringHistory}">
+      <div class="col-10" th:each="taskSignup : ${taskSignups}">
         <div class="card task-card">
           <div class="card-body d-flex align-items-center">
             <div class="me-auto">
-              <h4 class="card-title"  th:text="${task.name}"></h4>
-              <p class="card-text mb-1 text-secondary">
-                <strong th:text="${task.organization}"></strong>
-              </p>
-              <hr />
-              <p class="card-text mb-1">
-                <strong>Event Date:</strong> 
-				<span id="eventDate" th:text="${task.eventDate}"></span>
-              </p>
+              <h4 class="card-title" th:text="${tasks[taskSignup.getTask().getId()].getTitle()}">Task Title</h4>
+              <p class="card-text mb-1" th:text="'Event Location: ' + ${tasks[taskSignup.getTask().getId()].getLocation()}">Event Location</p>
+              <p class="card-text mb-1" th:text="'Event Date: ' + ${tasks[taskSignup.getTask().getId()].getEventDate()}">Event Date</p>
+              <p class="card-text mb-1" th:text="'Creation Date: ' + ${tasks[taskSignup.getTask().getId()].getCreatedAt()}">Creation Date</p>
               <p class="card-text mb-0">
-                <strong>Status:</strong>
-				<span class="badge"
-				                    th:classappend="${task.completed ? 'bg-success text-light' : (task.cancelled ? 'bg-danger text-light' : 'bg-warning text-dark')}"
-				                    th:text="${task.completed ? 'Completed' : (task.cancelled ? 'Cancelled' : 'In Progress')}">
-				                Status
-				              </span>              </p>
+                <strong><i class="bi bi-check-circle"></i> Status: </strong>
+                <span id="taskStatus" class="badge"
+                      th:text="${tasks[taskSignup.getTask().getId()].status}" th:classappend="${tasks[taskSignup.getTask().getId()].status == tasks[taskSignup.getTask().getId()].status.AVAILABLE ? 'bg-success' : (tasks[taskSignup.getTask().getId()].status == tasks[taskSignup.getTask().getId()].status.CANCELLED ? 'bg-danger' : (tasks[taskSignup.getTask().getId()].status == tasks[taskSignup.getTask().getId()].status.FILLED ? 'bg-warning' : 'bg-secondary'))}"></span>
+              </p>
             </div>
-            <button class="btn btn-primary" onclick="rateOrganization()">
+            <a th:href="@{/o/profile(id=${tasks[taskSignup.getTask().getId()].getOrganizationId()})}" class="btn btn-primary me-2" th:classappend="${tasks[taskSignup.getTask().getId()].status != tasks[taskSignup.getTask().getId()].status.ENDED ? ' disabled' : ' '}">
               Rate Organization
-            </button>
+            </a>
+            <a th:href="@{/v/opportunities/{taskId}(taskId=${taskSignup.getTask().getId()})}" class="btn btn-primary">
+              View Task
+            </a>
           </div>
         </div>
       </div>

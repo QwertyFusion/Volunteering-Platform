@@ -114,7 +114,7 @@
                     </form>
 
                     <!-- Cancel Participation Button -->
-					<form th:action="@{/volunteer/${session.userId}/task/${taskId}}" method="delete" id="cancelForm" style="display: inline-block;" th:if="${(task.status != task.status.APPLICATION_ENDED || task.status != task.status.ENDED) && alreadySignedUp}">
+					<form th:action="@{/volunteer/${session.userId}/task/${taskId}}" method="delete" id="cancelForm" style="display: inline-block;" th:if="${(task.status == task.status.AVAILABLE || task.status == task.status.CANCELLED || task.status == task.status.FILLED) && alreadySignedUp}">
                         <button id="cancelButton" class="btn btn-danger" type="button"
                                 onclick="cancelParticipation()" th:if="${alreadySignedUp}">
                             <i class="bi bi-x-circle"></i> Cancel Participation

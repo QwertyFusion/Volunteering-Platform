@@ -198,8 +198,31 @@ public class VolunteerViewsController {
     }
   
     @GetMapping("/v/history")
-    public ModelAndView tasksHistory() {
-        return new ModelAndView("volunteer_history");
+    public ModelAndView tasksHistory(HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView("volunteer_history");
+        Long volunteerId = (Long) request.getSession().getAttribute("userId");
+        ResponseEntity<List<TaskSignup>> response = taskSignupController.getUserSignups(volunteerId);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<TaskSignup> taskSignups = response.getBody();
+            Map<Long, Task> taskMap = new HashMap<>();
+            if (taskSignups != null) {
+                for (TaskSignup taskSignup : taskSignups) {
+                    ResponseEntity<Task> taskResponse = taskController.getTaskById(taskSignup.getTask().getId());
+                    if (taskResponse.getStatusCode().is2xxSuccessful() && taskResponse.getBody() != null) {
+                        taskMap.put(taskSignup.getTask().getId(), taskResponse.getBody());
+                    } else {
+                        log.error("Task not found with id: {}", taskSignup.getTask().getId());
+                    }
+                }
+            }
+
+            mav.addObject("tasks", taskMap);
+            mav.addObject("taskSignups", taskSignups.toArray());
+        } else {
+            mav.addObject("errorMessage", "Unable to load tasks. Please try again later.");
+            log.error("Failed to fetch tasks, status code: {}", response.getStatusCode());
+        }
+        return mav;
     }
 
     /**@GetMapping("/v/profile/edit")
