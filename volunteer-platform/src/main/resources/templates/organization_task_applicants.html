@@ -67,92 +67,130 @@
 <!-- Navbar -->
 <div th:replace="~{fragments/navbar::navbar}"></div>
 
-<!-- Applicants Section -->
+<!--&lt;!&ndash; Old Applicants Section &ndash;&gt;-->
+<!--<main>-->
+<!--  <div class="container py-5 my-5 applicants-container">-->
+<!--    <div class="d-flex justify-content-start mb-3">-->
+<!--      <button id="pending-btn" class="btn btn-primary me-2">-->
+<!--        Pending Applicants-->
+<!--      </button>-->
+<!--      <button id="accepted-btn" class="btn btn-outline-primary">-->
+<!--        Accepted Applicants-->
+<!--      </button>-->
+<!--    </div>-->
+
+<!--    <div id="pending-applicants" class="row gy-4 justify-content-center">-->
+<!--      <div class="applicants-section__title">Pending Applicants</div>-->
+<!--      <div class="applicants-card col-10">-->
+<!--        <div class="card-body d-flex align-items-center">-->
+<!--          <div class="me-auto">-->
+<!--            <p>-->
+<!--              Volunteer Name worked in <strong>35 sessions</strong> before-->
+<!--            </p>-->
+<!--            <div class="applicants-rating" data-id="1">-->
+<!--              <span data-value="1">&#9733;</span>-->
+<!--              <span data-value="2">&#9733;</span>-->
+<!--              <span data-value="3">&#9733;</span>-->
+<!--              <span data-value="4">&#9733;</span>-->
+<!--              <span data-value="5">&#9734;</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <button class="btn btn-success applicants-card__accept-btn btn-fixed">-->
+<!--              Accept-->
+<!--            </button>-->
+<!--            <a href="details.html" class="btn btn-primary btn-fixed">View</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="applicants-card col-10">-->
+<!--        <div class="card-body d-flex align-items-center">-->
+<!--          <div class="me-auto">-->
+<!--            <p>-->
+<!--              Volunteer Name worked in <strong>15 sessions</strong> before-->
+<!--            </p>-->
+<!--            <div class="applicants-rating" data-id="2">-->
+<!--              <span data-value="1">&#9733;</span>-->
+<!--              <span data-value="2">&#9733;</span>-->
+<!--              <span data-value="3">&#9733;</span>-->
+<!--              <span data-value="4">&#9734;</span>-->
+<!--              <span data-value="5">&#9734;</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <button class="btn btn-success applicants-card__accept-btn btn-fixed">-->
+<!--              Accept-->
+<!--            </button>-->
+<!--            <a href="details.html" class="btn btn-primary btn-fixed">View</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="applicants-card col-10">-->
+<!--        <div class="card-body d-flex align-items-center">-->
+<!--          <div class="me-auto">-->
+<!--            <p>-->
+<!--              Volunteer Name worked in <strong>2 sessions</strong> before-->
+<!--            </p>-->
+<!--            <div class="applicants-rating" data-id="3">-->
+<!--              <span data-value="1">&#9733;</span>-->
+<!--              <span data-value="2">&#9734;</span>-->
+<!--              <span data-value="3">&#9734;</span>-->
+<!--              <span data-value="4">&#9734;</span>-->
+<!--              <span data-value="5">&#9734;</span>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div>-->
+<!--            <button class="btn btn-success applicants-card__accept-btn btn-fixed">-->
+<!--              Accept-->
+<!--            </button>-->
+<!--            <a href="details.html" class="btn btn-primary btn-fixed">View</a>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+
+<!--    <div id="accepted-applicants" class="row gy-4 justify-content-center">-->
+<!--      <div class="applicants-section__title">Accepted Applicants</div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</main>-->
+
+<!-- New Applicants Section -->
 <main>
   <div class="container py-5 my-5 applicants-container">
-    <div class="d-flex justify-content-start mb-3">
-      <button id="pending-btn" class="btn btn-primary me-2">
-        Pending Applicants
-      </button>
-      <button id="accepted-btn" class="btn btn-outline-primary">
-        Accepted Applicants
-      </button>
-    </div>
-
     <div id="pending-applicants" class="row gy-4 justify-content-center">
-      <div class="applicants-section__title">Pending Applicants</div>
-      <div class="applicants-card col-10">
+      <div class="applicants-section__title">Applicants List</div>
+      <div class="applicants-card col-10" th:each="taskSignup : ${taskSignups}">
         <div class="card-body d-flex align-items-center">
           <div class="me-auto">
-            <p>
-              Volunteer Name worked in <strong>35 sessions</strong> before
-            </p>
-            <div class="applicants-rating" data-id="1">
+            <h5 class="card-title"><span th:text="${taskSignup.getVolunteer().getName()}"></span><div class="applicants-rating" data-id="1">
               <span data-value="1">&#9733;</span>
               <span data-value="2">&#9733;</span>
               <span data-value="3">&#9733;</span>
               <span data-value="4">&#9733;</span>
               <span data-value="5">&#9734;</span>
-            </div>
-          </div>
-          <div>
-            <button class="btn btn-success applicants-card__accept-btn btn-fixed">
-              Accept
-            </button>
-            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="applicants-card col-10">
-        <div class="card-body d-flex align-items-center">
-          <div class="me-auto">
+            </div></h5>
             <p>
-              Volunteer Name worked in <strong>15 sessions</strong> before
+              <strong>Gender:</strong> <span th:text="${taskSignup.getVolunteer().getGender()}"></span>
+            <br />
+              <strong>Email:</strong> <span th:text="${taskSignup.getVolunteer().getEmail()}"></span>
+              <br />
+              <strong>Contact No.:</strong> <span th:text="${taskSignup.getVolunteer().getPhoneNumber()}"></span>
+              <br />
             </p>
-            <div class="applicants-rating" data-id="2">
-              <span data-value="1">&#9733;</span>
-              <span data-value="2">&#9733;</span>
-              <span data-value="3">&#9733;</span>
-              <span data-value="4">&#9734;</span>
-              <span data-value="5">&#9734;</span>
+            <div class="mt-2"><strong>Skill:</strong>
+              <span th:each="skill : ${taskSignup.getVolunteer().skills}" class="badge bg-secondary me-1 mb-1" th:text="${skill.name}"></span>
             </div>
+
           </div>
           <div>
-            <button class="btn btn-success applicants-card__accept-btn btn-fixed">
-              Accept
-            </button>
-            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
+            <a th:href="@{/v/profile(id=${taskSignup.getVolunteer().getId()})}" class="btn btn-primary btn-fixed" th:if="${task.status != task.status.ENDED}">View Profile</a>
+            <a th:href="@{/v/profile(id=${taskSignup.getVolunteer().getId()})}" class="btn btn-primary btn-fixed" th:if="${task.status == task.status.ENDED}">Rate Volunteer</a>
           </div>
         </div>
       </div>
-
-      <div class="applicants-card col-10">
-        <div class="card-body d-flex align-items-center">
-          <div class="me-auto">
-            <p>
-              Volunteer Name worked in <strong>2 sessions</strong> before
-            </p>
-            <div class="applicants-rating" data-id="3">
-              <span data-value="1">&#9733;</span>
-              <span data-value="2">&#9734;</span>
-              <span data-value="3">&#9734;</span>
-              <span data-value="4">&#9734;</span>
-              <span data-value="5">&#9734;</span>
-            </div>
-          </div>
-          <div>
-            <button class="btn btn-success applicants-card__accept-btn btn-fixed">
-              Accept
-            </button>
-            <a href="details.html" class="btn btn-primary btn-fixed">View</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="accepted-applicants" class="row gy-4 justify-content-center">
-      <div class="applicants-section__title">Accepted Applicants</div>
     </div>
   </div>
 </main>
@@ -171,83 +209,83 @@
         crossorigin="anonymous"
 ></script>
 <script>
-  document.querySelectorAll(".applicants-rating").forEach((ratingDiv) => {
-    const stars = ratingDiv.querySelectorAll("span");
-    const id = ratingDiv.getAttribute("data-id");
+  // document.querySelectorAll(".applicants-rating").forEach((ratingDiv) => {
+  //   const stars = ratingDiv.querySelectorAll("span");
+  //   const id = ratingDiv.getAttribute("data-id");
+  //
+  //   stars.forEach((star) => {
+  //     star.addEventListener("click", () => {
+  //       const value = parseInt(star.getAttribute("data-value"));
+  //       updateRating(ratingDiv, value);
+  //     });
+  //   });
+  //
+  //   function updateRating(ratingDiv, value) {
+  //     const stars = ratingDiv.querySelectorAll("span");
+  //     stars.forEach((star, index) => {
+  //       if (index < value) {
+  //         star.innerHTML = "&#9733;";
+  //       } else {
+  //         star.innerHTML = "&#9734;";
+  //       }
+  //     });
+  //   }
+  // });
 
-    stars.forEach((star) => {
-      star.addEventListener("click", () => {
-        const value = parseInt(star.getAttribute("data-value"));
-        updateRating(ratingDiv, value);
-      });
-    });
-
-    function updateRating(ratingDiv, value) {
-      const stars = ratingDiv.querySelectorAll("span");
-      stars.forEach((star, index) => {
-        if (index < value) {
-          star.innerHTML = "&#9733;";
-        } else {
-          star.innerHTML = "&#9734;";
-        }
-      });
-    }
-  });
-
-  document
-          .querySelectorAll(".applicants-card__accept-btn")
-          .forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const card = e.target.closest(".applicants-card");
-              const ratingDiv = card.querySelector(".applicants-rating");
-              const acceptedSection = document.getElementById(
-                      "accepted-applicants"
-              );
-
-              acceptedSection.appendChild(card);
-              button.setAttribute("disabled", "true");
-              button.textContent = "Accepted";
-              button.classList.replace("btn-success", "btn-secondary");
-            });
-          });
-
-  // Button toggle functionality
-  const pendingBtn = document.getElementById("pending-btn");
-  const acceptedBtn = document.getElementById("accepted-btn");
-
-  pendingBtn.addEventListener("click", () => {
-    pendingBtn.classList.add("btn-primary");
-    pendingBtn.classList.remove("btn-outline-primary");
-    acceptedBtn.classList.add("btn-outline-primary");
-    acceptedBtn.classList.remove("btn-primary");
-
-    document
-            .getElementById("pending-applicants")
-            .classList.remove("d-none");
-    document.getElementById("accepted-applicants").classList.add("d-none");
-  });
-
-  acceptedBtn.addEventListener("click", () => {
-    acceptedBtn.classList.add("btn-primary");
-    acceptedBtn.classList.remove("btn-outline-primary");
-    pendingBtn.classList.add("btn-outline-primary");
-    pendingBtn.classList.remove("btn-primary");
-
-    document
-            .getElementById("accepted-applicants")
-            .classList.remove("d-none");
-    document.getElementById("pending-applicants").classList.add("d-none");
-  });
-
-  // Set initial state
-  document.getElementById("accepted-applicants").classList.add("d-none");
-
-  document.getElementById("current-year").textContent =
-          new Date().getFullYear();
-
-  function rateVolunteers() {
-    alert("Rate Volunteers functionality will be implemented soon.");
-  }
+  // document
+  //         .querySelectorAll(".applicants-card__accept-btn")
+  //         .forEach((button) => {
+  //           button.addEventListener("click", (e) => {
+  //             const card = e.target.closest(".applicants-card");
+  //             const ratingDiv = card.querySelector(".applicants-rating");
+  //             const acceptedSection = document.getElementById(
+  //                     "accepted-applicants"
+  //             );
+  //
+  //             acceptedSection.appendChild(card);
+  //             button.setAttribute("disabled", "true");
+  //             button.textContent = "Accepted";
+  //             button.classList.replace("btn-success", "btn-secondary");
+  //           });
+  //         });
+  //
+  // // Button toggle functionality
+  // const pendingBtn = document.getElementById("pending-btn");
+  // const acceptedBtn = document.getElementById("accepted-btn");
+  //
+  // pendingBtn.addEventListener("click", () => {
+  //   pendingBtn.classList.add("btn-primary");
+  //   pendingBtn.classList.remove("btn-outline-primary");
+  //   acceptedBtn.classList.add("btn-outline-primary");
+  //   acceptedBtn.classList.remove("btn-primary");
+  //
+  //   document
+  //           .getElementById("pending-applicants")
+  //           .classList.remove("d-none");
+  //   document.getElementById("accepted-applicants").classList.add("d-none");
+  // });
+  //
+  // acceptedBtn.addEventListener("click", () => {
+  //   acceptedBtn.classList.add("btn-primary");
+  //   acceptedBtn.classList.remove("btn-outline-primary");
+  //   pendingBtn.classList.add("btn-outline-primary");
+  //   pendingBtn.classList.remove("btn-primary");
+  //
+  //   document
+  //           .getElementById("accepted-applicants")
+  //           .classList.remove("d-none");
+  //   document.getElementById("pending-applicants").classList.add("d-none");
+  // });
+  //
+  // // Set initial state
+  // document.getElementById("accepted-applicants").classList.add("d-none");
+  //
+  // document.getElementById("current-year").textContent =
+  //         new Date().getFullYear();
+  //
+  // function rateVolunteers() {
+  //   alert("Rate Volunteers functionality will be implemented soon.");
+  // }
 </script>
 </body>
 </html>

@@ -126,11 +126,13 @@ public class OrganizationViewsController {
     @GetMapping("/o/task/applicants")
     public ModelAndView viewTaskApplicants(@RequestParam Long taskId) {
         ModelAndView mav = new ModelAndView("organization_task_applicants");
+        Task task = taskController.getTaskById(taskId).getBody();
+        mav.addObject("task", task);
         ResponseEntity<List<TaskSignup>> response = taskSignupController.getTaskSignups(taskId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             List<TaskSignup> taskSignups = response.getBody();
-            mav.addObject("task", taskSignups != null ? taskSignups.toArray(new TaskSignup[0]) : new TaskSignup[0]); // Get volunteer details like for each loop taskSignup: taskSignups, then taskSignup.getVolunteer().getName()
+            mav.addObject("taskSignups", taskSignups != null ? taskSignups.toArray(new TaskSignup[0]) : new TaskSignup[0]); // Get volunteer details like for each loop taskSignup: taskSignups, then taskSignup.getVolunteer().getName()
         } else {
             mav.addObject("errorMessage", "Unable to load task details. Please try again later.");
             log.error("Failed to fetch task, status code: {}", response.getStatusCode());
