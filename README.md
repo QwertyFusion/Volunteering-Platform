@@ -22,16 +22,41 @@ Here are some screenshots of the platform:
 
 ## 📜 Project Artifacts
 
-Below are some of the important artifacts created during the project phase:
+This section outlines the important artifacts created during the project phase, categorized by their types.
+
+### 1. Wireframes
+Wireframes provide a visual representation of the user interface and user experience flows.
 
 <p align="center">
-  <img src="./artifacts/wireframe/loginflow.png" alt="Wireframe" width="45%">
-  <img src="./artifacts/erdiagram/erdiagram.png" alt="ER Diagram" width="45%">
+  <img src="./artifacts/wireframe/totalflow.png" alt="Wireframe Total Flow" width="45%">
 </p>
 
 <p align="center">
-  <img src="./artifacts/usecasediagram/usecasediagram.png" alt="Use Case Diagram" width="45%">
-  <img src="./artifacts/classdiagram/classdiagram.png" alt="Class Diagram" width="45%">
+  <img src="./artifacts/wireframe/loginflow.png" alt="Login Flow" width="45%">
+  <img src="./artifacts/wireframe/rankingflow.png" alt="Rankings Flow" width="45%">
+</p>
+
+<p align="center">
+  <img src="./artifacts/wireframe/organizationflow.png" alt="Organization Flow" width="45%">
+  <img src="./artifacts/wireframe/volunteerflow.png" alt="Volunteer Flow" width="45%">
+</p>
+
+### 2. Diagrams
+Diagrams illustrate the system's architecture and relationships between different components.
+
+#### ER Diagram
+<p align="center">
+  <img src="./artifacts/erdiagram/erdiagram.png" alt="ER Diagram" width="85%">
+</p>
+
+#### Use Case Diagram
+<p align="center">
+  <img src="./artifacts/usecasediagram/usecasediagram.png" alt="Use Case Diagram" width="85%">
+</p>
+
+#### Class Diagram
+<p align="center">
+  <img src="./artifacts/classdiagram/classdiagram.png" alt="Class Diagram" width="85%">
 </p>
 
 ---
