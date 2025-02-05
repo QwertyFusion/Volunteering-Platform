@@ -161,7 +161,7 @@
 <main>
   <div class="container py-5 my-5 applicants-container">
     <div id="pending-applicants" class="row gy-4 justify-content-center">
-      <div class="applicants-section__title">Applicants List</div>
+      <div class="applicants-section__title">Applicants List - <span th:text="${task.getTitle()}"></span></div>
       <div class="applicants-card col-10" th:each="taskSignup : ${taskSignups}">
         <div class="card-body d-flex align-items-center">
           <div class="me-auto">

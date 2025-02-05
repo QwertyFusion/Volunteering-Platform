@@ -73,7 +73,7 @@
                 <input type="email" class="form-control me-2" id="email" name="email" th:value="${volunteer.email}" disabled />
                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'email')">Edit</button>
               </div>
-              <label for="phone" class="form-label">Phone Number</label>
+              <label for="phoneNumber" class="form-label">Phone Number</label>
               <div class="mb-3 d-flex align-items-center">
                 <input type="text" class="form-control me-2" id="phoneNumber" name="phoneNumber" th:value="${volunteer.phoneNumber}" disabled />
                 <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleEdit(this, 'phone')">Edit</button>
@@ -90,7 +90,7 @@
 			                </div>
               <label for="skills" class="form-label">Skills</label>
               <div class="mb-3">
-                <input id="skills" class="form-control" name="skills" placeholder="Type and press Enter to add a skill" th:value="${volunteer.skills}" required />
+                <input id="skills" class="form-control" name="skills" placeholder="Type and press Enter to add a skill" th:value="${skills}" required />
               </div>
 			  <label class="form-label">Password</label>
 			               <div class="mb-3">
@@ -102,8 +102,6 @@
 			                   Change Password
 			                 </button>
 			               </div>
-			               <hr />
-              <button type="submit" class="btn btn-primary w-100">Save Changes</button>
             </form>
             <hr />
             <label class="form-label lead">Remove Account</label>

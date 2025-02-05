@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.example.volunteer_platform.enums.TaskStatus;
-import com.example.volunteer_platform.model.Organization;
+import com.example.volunteer_platform.model.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +24,6 @@ import com.example.volunteer_platform.controller.TaskSignupController;
 import com.example.volunteer_platform.controller.UserController;
 import com.example.volunteer_platform.dto.TaskSignupDto;
 import com.example.volunteer_platform.dto.VolunteerPartialDto;
-import com.example.volunteer_platform.model.Task;
-import com.example.volunteer_platform.model.TaskSignup;
-import com.example.volunteer_platform.model.Volunteer;
 import com.example.volunteer_platform.service.TaskSignupService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -225,18 +222,20 @@ public class VolunteerViewsController {
         return mav;
     }
 
-    /**@GetMapping("/v/profile/edit")
-    public ModelAndView profileSettings() {
-        return new ModelAndView("volunteer_profile_settings");
-    }**/
     @GetMapping("/v/profile/edit")
     public ModelAndView profileSettings(Principal principal) {
         String email = principal.getName();
         ResponseEntity<Volunteer> volunteerResponse = userController.findVolunteerByEmailOptional(email);
         ModelAndView modelAndView = new ModelAndView("volunteer_profile_settings");
 
+        StringBuilder skillsString = new StringBuilder();
         if (volunteerResponse != null && volunteerResponse.getBody() != null) {
             modelAndView.addObject("volunteer", volunteerResponse.getBody());
+            for (Skill skill : volunteerResponse.getBody().getSkills()) {
+                skillsString.append(skill.getName());
+                skillsString.append(", ");
+            }
+            modelAndView.addObject("skills", skillsString.toString());
         } else {
             modelAndView.addObject("errorMessage", "Profile not found!");
         }
