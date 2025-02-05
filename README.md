@@ -10,17 +10,10 @@
 - [📸 Screenshots](#-screenshots)
 - [🚀 Features](#-features)
 - [📅 Milestones & Tasks](#-milestones--tasks)
-- [License](#license)
-- [🛠️ Tools & Technology Stack](#-tools--technology-stack)
-  - [Tools Used](#tools-used)
-  - [🔗 Link to Tools](#-link-to-tools)
-- [Developers](#developers)
+- [📜 License](#-license)
+- [🛠️ Tools & Technology Stack](#%EF%B8%8F-tools--technology-stack)
+- [👩‍💻 Developers](#-developers)
 - [📜 Project Artifacts](#-project-artifacts)
-  - [1. Diagrams](#1-diagrams)
-    - [ER Diagram](#er-diagram)
-    - [Use Case Diagram](#use-case-diagram)
-    - [Class Diagram](#class-diagram)
-  - [2. Wireframes](#2-wireframes)
 
 ---
 
@@ -63,7 +56,7 @@ Here are some screenshots of the platform:
 
 ---
 
-## License
+## 📜 License
 PaperTrail is released under the MIT License. See the [LICENSE](./LICENSE) file for more information.
 
 ---
@@ -102,7 +95,7 @@ PaperTrail is released under the MIT License. See the [LICENSE](./LICENSE) file 
 
 ---
 
-## Developers
+## 👩‍💻 Developers
 <ul>
   <li><a href="https://github.com/QwertyFusion">[@QwertyFusion]</a></li>
   <li><a href="https://github.com/Umensalma">[@Umensalma]</a></li>
