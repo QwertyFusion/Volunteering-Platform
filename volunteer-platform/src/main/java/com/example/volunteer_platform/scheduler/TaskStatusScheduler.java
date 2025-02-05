@@ -31,6 +31,12 @@ public class TaskStatusScheduler {
                 task.setStatus(TaskStatus.APPLICATION_ENDED);
                 taskRepository.save(task);
             }
+
+            if (task.getEventDate().isBefore(today)
+                    && task.getStatus() != TaskStatus.ENDED) {
+                task.setStatus(TaskStatus.ENDED);
+                taskRepository.save(task);
+            }
         }
     }
 }

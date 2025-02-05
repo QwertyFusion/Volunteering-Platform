@@ -127,7 +127,7 @@ public class TaskSignupController {
             Task task = taskOptional.get();
             Volunteer volunteer = userOptional.get();
 
-            if (task.getStatus() == TaskStatus.CANCELLED || task.getStatus() == TaskStatus.APPLICATION_ENDED || task.getStatus() == TaskStatus.FILLED) {
+            if (task.getStatus() != TaskStatus.AVAILABLE) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 

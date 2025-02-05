@@ -62,94 +62,26 @@
     <h2 class="text-center mb-4">Tasks History List</h2>
     <div class="row gy-4 justify-content-center">
       <!-- Task Card -->
-      <div class="col-10">
+      <div class="col-10" th:each="task : ${tasks}">
         <div class="task-card card">
           <div class="card-body d-flex align-items-center">
             <div class="me-auto">
-              <h4 class="card-title">Task Title 1</h4>
-              <p class="card-text mb-1">
-                <strong>Created At:</strong> 10/01/2025
-              </p>
-              <p class="card-text mb-1">
-                <strong>Event Date:</strong> 15/01/2025
-              </p>
+              <h4 class="card-title" th:text="${task.title}">Task Title</h4>
+              <p class="card-text mb-1" th:text="'Event Location: ' + ${task.location}">Event Location</p>
+              <p class="card-text mb-1" th:text="'Event Date: ' + ${task.eventDate}">Event Date</p>
+              <p class="card-text mb-1" th:text="'Creation Date: ' + ${task.createdAt}">Creation Date</p>
               <p class="card-text mb-0">
-                <strong>Status:</strong>
-                <span class="badge bg-success text-light">Completed</span>
+                <strong><i class="bi bi-check-circle"></i> Status: </strong>
+                <span id="taskStatus" class="badge"
+                      th:text="${task.status}" th:classappend="${task.status == task.status.AVAILABLE ? 'bg-success' : (task.status == task.status.CANCELLED ? 'bg-danger' : (task.status == task.status.FILLED ? 'bg-warning' : 'bg-secondary'))}"></span>
               </p>
             </div>
-            <button class="btn btn-primary" onclick="rateVolunteers()">
+            <a th:href="@{/o/task/applicants(taskId=${task.id})}" class="btn btn-primary me-2" th:classappend="${task.status != task.status.ENDED ? ' disabled' : ' '}">
               Rate Volunteers
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Another Task Card -->
-      <div class="col-10">
-        <div class="task-card card">
-          <div class="card-body d-flex align-items-center">
-            <div class="me-auto">
-              <h4 class="card-title">Task Title 2</h4>
-              <p class="card-text mb-1">
-                <strong>Created At:</strong> 05/01/2025
-              </p>
-              <p class="card-text mb-1">
-                <strong>Event Date:</strong> 20/01/2025
-              </p>
-              <p class="card-text mb-0">
-                <strong>Status:</strong>
-                <span class="badge bg-warning text-dark">In Progress</span>
-              </p>
-            </div>
-            <button class="btn btn-primary" disabled>
-              Rate Volunteers
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Another Task Card -->
-      <div class="col-10">
-        <div class="task-card card">
-          <div class="card-body d-flex align-items-center">
-            <div class="me-auto">
-              <h4 class="card-title">Task Title 3</h4>
-              <p class="card-text mb-1">
-                <strong>Created At:</strong> 15/01/2025
-              </p>
-              <p class="card-text mb-1">
-                <strong>Event Date:</strong> 25/01/2025
-              </p>
-              <p class="card-text mb-0">
-                <strong>Status:</strong>
-                <span class="badge bg-danger text-light">Cancelled</span>
-              </p>
-            </div>
-            <button class="btn btn-primary" disabled>
-              Rate Volunteers
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- Another Task Card -->
-      <div class="col-10">
-        <div class="task-card card">
-          <div class="card-body d-flex align-items-center">
-            <div class="me-auto">
-              <h4 class="card-title">Task Title 4</h4>
-              <p class="card-text mb-1">
-                <strong>Created At:</strong> 01/12/2024
-              </p>
-              <p class="card-text mb-1">
-                <strong>Event Date:</strong> 01/01/2025
-              </p>
-              <p class="card-text mb-0">
-                <strong>Status:</strong>
-                <span class="badge bg-success text-light">Completed</span>
-              </p>
-            </div>
-            <button class="btn btn-primary" onclick="rateVolunteers()">
-              Rate Volunteers
-            </button>
+            </a>
+            <a th:href="@{/o/task/view(taskId=${task.id})}" class="btn btn-primary">
+              View Task
+            </a>
           </div>
         </div>
       </div>

@@ -74,7 +74,7 @@
           <p>
             <strong><i class="bi bi-check-circle"></i> Status: </strong>
             <span id="taskStatus" class="badge"
-                  th:text="${task.status}" th:classappend="${task.status == task.status.AVAILABLE ? ' bg-success' : ' bg-danger'}"></span>
+                  th:text="${task.status}" th:classappend="${task.status == task.status.AVAILABLE ? 'bg-success' : (task.status == task.status.CANCELLED ? 'bg-danger' : (task.status == task.status.FILLED ? 'bg-warning' : 'bg-secondary'))}"></span>
           </p>
         </div>
       </div>
@@ -100,7 +100,7 @@
       <hr />
 
       <div class="d-flex gap-2 mt-4">
-        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal">
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editTaskModal" th:if="${task.status == task.status.AVAILABLE}">
           <i class="bi bi-pencil"></i> Edit
         </button>
         <a th:href="@{/o/task/applicants(taskId=${task.id})}" class="btn btn-outline-primary">

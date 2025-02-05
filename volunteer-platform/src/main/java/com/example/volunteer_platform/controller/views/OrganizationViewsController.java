@@ -140,8 +140,19 @@ public class OrganizationViewsController {
     }
 
     @GetMapping("/o/history")
-    public ModelAndView tasksHistory() {
-        return new ModelAndView("organization_task_history");
+    public ModelAndView tasksHistory(HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView("organization_task_history");
+        Long organizationId = (Long) request.getSession().getAttribute("userId");
+        ResponseEntity<List<Task>> response = taskController.getOrganizationTasks(organizationId);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            List<Task> tasks = response.getBody();
+
+            mav.addObject("tasks", tasks.toArray(new Task[0]));
+        } else {
+            mav.addObject("errorMessage", "Unable to load tasks. Please try again later.");
+            log.error("Failed to fetch tasks, status code: {}", response.getStatusCode());
+        }
+        return mav;
     }
 
     @GetMapping("/o/profile/edit")
