@@ -26,12 +26,12 @@ Below are some of the important artifacts created during the project phase:
 
 <p align="center">
   <img src="./artifacts/wireframe/loginflow.png" alt="Wireframe" width="45%">
-  <img src="./artifacts/erdiagram.png" alt="ER Diagram" width="45%">
+  <img src="./artifacts/erdiagram/erdiagram.png" alt="ER Diagram" width="45%">
 </p>
 
 <p align="center">
-  <img src="./artifacts/usecasediagram.png" alt="Use Case Diagram" width="45%">
-  <img src="./artifacts/classdiagram.png" alt="Class Diagram" width="45%">
+  <img src="./artifacts/usecasediagram/usecasediagram.png" alt="Use Case Diagram" width="45%">
+  <img src="./artifacts/classdiagram/classdiagram.png" alt="Class Diagram" width="45%">
 </p>
 
 ---
