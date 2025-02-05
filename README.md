@@ -9,13 +9,13 @@
 Here are some screenshots of the platform:
 
 <p align="center">
-  <img src="<./preview/homepage.png>" alt="Homepage" width="45%">
-  <img src="<./preview/opportunities.png>" alt="Volunteer Opportunities" width="45%">
+  <img src="./preview/homepage.png" alt="Homepage" width="45%">
+  <img src="./preview/opportunities.png" alt="Volunteer Opportunities" width="45%">
 </p>
 
 <p align="center">
-  <img src="<./preview/rankings.png>" alt="Rankings" width="45%">
-  <img src="<./preview/tasksignup.png>" alt="Task Signup" width="45%">
+  <img src="./preview/rankings.png" alt="Rankings" width="45%">
+  <img src="./preview/tasksignup.png" alt="Task Signup" width="45%">
 </p>
 
 ---
@@ -25,13 +25,13 @@ Here are some screenshots of the platform:
 Below are some of the important artifacts created during the project phase:
 
 <p align="center">
-  <img src="<./artifacts/>" alt="Wireframe" width="45%">
-  <img src="<./artifacts/erdiagram.png>" alt="ER Diagram" width="45%">
+  <img src="./artifacts/wireframe/loginflow.png" alt="Wireframe" width="45%">
+  <img src="./artifacts/erdiagram.png" alt="ER Diagram" width="45%">
 </p>
 
 <p align="center">
-  <img src="<./artifacts/usecasediagram.png>" alt="Use Case Diagram" width="45%">
-  <img src="<./artifacts/classdiagram.png>" alt="Class Diagram" width="45%">
+  <img src="./artifacts/usecasediagram.png" alt="Use Case Diagram" width="45%">
+  <img src="./artifacts/classdiagram.png" alt="Class Diagram" width="45%">
 </p>
 
 ---
